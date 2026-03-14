@@ -50,7 +50,7 @@ _run_in_host() {
   exit 1
 }
 
-# Parse --sandbox/--docker flag and dispatch to docker or host exec.
+# Parse --sandbox flag and dispatch to docker or host exec.
 # Args: all command-line arguments passed to the script.
 main() {
   local run_in_docker
@@ -61,7 +61,7 @@ main() {
 
   for arg in "$@"; do
     case "$arg" in
-    --sandbox | --docker)
+    --sandbox)
       run_in_docker=true
       ;;
     *)
