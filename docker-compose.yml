@@ -1,0 +1,18 @@
+services:
+  claude:
+    image: 5a39d3b069d0dedb646263cf1c76a367a0a8aa1d307f469d83a58ab9ee6e4d62
+    volumes:
+      - claude-nix:/nix
+      - claude-config:${CLAUDE_DOCKER_CONFIG_DIR}
+      - ${CLAUDE_HOST_WORKING_DIR}:${CLAUDE_DOCKER_WORKING_DIR}
+    working_dir: ${CLAUDE_DOCKER_WORKING_DIR}
+    environment:
+      - ANTHROPIC_API_KEY
+      - CLAUDE_CONFIG_DIR=${CLAUDE_DOCKER_CONFIG_DIR}
+      - DISABLE_AUTOUPDATER=1
+
+volumes:
+  claude-nix:
+    name: claude-nix
+  claude-config:
+    name: claude-config
