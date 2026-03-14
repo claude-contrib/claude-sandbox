@@ -27,10 +27,9 @@ _run_in_docker() {
   if [ -t 0 ]; then
     docker compose -f "$CLAUDE_DOCKER_COMPOSE" run --rm claude "$@"
   else
-    local stdin
-    stdin="$(cat)"
-
-    docker compose -f "$CLAUDE_DOCKER_COMPOSE" run --rm claude claude-nix.sh "$@" "$stdin" </dev/tty
+    local stream
+    stream="$(cat)"
+    docker compose -f "$CLAUDE_DOCKER_COMPOSE" run --rm claude claude-nix.sh "$@" "$stream" </dev/tty
   fi
 }
 

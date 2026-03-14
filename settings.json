@@ -7,8 +7,6 @@
   "permissions": {
     "defaultMode": "bypassPermissions"
   },
-  "effortLevel": "high",
-  "alwaysThinkingEnabled": true,
   "skipDangerousModePermissionPrompt": true,
   "includeCoAuthoredBy": false
 }
