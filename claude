@@ -1,0 +1,81 @@
+#!/bin/bash
+
+[ -z "${DEBUG:-}" ] || set -x
+
+set -euo pipefail
+
+_claude_script_this="$(realpath "${BASH_SOURCE[0]}")"
+_claude_script_dir="$(cd "$(dirname "$_claude_script_this")" && pwd)"
+
+# Run claude in a Docker sandbox container.
+# Args: forwarded to the claude binary inside the container.
+_run_in_docker() {
+  CLAUDE_HOST_WORKING_DIR="$PWD"
+  CLAUDE_HOST_VERSION="$(cat "$_claude_script_dir/version.txt")"
+  CLAUDE_HOST_VERSION="${CLAUDE_HOST_VERSION:-latest}"
+
+  export CLAUDE_HOST_VERSION
+  export CLAUDE_HOST_WORKING_DIR
+
+  CLAUDE_DOCKER_COMPOSE="$_claude_script_dir/docker-compose.yml"
+  CLAUDE_DOCKER_CONFIG_DIR=/home/claude/.config/claude
+  CLAUDE_DOCKER_WORKING_DIR="/home/claude/${CLAUDE_HOST_WORKING_DIR#"$HOME"/}"
+
+  export CLAUDE_DOCKER_CONFIG_DIR
+  export CLAUDE_DOCKER_WORKING_DIR
+
+  if [ -t 0 ]; then
+    docker compose -f "$CLAUDE_DOCKER_COMPOSE" run --rm claude "$@"
+  else
+    local stdin
+    stdin="$(cat)"
+
+    docker compose -f "$CLAUDE_DOCKER_COMPOSE" run --rm claude claude-nix.sh "$@" "$stdin" </dev/tty
+  fi
+}
+
+# Run the host claude binary, skipping this wrapper in PATH.
+# Args: forwarded to the host claude binary as-is.
+_run_in_host() {
+  local dir entry IFS=':'
+
+  for dir in $PATH; do
+    entry="$dir/claude"
+    if [ -x "$entry" ] && [ "$(realpath "$entry")" != "$_claude_script_this" ]; then
+      "$entry" "$@"
+      return
+    fi
+  done
+
+  echo "error: could not find host claude binary in PATH" >&2
+  exit 1
+}
+
+# Parse --sandbox/--docker flag and dispatch to docker or host exec.
+# Args: all command-line arguments passed to the script.
+main() {
+  local run_in_docker
+  run_in_docker=false
+
+  local args
+  args=()
+
+  for arg in "$@"; do
+    case "$arg" in
+    --sandbox | --docker)
+      run_in_docker=true
+      ;;
+    *)
+      args+=("$arg")
+      ;;
+    esac
+  done
+
+  if [ "$run_in_docker" = true ]; then
+    _run_in_docker ${args[@]+"${args[@]}"}
+  else
+    _run_in_host "$@"
+  fi
+}
+
+main "$@"
