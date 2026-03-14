@@ -24,12 +24,22 @@ _run_in_docker() {
   export CLAUDE_DOCKER_CONFIG_DIR
   export CLAUDE_DOCKER_WORKING_DIR
 
+  local -a run_opts=()
+
+  if [ -n "${SSH_AUTH_SOCK:-}" ]; then
+    run_opts+=(-v "$SSH_AUTH_SOCK:/run/ssh-agent" -e "SSH_AUTH_SOCK=/run/ssh-agent")
+  fi
+
+  if [ -n "${GH_TOKEN:-}" ]; then
+    run_opts+=(-e "GH_TOKEN")
+  fi
+
   if [ -t 0 ]; then
-    docker compose -f "$CLAUDE_DOCKER_COMPOSE" run --rm claude "$@"
+    docker compose -f "$CLAUDE_DOCKER_COMPOSE" run "${run_opts[@]}" --rm claude "$@"
   else
     local stream
     stream="$(cat)"
-    docker compose -f "$CLAUDE_DOCKER_COMPOSE" run --rm claude claude-nix.sh "$@" "$stream" </dev/tty
+    docker compose -f "$CLAUDE_DOCKER_COMPOSE" run "${run_opts[@]}" --rm claude claude-nix.sh "$@" "$stream" </dev/tty
   fi
 }
 
