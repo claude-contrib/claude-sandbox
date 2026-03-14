@@ -5,12 +5,12 @@ services:
       - claude-nix:/nix
       - claude-config:${CLAUDE_DOCKER_CONFIG_DIR}
       - ${CLAUDE_HOST_WORKING_DIR}:${CLAUDE_DOCKER_WORKING_DIR}
-      - ${SSH_AUTH_SOCK}:/ssh-agent
+      - ${SSH_AUTH_SOCK}:/run/ssh-agent
     working_dir: ${CLAUDE_DOCKER_WORKING_DIR}
     environment:
       - GH_TOKEN
       - ANTHROPIC_API_KEY
-      - SSH_AUTH_SOCK=/ssh-agent
+      - SSH_AUTH_SOCK=/run/ssh-agent
       - CLAUDE_CONFIG_DIR=${CLAUDE_DOCKER_CONFIG_DIR}
       - DISABLE_AUTOUPDATER=1
 
