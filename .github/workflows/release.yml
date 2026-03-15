@@ -48,7 +48,7 @@ jobs:
             org.opencontainers.image.title=claude-sandbox
             org.opencontainers.image.description=Isolated, Nix-enabled Claude Code execution environment
 
-      - uses: docker/build-push-action@v6
+      - uses: docker/build-push-action@v7
         with:
           context: .
           push: true
