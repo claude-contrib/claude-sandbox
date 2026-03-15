@@ -90,7 +90,7 @@ setup() {
   unset -f gum
   PATH="/nonexistent"
   run _gum_log --level info "hello world"
-  [[ "$output" == *"sandbox: hello world"* ]]
+  [[ "$output" == *"hello world"* ]]
 }
 
 @test "_gum_log calls gum when available" {

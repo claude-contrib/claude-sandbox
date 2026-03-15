@@ -73,7 +73,7 @@ Detection requires:
 
 When a network is detected, you'll see:
 ```
-sandbox: joining docker network 'myproject_default'
+Joining Docker network 'myproject_default'
 ```
 
 ## Configuration

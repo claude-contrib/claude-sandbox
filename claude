@@ -26,7 +26,7 @@ _gum_log() {
     gum log "$@"
   else
     local msg="${*: -1}"
-    printf 'sandbox: %s\n' "$msg" >&2
+    printf '%s\n' "$msg" >&2
   fi
 }
 
@@ -39,7 +39,7 @@ _gum_spin() {
   if _has_gum; then
     gum spin --spinner dot --title "$title" -- "$@"
   else
-    printf 'sandbox: %s\n' "$title" >&2
+    printf '%s\n' "$title" >&2
     "$@"
   fi
 }
@@ -148,7 +148,7 @@ _get_container_image() {
   if docker image inspect "$image" &>/dev/null; then
     return 0
   fi
-  _gum_spin "Pulling $image..." docker pull "$image"
+  _gum_spin "Pulling image $image" docker pull "$image"
 }
 
 # Run claude in a Docker sandbox container.
@@ -176,7 +176,7 @@ _run_in_docker() {
 
   local docker_network
   if docker_network="$(_get_container_network)"; then
-    _gum_log --level info "joining docker network '$docker_network'"
+    _gum_log --level info "Joining Docker network '$docker_network'"
     export CLAUDE_DOCKER_NETWORK="$docker_network"
     docker_compose_files+=(-f "$_claude_script_dir/docker-compose.net.yml")
   fi
