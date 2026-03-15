@@ -30,7 +30,6 @@ _run_in_docker() {
     run_opts+=(-v "$SSH_AUTH_SOCK:/run/ssh-agent" -e "SSH_AUTH_SOCK=/run/ssh-agent")
   fi
 
-  export GH_TOKEN="${GH_TOKEN:-$GITHUB_TOKEN}"
   if [ -n "${GH_TOKEN:-}" ]; then
     run_opts+=(-e "GH_TOKEN")
   fi
@@ -40,7 +39,7 @@ _run_in_docker() {
   else
     local stream
     stream="$(cat)"
-    docker compose -f "$CLAUDE_DOCKER_COMPOSE" run "${run_opts[@]}" --rm claude "$@" "$stream" </dev/tty
+    docker compose -f "$CLAUDE_DOCKER_COMPOSE" run "${run_opts[@]}" --rm claude claude-nix.sh "$@" "$stream" </dev/tty
   fi
 }
 
