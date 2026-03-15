@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.5.0](https://github.com/claude-contrib/claude-sandbox/compare/v0.4.2...v0.5.0) (2026-03-15)
+
+
+### Features
+
+* migrate to nixos/nix base image with claude-code-nix ([1163a63](https://github.com/claude-contrib/claude-sandbox/commit/1163a637301debd29f1282085fbdea0785407c44))
+
+
+### Bug Fixes
+
+* reduce image size with nix store gc, optimise, and cache cleanup ([ff0606b](https://github.com/claude-contrib/claude-sandbox/commit/ff0606bfc8402f8e3ba67a505499cc009236c437))
+* resolve quoted glob, broken working dir mapping, and fragile stdin handling ([9cfab7c](https://github.com/claude-contrib/claude-sandbox/commit/9cfab7c9129a6b967f243cb994a6b69b45872bd7))
+* restore pipe+interactive support with /dev/tty reconnect ([5bb23cf](https://github.com/claude-contrib/claude-sandbox/commit/5bb23cf17983d7ba0acd13b2636ce9a64da63382))
+* three-way stdin handling for pipe+tty, pipe-only, and interactive ([5b5dc4e](https://github.com/claude-contrib/claude-sandbox/commit/5b5dc4ec7412dcc2070469135d62ae180dea51a9))
+
 ## [0.4.2](https://github.com/claude-contrib/claude-sandbox/compare/v0.4.1...v0.4.2) (2026-03-15)
 
 
