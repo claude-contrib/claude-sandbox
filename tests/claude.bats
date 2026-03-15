@@ -453,7 +453,7 @@ SCRIPT
   rm -rf "$tmpdir"
 }
 
-@test "_run_in_docker passes -T when no controlling terminal" {
+@test "_run_in_docker passes -T when stdin is not a tty" {
   local tmpdir
   tmpdir="$(mktemp -d)"
   HOME="$tmpdir"
@@ -470,42 +470,9 @@ SCRIPT
   }
   export -f docker
 
-  # In bats, stdin is not a tty and /dev/tty is typically not openable,
-  # so the -T fallback branch is taken
-  if (: </dev/tty) 2>/dev/null; then
-    skip "controlling terminal available"
-  fi
-
+  # In bats, stdin is not a tty so -T is added
   run _run_in_docker
   [[ "$output" == *"run -T"* ]]
-
-  rm -rf "$tmpdir"
-}
-
-@test "_run_in_docker takes pipe+tty path when /dev/tty is openable" {
-  if ! (: </dev/tty) 2>/dev/null; then
-    skip "no controlling terminal"
-  fi
-
-  local tmpdir
-  tmpdir="$(mktemp -d)"
-  HOME="$tmpdir"
-  cd "$tmpdir"
-
-  _claude_script_dir="$REPO_ROOT"
-  unset SSH_AUTH_SOCK GH_TOKEN GITHUB_TOKEN
-
-  docker() {
-    case "$1" in
-      image) return 0 ;;
-      compose) echo "ARGS: $*" ;;
-    esac
-  }
-  export -f docker
-
-  run _run_in_docker
-  [[ "$output" == *"ARGS:"* ]]
-  [[ "$output" != *"-T"* ]]
 
   rm -rf "$tmpdir"
 }
