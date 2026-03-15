@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.1](https://github.com/claude-contrib/claude-sandbox/compare/v0.3.0...v0.3.1) (2026-03-15)
+
+
+### Bug Fixes
+
+* disable Nix seccomp BPF filtering for arm64 QEMU compatibility ([a815080](https://github.com/claude-contrib/claude-sandbox/commit/a8150803a73d9aa10aeff08d69eaeb0cc7a380f9))
+
 ## [0.3.0](https://github.com/claude-contrib/claude-sandbox/compare/v0.2.2...v0.3.0) (2026-03-15)
 
 
