@@ -199,6 +199,10 @@ _run_in_docker() {
 
   if [ -t 0 ]; then
     docker compose "${docker_compose_files[@]}" run "${run_opts[@]}" --rm claude claude-exec.sh "$@"
+  elif (: </dev/tty) 2>/dev/null; then
+    local stream
+    stream="$(cat)"
+    docker compose "${docker_compose_files[@]}" run "${run_opts[@]}" --rm claude claude-exec.sh "$@" "$stream" </dev/tty
   else
     docker compose "${docker_compose_files[@]}" run -T "${run_opts[@]}" --rm claude claude-exec.sh "$@"
   fi
