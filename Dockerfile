@@ -20,7 +20,7 @@ RUN curl -fsSL https://claude.ai/install.sh | bash
 
 ENV NIX_CONFIG="experimental-features = nix-command flakes"
 
-ENV PATH="/home/claude/.local/bin:$PATH"
+ENV PATH="/home/claude/.local/bin:/nix/var/nix/profiles/default/bin:$PATH"
 
 RUN mkdir -p /home/claude/.config/claude
 
