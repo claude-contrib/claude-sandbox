@@ -25,7 +25,7 @@ ENV PATH="/home/claude/.local/bin:/nix/var/nix/profiles/default/bin:$PATH"
 RUN mkdir -p /home/claude/.config/claude
 
 RUN git clone https://github.com/claude-contrib/claude-status.git /home/claude/.local/share/claude-status \
-    && ln -s /home/claude/.local/share/claude-status/claude-status.sh /home/claude/.local/bin/claude-status
+    && ln -s /home/claude/.local/share/claude-status/claude-status /home/claude/.local/bin/claude-status
 
 COPY --chown=claude:claude claude-exec.sh /home/claude/.local/bin/claude-exec.sh
 COPY --chown=claude:claude settings.json /home/claude/.local/share/claude/settings.json
