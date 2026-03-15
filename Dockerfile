@@ -1,30 +1,32 @@
 # syntax=docker/dockerfile:1
 
-FROM ubuntu:24.04
+FROM nixos/nix:latest
 
-SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
+ENV LANG=C.UTF-8
+ENV TERM=xterm-256color
+ENV COLORTERM=truecolor
 
-RUN apt-get update && apt-get install -y curl git gh jq ripgrep sudo xz-utils ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN echo "experimental-features = nix-command flakes" >> /etc/nix/nix.conf && \
+    echo "sandbox = false" >> /etc/nix/nix.conf && \
+    echo "filter-syscalls = false" >> /etc/nix/nix.conf
 
-RUN curl -fsSL https://install.determinate.systems/nix | sh -s -- install linux --no-confirm --init none --no-start-daemon --extra-conf "sandbox = false" --extra-conf "filter-syscalls = false"
-
-RUN useradd -m -u 1001 -s /bin/bash claude
-
-RUN chown -R claude:claude /nix
+RUN echo "claude:x:1000:1000::/home/claude:/bin/sh" >> /etc/passwd && \
+    echo "claude:x:1000:" >> /etc/group && \
+    mkdir -p /home/claude && \
+    chown claude:claude /home/claude && \
+    chown -R claude:claude /nix
 
 USER claude
 
 WORKDIR /home/claude
 
-RUN curl -fsSL https://claude.ai/install.sh | bash
+COPY --chown=claude:claude flake.nix flake.lock ./
 
-ENV NIX_CONFIG="experimental-features = nix-command flakes"
-ENV PATH="/home/claude/.local/bin:/nix/var/nix/profiles/default/bin:$PATH"
-ENV LANG=C.UTF-8
-ENV TERM=xterm-256color
-ENV COLORTERM=truecolor
+RUN nix profile install .#claude-sandbox && rm flake.nix flake.lock
 
-RUN mkdir -p /home/claude/.config/claude
+ENV PATH="/home/claude/.nix-profile/bin:/home/claude/.local/bin:/nix/var/nix/profiles/default/bin:$PATH"
+
+RUN mkdir -p /home/claude/.config/claude /home/claude/.local/bin /home/claude/.local/share/claude
 
 RUN git clone https://github.com/claude-contrib/claude-status.git /home/claude/.local/share/claude-status \
     && ln -s /home/claude/.local/share/claude-status/claude-status /home/claude/.local/bin/claude-status

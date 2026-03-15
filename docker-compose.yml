@@ -10,7 +10,6 @@ services:
     environment:
       - ANTHROPIC_API_KEY
       - CLAUDE_CONFIG_DIR=${CLAUDE_DOCKER_CONFIG_DIR}
-      - DISABLE_AUTOUPDATER=1
 
 volumes:
   claude-nix:

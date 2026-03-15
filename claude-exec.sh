@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 set -euo pipefail
 
 CLAUDE_SETTINGS_PATH="/home/claude/.local/share/claude/settings.json"
