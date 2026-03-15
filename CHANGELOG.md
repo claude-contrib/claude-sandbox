@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.2](https://github.com/claude-contrib/claude-sandbox/compare/v0.2.1...v0.2.2) (2026-03-15)
+
+
+### Bug Fixes
+
+* **ci:** supply explicit tag value to metadata-action to fix empty tags on push-to-main ([1ec7c96](https://github.com/claude-contrib/claude-sandbox/commit/1ec7c96a244fa62f8b336659564c4d15533136f6))
+
 ## [0.2.1](https://github.com/claude-contrib/claude-sandbox/compare/v0.2.0...v0.2.1) (2026-03-15)
 
 
