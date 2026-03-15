@@ -56,6 +56,9 @@ claude --sandbox
 # Sandbox with args
 claude --sandbox --print "hello"
 
+# Show help
+claude --help
+
 # Debug tracing
 DEBUG=1 claude --sandbox
 ```
@@ -75,7 +78,13 @@ sandbox: joining docker network 'myproject_default'
 
 ## Configuration
 
-Set `ANTHROPIC_API_KEY` in your environment — it's passed through to the container automatically.
+| Variable | Description |
+|----------|-------------|
+| `ANTHROPIC_API_KEY` | Anthropic API key (required, forwarded to sandbox) |
+| `GH_TOKEN` | GitHub personal access token (forwarded to sandbox) |
+| `GITHUB_TOKEN` | Alias for `GH_TOKEN` — used when `GH_TOKEN` is not set |
+| `SSH_AUTH_SOCK` | SSH agent socket (forwarded to sandbox) |
+| `DEBUG` | Enable debug tracing (`set -x`) |
 
 ## The claude-contrib Ecosystem
 
