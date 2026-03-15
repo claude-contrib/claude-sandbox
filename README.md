@@ -20,6 +20,7 @@ The sandbox container comes pre-configured with:
 - **`bypassPermissions`** — no confirmation prompts
 - **Nix flakes** — auto-activates `flake.nix` if present in your project
 - **Project mount** — your working directory is mounted into the container
+- **Devcontainer network** — auto-joins the devcontainer's Docker network if one is running
 
 ## Installation
 
@@ -57,6 +58,19 @@ claude --sandbox --print "hello"
 
 # Debug tracing
 DEBUG=1 claude --sandbox
+```
+
+## Devcontainer Network
+
+If your project uses a [devcontainer](https://containers.dev/) (VS Code, Codespaces, devcontainer CLI), the sandbox automatically detects the running devcontainer and joins its Docker network. This lets Claude reach services (databases, APIs, etc.) defined in the devcontainer without any extra configuration.
+
+Detection requires:
+1. A `.devcontainer/devcontainer.json` or `.devcontainer.json` in the project root
+2. A running devcontainer with the `devcontainer.local_folder` label matching the project
+
+When a network is detected, you'll see:
+```
+sandbox: joining docker network 'myproject_default'
 ```
 
 ## Configuration

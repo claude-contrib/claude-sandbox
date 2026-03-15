@@ -7,7 +7,82 @@ set -euo pipefail
 _claude_script_this="$(realpath "${BASH_SOURCE[0]}")"
 _claude_script_dir="$(cd "$(dirname "$_claude_script_this")" && pwd)"
 
+# Get the project root if it has a devcontainer configuration.
+# Uses git to resolve the project root, then checks for
+# .devcontainer/devcontainer.json or .devcontainer.json.
+# Stdout: absolute path to the project root.
+# Returns: 0 if a devcontainer config exists, 1 otherwise.
+_get_project_path() {
+  local project_path
+  project_path="$(git rev-parse --show-toplevel 2>/dev/null)" || return 1
+
+  [ -f "$project_path/.devcontainer/devcontainer.json" ] && echo "$project_path" && return 0
+  [ -f "$project_path/.devcontainer.json" ] && echo "$project_path" && return 0
+
+  return 1
+}
+
+# Get the container ID of a running devcontainer for the current project.
+# Queries docker for containers with the devcontainer.local_folder label
+# matching the project root. Returns the first running match.
+# Stdout: short container ID.
+# Returns: 0 if a running devcontainer is found, 1 otherwise.
+_get_container_id() {
+  local project_path
+  project_path="$(_get_project_path)" || return 1
+
+  local container_id
+  container_id="$(docker ps -q \
+    --filter "label=devcontainer.local_folder=$project_path" \
+    --filter "status=running" \
+    2>/dev/null | head -n1)" || return 1
+
+  if [ -n "$container_id" ]; then
+    echo "$container_id"
+  else
+    return 1
+  fi
+}
+
+# Get the Docker network of a running devcontainer for the current project.
+# Inspects the container's attached networks and returns the first
+# non-default one (preferring compose-created networks like myproject_default).
+# Falls back to the first network if all are default types.
+# Stdout: Docker network name.
+# Returns: 0 if a network is found, 1 otherwise.
+_get_container_network() {
+  local container_id
+  container_id="$(_get_container_id)" || return 1
+
+  local network_list
+  network_list="$(docker inspect "$container_id" \
+    --format '{{range $name, $_ := .NetworkSettings.Networks}}{{$name}}{{"\n"}}{{end}}' \
+    2>/dev/null)" || return 1
+
+  local network
+  while IFS= read -r network; do
+    case "$network" in
+    bridge | host | none | "") continue ;;
+    *)
+      echo "$network"
+      return 0
+      ;;
+    esac
+  done <<<"$network_list"
+
+  # fallback: use first network even if it's a default type
+  network="$(echo "$network_list" | head -n1)"
+
+  if [ -n "$network" ]; then
+    echo "$network"
+  else
+    return 1
+  fi
+}
+
 # Run claude in a Docker sandbox container.
+# Builds the compose file list, detects devcontainer networks,
+# and forwards SSH agent and GitHub token if available.
 # Args: forwarded to the claude binary inside the container.
 _run_in_docker() {
   CLAUDE_HOST_WORKING_DIR="$PWD"
@@ -17,12 +92,20 @@ _run_in_docker() {
   export CLAUDE_HOST_VERSION
   export CLAUDE_HOST_WORKING_DIR
 
-  CLAUDE_DOCKER_COMPOSE="$_claude_script_dir/docker-compose.yml"
   CLAUDE_DOCKER_CONFIG_DIR=/home/claude/.config/claude
   CLAUDE_DOCKER_WORKING_DIR="/home/claude/${CLAUDE_HOST_WORKING_DIR#"$HOME"/}"
 
   export CLAUDE_DOCKER_CONFIG_DIR
   export CLAUDE_DOCKER_WORKING_DIR
+
+  CLAUDE_DOCKER_COMPOSE="$_claude_script_dir/docker-compose.yml"
+  local -a docker_compose_files=(-f "$CLAUDE_DOCKER_COMPOSE")
+
+  local docker_network
+  if docker_network="$(_get_container_network)"; then
+    export CLAUDE_DOCKER_NETWORK="$docker_network"
+    docker_compose_files+=(-f "$_claude_script_dir/docker-compose.net.yml")
+  fi
 
   local -a run_opts=()
 
@@ -35,11 +118,11 @@ _run_in_docker() {
   fi
 
   if [ -t 0 ]; then
-    docker compose -f "$CLAUDE_DOCKER_COMPOSE" run "${run_opts[@]}" --rm claude claude-exec.sh "$@"
+    docker compose "${docker_compose_files[@]}" run "${run_opts[@]}" --rm claude claude-exec.sh "$@"
   else
     local stream
     stream="$(cat)"
-    docker compose -f "$CLAUDE_DOCKER_COMPOSE" run "${run_opts[@]}" --rm claude claude-exec.sh "$@" "$stream" </dev/tty
+    docker compose "${docker_compose_files[@]}" run "${run_opts[@]}" --rm claude claude-exec.sh "$@" "$stream" </dev/tty
   fi
 }
 
