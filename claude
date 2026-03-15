@@ -198,7 +198,12 @@ _run_in_docker() {
   fi
 
   if ! [ -t 0 ]; then
-    run_opts+=(-T)
+    if (: </dev/tty) 2>/dev/null; then
+      set -- "$@" "$(cat)"
+      exec 0</dev/tty
+    else
+      run_opts+=(-T)
+    fi
   fi
 
   docker compose "${docker_compose_files[@]}" run "${run_opts[@]}" --rm claude claude-exec.sh "$@"
