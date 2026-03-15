@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.4.2](https://github.com/claude-contrib/claude-sandbox/compare/v0.4.1...v0.4.2) (2026-03-15)
+
+
+### Bug Fixes
+
+* add locale and terminal ENV vars for proper Unicode and color support ([7671318](https://github.com/claude-contrib/claude-sandbox/commit/76713188f23de883477b72792029d260bd97489f))
+* persist ~/.cache volume to avoid repeated nix downloads ([b3ece88](https://github.com/claude-contrib/claude-sandbox/commit/b3ece88c997eda82c23e1bf3f896b4c1f00b0187))
+
 ## [0.4.1](https://github.com/claude-contrib/claude-sandbox/compare/v0.4.0...v0.4.1) (2026-03-15)
 
 
