@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.3.0](https://github.com/claude-contrib/claude-sandbox/compare/v0.2.2...v0.3.0) (2026-03-15)
+
+
+### Features
+
+* auto-join devcontainer Docker network in sandbox mode ([3b717c4](https://github.com/claude-contrib/claude-sandbox/commit/3b717c44eda215d4f6b8424275ac24736839b49f))
+
+
+### Bug Fixes
+
+* add linux/arm64 platform to Docker image build ([b199743](https://github.com/claude-contrib/claude-sandbox/commit/b199743e5e065a3028252bb772dc21ff2f0d04f8))
+
 ## [0.2.2](https://github.com/claude-contrib/claude-sandbox/compare/v0.2.1...v0.2.2) (2026-03-15)
 
 
