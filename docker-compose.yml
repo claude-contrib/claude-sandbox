@@ -3,6 +3,7 @@ services:
     image: ghcr.io/claude-contrib/claude-sandbox:${CLAUDE_HOST_VERSION}
     volumes:
       - claude-nix:/nix
+      - claude-cache:/home/claude/.cache
       - claude-config:${CLAUDE_DOCKER_CONFIG_DIR}
       - ${CLAUDE_HOST_WORKING_DIR}:${CLAUDE_DOCKER_WORKING_DIR}
     working_dir: ${CLAUDE_DOCKER_WORKING_DIR}
@@ -14,5 +15,7 @@ services:
 volumes:
   claude-nix:
     name: claude-nix
+  claude-cache:
+    name: claude-cache
   claude-config:
     name: claude-config
