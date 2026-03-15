@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.4.0](https://github.com/claude-contrib/claude-sandbox/compare/v0.3.1...v0.4.0) (2026-03-15)
+
+
+### Features
+
+* add --help flag, image pre-pull with spinner, and gum integration ([123b75b](https://github.com/claude-contrib/claude-sandbox/commit/123b75b02360f7a553518a19e3b212b6428de886))
+* install claude-status in sandbox container ([ae63245](https://github.com/claude-contrib/claude-sandbox/commit/ae6324563608b4cdafaa6d5d77a088f950d5ed39))
+
+
+### Bug Fixes
+
+* add nix bin to PATH in Dockerfile ([d4850e1](https://github.com/claude-contrib/claude-sandbox/commit/d4850e19bef3cf021fe3e0b6c7314ec07fa98d92))
+* alias GITHUB_TOKEN to GH_TOKEN in sandbox mode ([35a695c](https://github.com/claude-contrib/claude-sandbox/commit/35a695c7ffc46e892341a64ebb3efcae9b853abc))
+* consolidate GH_TOKEN/GITHUB_TOKEN in --help output ([13d47c0](https://github.com/claude-contrib/claude-sandbox/commit/13d47c0a9911a5e5b5ed771c95111545aac95984))
+* uppercase log messages and drop sandbox: prefix ([515ced3](https://github.com/claude-contrib/claude-sandbox/commit/515ced367322e502ee21fb326f999a3ae2265c5f))
+
 ## [0.3.1](https://github.com/claude-contrib/claude-sandbox/compare/v0.3.0...v0.3.1) (2026-03-15)
 
 
