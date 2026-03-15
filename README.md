@@ -89,12 +89,14 @@ Joining Docker network 'myproject_default'
 
 ## The claude-contrib Ecosystem
 
-| Marketplace | Install key | What it provides |
-|-------------|------------|-----------------|
-| [claude-extensions](https://github.com/claude-contrib/claude-extensions) | `@claude-extensions` | Hooks, context rules, session automation |
-| [claude-services](https://github.com/claude-contrib/claude-services) | `@claude-services` | MCP servers — browser, filesystem, sequential thinking |
-| [claude-skills](https://github.com/claude-contrib/claude-skills) | `@claude-skills` | Slash commands — `/commit`, and more |
-| **claude-sandbox** ← you are here | — | Sandboxed Docker environment for Claude Code |
+| Repo | What it provides |
+|------|-----------------|
+| [claude-extensions](https://github.com/claude-contrib/claude-extensions) | Hooks, context rules, session automation |
+| [claude-features](https://github.com/claude-contrib/claude-features) | Devcontainer features for Claude Code and Anthropic tools |
+| [claude-languages](https://github.com/claude-contrib/claude-languages) | LSP language servers — completions, diagnostics, hover |
+| **claude-sandbox** ← you are here | Sandboxed Docker environment for Claude Code |
+| [claude-services](https://github.com/claude-contrib/claude-services) | MCP servers — browser, filesystem, sequential thinking |
+| [claude-status](https://github.com/claude-contrib/claude-status) | Live status line — context, cost, model, branch, worktree |
 
 ## License
 
