@@ -22,7 +22,11 @@ WORKDIR /home/claude
 
 COPY --chown=claude:claude flake.nix flake.lock ./
 
-RUN nix profile install .#claude-sandbox && rm flake.nix flake.lock
+RUN nix profile install .#claude-sandbox && \
+    rm flake.nix flake.lock && \
+    nix store gc && \
+    nix store optimise && \
+    rm -rf ~/.cache/nix
 
 ENV PATH="/home/claude/.nix-profile/bin:/home/claude/.local/bin:/nix/var/nix/profiles/default/bin:$PATH"
 
