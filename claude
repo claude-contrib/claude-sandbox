@@ -187,6 +187,8 @@ _run_in_docker() {
     run_opts+=(-v "$SSH_AUTH_SOCK:/run/ssh-agent" -e "SSH_AUTH_SOCK=/run/ssh-agent")
   fi
 
+  export GH_TOKEN="${GH_TOKEN:-${GITHUB_TOKEN:-}}"
+
   if [ -n "${GH_TOKEN:-}" ]; then
     run_opts+=(-e "GH_TOKEN")
   fi
