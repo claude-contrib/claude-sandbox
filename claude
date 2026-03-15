@@ -7,6 +7,68 @@ set -euo pipefail
 _claude_script_this="$(realpath "${BASH_SOURCE[0]}")"
 _claude_script_dir="$(cd "$(dirname "$_claude_script_this")" && pwd)"
 
+# Check if gum is available (memoized).
+_has_gum() {
+  if [ -z "${_gum_available+x}" ]; then
+    if command -v gum &>/dev/null; then
+      _gum_available=1
+    else
+      _gum_available=0
+    fi
+  fi
+  [ "$_gum_available" -eq 1 ]
+}
+
+# Log a message. Uses gum log when available, falls back to printf.
+# Usage: _gum_log --level info "message"
+_gum_log() {
+  if _has_gum; then
+    gum log "$@"
+  else
+    local msg="${*: -1}"
+    printf 'sandbox: %s\n' "$msg" >&2
+  fi
+}
+
+# Run a command with a spinner. Uses gum spin when available,
+# falls back to printing the title then running the command directly.
+# Usage: _gum_spin "title" cmd [args...]
+_gum_spin() {
+  local title="$1"
+  shift
+  if _has_gum; then
+    gum spin --spinner dot --title "$title" -- "$@"
+  else
+    printf 'sandbox: %s\n' "$title" >&2
+    "$@"
+  fi
+}
+
+# Print usage information and exit.
+_usage() {
+  local version
+  version="$(cat "$_claude_script_dir/version.txt" 2>/dev/null || echo "unknown")"
+
+  cat <<EOF
+claude-sandbox ${version}
+
+Usage: claude [flags] [claude args...]
+
+Flags:
+  --sandbox    Run claude inside a Docker sandbox container
+  --help       Show this help message and exit
+
+Environment variables:
+  ANTHROPIC_API_KEY   Anthropic API key (required)
+  GH_TOKEN            GitHub personal access token (forwarded to sandbox)
+  GITHUB_TOKEN        Alias for GH_TOKEN
+  SSH_AUTH_SOCK       SSH agent socket (forwarded to sandbox)
+  DEBUG               Enable debug tracing (set -x)
+
+https://github.com/claude-contrib/claude-sandbox
+EOF
+}
+
 # Get the project root if it has a devcontainer configuration.
 # Uses git to resolve the project root, then checks for
 # .devcontainer/devcontainer.json or .devcontainer.json.
@@ -80,6 +142,15 @@ _get_container_network() {
   fi
 }
 
+# Ensure the container image is available locally, pulling if needed.
+_get_container_image() {
+  local image="ghcr.io/claude-contrib/claude-sandbox:${CLAUDE_HOST_VERSION}"
+  if docker image inspect "$image" &>/dev/null; then
+    return 0
+  fi
+  _gum_spin "Pulling $image..." docker pull "$image"
+}
+
 # Run claude in a Docker sandbox container.
 # Builds the compose file list, detects devcontainer networks,
 # and forwards SSH agent and GitHub token if available.
@@ -92,6 +163,8 @@ _run_in_docker() {
   export CLAUDE_HOST_VERSION
   export CLAUDE_HOST_WORKING_DIR
 
+  _get_container_image
+
   CLAUDE_DOCKER_CONFIG_DIR=/home/claude/.config/claude
   CLAUDE_DOCKER_WORKING_DIR="/home/claude/${CLAUDE_HOST_WORKING_DIR#"$HOME"/}"
 
@@ -103,6 +176,7 @@ _run_in_docker() {
 
   local docker_network
   if docker_network="$(_get_container_network)"; then
+    _gum_log --level info "joining docker network '$docker_network'"
     export CLAUDE_DOCKER_NETWORK="$docker_network"
     docker_compose_files+=(-f "$_claude_script_dir/docker-compose.net.yml")
   fi
@@ -154,6 +228,10 @@ main() {
 
   for arg in "$@"; do
     case "$arg" in
+    --help)
+      _usage
+      exit 0
+      ;;
     --sandbox)
       run_in_docker=true
       ;;
