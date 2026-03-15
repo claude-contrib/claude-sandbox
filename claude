@@ -39,7 +39,7 @@ _run_in_docker() {
   else
     local stream
     stream="$(cat)"
-    docker compose -f "$CLAUDE_DOCKER_COMPOSE" run "${run_opts[@]}" --rm claude claude-nix.sh "$@" "$stream" </dev/tty
+    docker compose -f "$CLAUDE_DOCKER_COMPOSE" run "${run_opts[@]}" --rm claude "$@" "$stream" </dev/tty
   fi
 }
 
