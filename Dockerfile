@@ -22,6 +22,10 @@ ENV NIX_CONFIG="experimental-features = nix-command flakes"
 
 ENV PATH="/home/claude/.local/bin:/nix/var/nix/profiles/default/bin:$PATH"
 
+ENV LANG=C.UTF-8
+ENV TERM=xterm-256color
+ENV COLORTERM=truecolor
+
 RUN mkdir -p /home/claude/.config/claude
 
 RUN git clone https://github.com/claude-contrib/claude-status.git /home/claude/.local/share/claude-status \
