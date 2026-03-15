@@ -401,3 +401,127 @@ SCRIPT
   [[ "$status" -eq 1 ]]
   [[ "$output" == *"could not find host claude binary"* ]]
 }
+
+# ---------------------------------------------------------------------------
+# _run_in_docker
+# ---------------------------------------------------------------------------
+
+@test "_run_in_docker maps working dir for path under HOME" {
+  local tmpdir
+  tmpdir="$(mktemp -d)"
+  HOME="$tmpdir"
+  mkdir -p "$tmpdir/projects/myapp"
+  cd "$tmpdir/projects/myapp"
+
+  _claude_script_dir="$REPO_ROOT"
+  unset SSH_AUTH_SOCK GH_TOKEN GITHUB_TOKEN
+
+  docker() {
+    case "$1" in
+      image) return 0 ;;
+      compose) echo "DOCKER_WORKING_DIR=$CLAUDE_DOCKER_WORKING_DIR" ;;
+    esac
+  }
+  export -f docker
+
+  run _run_in_docker
+  [[ "$output" == *"DOCKER_WORKING_DIR=/home/claude/projects/myapp"* ]]
+
+  rm -rf "$tmpdir"
+}
+
+@test "_run_in_docker falls back to /home/claude/workspace for path outside HOME" {
+  local tmpdir
+  tmpdir="$(mktemp -d)"
+  HOME="/nonexistent-home-dir"
+  cd "$tmpdir"
+
+  _claude_script_dir="$REPO_ROOT"
+  unset SSH_AUTH_SOCK GH_TOKEN GITHUB_TOKEN
+
+  docker() {
+    case "$1" in
+      image) return 0 ;;
+      compose) echo "DOCKER_WORKING_DIR=$CLAUDE_DOCKER_WORKING_DIR" ;;
+    esac
+  }
+  export -f docker
+
+  run _run_in_docker
+  [[ "$output" == *"DOCKER_WORKING_DIR=/home/claude/workspace"* ]]
+
+  rm -rf "$tmpdir"
+}
+
+@test "_run_in_docker passes -T when stdin is not a tty" {
+  local tmpdir
+  tmpdir="$(mktemp -d)"
+  HOME="$tmpdir"
+  cd "$tmpdir"
+
+  _claude_script_dir="$REPO_ROOT"
+  unset SSH_AUTH_SOCK GH_TOKEN GITHUB_TOKEN
+
+  docker() {
+    case "$1" in
+      image) return 0 ;;
+      compose) echo "ARGS: $*" ;;
+    esac
+  }
+  export -f docker
+
+  run _run_in_docker
+  [[ "$output" == *"run -T"* ]]
+
+  rm -rf "$tmpdir"
+}
+
+@test "_run_in_docker forwards SSH_AUTH_SOCK volume and env" {
+  local tmpdir
+  tmpdir="$(mktemp -d)"
+  HOME="$tmpdir"
+  cd "$tmpdir"
+
+  _claude_script_dir="$REPO_ROOT"
+  export SSH_AUTH_SOCK="/tmp/test-ssh.sock"
+  unset GH_TOKEN GITHUB_TOKEN
+
+  docker() {
+    case "$1" in
+      image) return 0 ;;
+      compose) echo "ARGS: $*" ;;
+    esac
+  }
+  export -f docker
+
+  run _run_in_docker
+  [[ "$output" == *"/tmp/test-ssh.sock:/run/ssh-agent"* ]]
+
+  unset SSH_AUTH_SOCK
+  rm -rf "$tmpdir"
+}
+
+@test "_run_in_docker forwards GH_TOKEN when set" {
+  local tmpdir
+  tmpdir="$(mktemp -d)"
+  HOME="$tmpdir"
+  cd "$tmpdir"
+
+  _claude_script_dir="$REPO_ROOT"
+  export GH_TOKEN="test-token"
+  unset SSH_AUTH_SOCK GITHUB_TOKEN
+
+  docker() {
+    case "$1" in
+      image) return 0 ;;
+      compose) echo "ARGS: $*" ;;
+    esac
+  }
+  export -f docker
+
+  run _run_in_docker
+  [[ "$output" == *"GH_TOKEN"* ]]
+
+  unset GH_TOKEN
+  rm -rf "$tmpdir"
+}

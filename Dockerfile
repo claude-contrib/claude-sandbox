@@ -4,7 +4,7 @@ FROM ubuntu:24.04
 
 SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
 
-RUN apt-get update && apt-get install -y curl git gh jq ripgrep sudo xz-utils ca-certificates && rm -rf "/var/lib/apt/lists/*"
+RUN apt-get update && apt-get install -y curl git gh jq ripgrep sudo xz-utils ca-certificates && rm -rf /var/lib/apt/lists/*
 
 RUN curl -fsSL https://install.determinate.systems/nix | sh -s -- install linux --no-confirm --init none --no-start-daemon --extra-conf "sandbox = false" --extra-conf "filter-syscalls = false"
 

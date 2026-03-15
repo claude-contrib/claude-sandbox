@@ -166,7 +166,11 @@ _run_in_docker() {
   _get_container_image
 
   CLAUDE_DOCKER_CONFIG_DIR=/home/claude/.config/claude
-  CLAUDE_DOCKER_WORKING_DIR="/home/claude/${CLAUDE_HOST_WORKING_DIR#"$HOME"/}"
+  if [[ "$CLAUDE_HOST_WORKING_DIR" == "$HOME"/* ]]; then
+    CLAUDE_DOCKER_WORKING_DIR="/home/claude/${CLAUDE_HOST_WORKING_DIR#"$HOME"/}"
+  else
+    CLAUDE_DOCKER_WORKING_DIR="/home/claude/workspace"
+  fi
 
   export CLAUDE_DOCKER_CONFIG_DIR
   export CLAUDE_DOCKER_WORKING_DIR
@@ -196,9 +200,7 @@ _run_in_docker() {
   if [ -t 0 ]; then
     docker compose "${docker_compose_files[@]}" run "${run_opts[@]}" --rm claude claude-exec.sh "$@"
   else
-    local stream
-    stream="$(cat)"
-    docker compose "${docker_compose_files[@]}" run "${run_opts[@]}" --rm claude claude-exec.sh "$@" "$stream" </dev/tty
+    docker compose "${docker_compose_files[@]}" run -T "${run_opts[@]}" --rm claude claude-exec.sh "$@"
   fi
 }
 
