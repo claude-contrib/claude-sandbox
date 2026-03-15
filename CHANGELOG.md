@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.2.1](https://github.com/claude-contrib/claude-sandbox/compare/v0.2.0...v0.2.1) (2026-03-15)
+
+
+### Bug Fixes
+
+* fallback to GITHUB_TOKEN when GH_TOKEN is unset ([83d0806](https://github.com/claude-contrib/claude-sandbox/commit/83d0806acf9791065353f59c2090fc27b2f686e0))
+* remove unused claude-nix.sh invocation in docker run ([492c75f](https://github.com/claude-contrib/claude-sandbox/commit/492c75ff91fcef06e36ba0530d23ba7862325eb4))
+
 ## [0.2.0](https://github.com/claude-contrib/claude-sandbox/compare/v0.1.0...v0.2.0) (2026-03-14)
 
 
