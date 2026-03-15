@@ -148,7 +148,7 @@ _get_container_image() {
   if docker image inspect "$image" &>/dev/null; then
     return 0
   fi
-  _gum_spin "Pulling image $image" docker pull "$image"
+  _gum_spin "Pulling Docker image $image" docker pull "$image"
 }
 
 # Run claude in a Docker sandbox container.
