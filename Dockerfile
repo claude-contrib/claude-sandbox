@@ -19,9 +19,7 @@ WORKDIR /home/claude
 RUN curl -fsSL https://claude.ai/install.sh | bash
 
 ENV NIX_CONFIG="experimental-features = nix-command flakes"
-
 ENV PATH="/home/claude/.local/bin:/nix/var/nix/profiles/default/bin:$PATH"
-
 ENV LANG=C.UTF-8
 ENV TERM=xterm-256color
 ENV COLORTERM=truecolor
