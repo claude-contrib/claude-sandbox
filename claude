@@ -61,7 +61,7 @@ Flags:
 Environment variables:
   ANTHROPIC_API_KEY   Anthropic API key (required)
   GH_TOKEN            GitHub personal access token (forwarded to sandbox)
-  GITHUB_TOKEN        Alias for GH_TOKEN
+                      (also reads GITHUB_TOKEN)
   SSH_AUTH_SOCK       SSH agent socket (forwarded to sandbox)
   DEBUG               Enable debug tracing (set -x)
 
