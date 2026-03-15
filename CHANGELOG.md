@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.4.1](https://github.com/claude-contrib/claude-sandbox/compare/v0.4.0...v0.4.1) (2026-03-15)
+
+
+### Bug Fixes
+
+* clarify docker image pull message ([f042fb7](https://github.com/claude-contrib/claude-sandbox/commit/f042fb72704e678e930da295d2cb3e406c87dd5c))
+* update claude-status symlink after .sh extension removal ([8d0176d](https://github.com/claude-contrib/claude-sandbox/commit/8d0176df469d219f018746c9c51b3695de54616d))
+
 ## [0.4.0](https://github.com/claude-contrib/claude-sandbox/compare/v0.3.1...v0.4.0) (2026-03-15)
 
 
