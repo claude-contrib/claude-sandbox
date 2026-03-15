@@ -24,9 +24,9 @@ ENV PATH="/home/claude/.local/bin:$PATH"
 
 RUN mkdir -p /home/claude/.config/claude
 
-COPY --chown=claude:claude claude-nix.sh /home/claude/.local/bin/claude-nix.sh
+COPY --chown=claude:claude claude-exec.sh /home/claude/.local/bin/claude-exec.sh
 COPY --chown=claude:claude settings.json /home/claude/.local/share/claude/settings.json
 
-RUN chmod +x /home/claude/.local/bin/claude-nix.sh
+RUN chmod +x /home/claude/.local/bin/claude-exec.sh
 
-CMD ["claude-nix.sh"]
+CMD ["claude-exec.sh"]
