@@ -78,6 +78,11 @@ _run_in_docker() {
     run_opts+=(-v "$SSH_AUTH_SOCK:/run/ssh-agent" -e "SSH_AUTH_SOCK=/run/ssh-agent")
   fi
 
+  local claude_host_settings="${CLAUDE_CONFIG_DIR:-$HOME/.claude}/settings.docker.json"
+  if [ -f "$claude_host_settings" ]; then
+    run_opts+=(-v "$claude_host_settings:$CLAUDE_DOCKER_CONFIG_DIR/settings.docker.json:ro")
+  fi
+
   if ! [ -t 0 ]; then
     if (: </dev/tty) 2>/dev/null; then
       set -- "$@" "$(cat)"
