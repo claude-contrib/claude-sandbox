@@ -83,6 +83,9 @@ _run_in_docker() {
     compose_args+=(-f "$_claude_script_dir/claude-sandbox.net.yml")
   fi
 
+  # Export host git identity so claude-sandbox.env forwards them.
+  _resolve_git_env
+
   # Accumulate extra docker run options.
   local -a run_args=()
 
@@ -105,9 +108,6 @@ _run_in_docker() {
   if [[ -f "$_known_hosts" ]]; then
     run_args+=(-v "$_known_hosts:$CLAUDE_DOCKER_HOME/.ssh/known_hosts:ro")
   fi
-
-  # Export host git identity so claude-sandbox.env forwards them.
-  _resolve_git_env
 
   # When stdin is a pipe: if /dev/tty is reachable, slurp piped content as the
   # last argument and reconnect stdin to the terminal so claude stays interactive.
