@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.10.2](https://github.com/claude-contrib/claude-sandbox/compare/v0.10.1...v0.10.2) (2026-03-16)
+
+
+### Bug Fixes
+
+* **docker:** use hardcoded user and home path in system prompt ([53bb3dd](https://github.com/claude-contrib/claude-sandbox/commit/53bb3dd77873b26ea3e8d0079cead3d4d1e2045a))
+
 ## [0.10.1](https://github.com/claude-contrib/claude-sandbox/compare/v0.10.0...v0.10.1) (2026-03-16)
 
 
