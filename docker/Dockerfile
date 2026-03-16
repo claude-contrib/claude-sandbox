@@ -50,5 +50,6 @@ WORKDIR /home/claude
 
 COPY --chown=claude:claude settings.json /home/claude/.local/share/claude/settings.json
 COPY --chown=claude:claude --chmod=755 claude-exec.sh /home/claude/.local/bin/claude-exec.sh
+COPY --chown=claude:claude --chmod=755 hooks/context.sh /home/claude/.local/share/claude/hooks/context.sh
 
 CMD ["claude-exec.sh"]
