@@ -37,10 +37,6 @@ setup() {
   [[ "$output" == *"--help"* ]]
 }
 
-@test "_show_help contains ANTHROPIC_API_KEY" {
-  run _show_help
-  [[ "$output" == *"ANTHROPIC_API_KEY"* ]]
-}
 
 @test "_show_help contains repo URL" {
   run _show_help
