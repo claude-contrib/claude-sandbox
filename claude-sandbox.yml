@@ -3,6 +3,8 @@ services:
     # image: ghcr.io/claude-contrib/claude-sandbox:${CLAUDE_DOCKER_TAG}
     image: 204120f0f42ab1b819c33d5922ba34c248f3530be9677811a08fd690a6239b8c
     working_dir: ${CLAUDE_DOCKER_WORKING_DIR}
+    group_add:
+      - "${CLAUDE_USER_GROUP}"
     volumes:
       - claude-nix:/nix
       - claude-cache:/home/claude/.cache

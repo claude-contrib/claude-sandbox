@@ -87,8 +87,12 @@ _run_in_docker() {
   if [[ -S "$_docker_ssh_sock" ]]; then
     run_opts+=(-v "$_docker_ssh_sock:$_docker_ssh_sock" -e "SSH_AUTH_SOCK=$_docker_ssh_sock")
   elif [[ -n "${SSH_AUTH_SOCK:-}" ]]; then
+    CLAUDE_USER_GROUP="67278"
     run_opts+=(-v "$SSH_AUTH_SOCK:/run/ssh-agent" -e "SSH_AUTH_SOCK=/run/ssh-agent")
   fi
+
+  CLAUDE_USER_GROUP="${CLAUDE_USER_GROUP:-1000}"
+  export CLAUDE_USER_GROUP
 
   local _known_hosts="${HOME}/.ssh/known_hosts"
   if [[ -f "$_known_hosts" ]]; then
