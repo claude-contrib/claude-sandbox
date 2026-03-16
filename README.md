@@ -6,7 +6,7 @@
 [![Docker](https://img.shields.io/badge/ghcr.io-claude--sandbox-blue?logo=docker)](https://ghcr.io/claude-contrib/claude-sandbox)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-Run Claude Code in an isolated Docker container with `bypassPermissions` enabled, Nix flake support, and your project directory mounted read-write. One command, two modes: forward to the host binary by default, or sandbox with a flag.
+Run Claude Code in an isolated Docker container with `bypassPermissions` enabled, Nix flake support, your project directory mounted read-write, and automatic devcontainer network detection. One command, two modes: forward to the host binary by default, or sandbox with a flag.
 
 ## How It Works
 
