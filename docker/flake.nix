@@ -35,6 +35,7 @@
         packages.claude-sandbox = pkgs.buildEnv {
           name = "claude-sandbox";
           paths = with pkgs; [
+            bash
             claude-code
             claude-status
             gh

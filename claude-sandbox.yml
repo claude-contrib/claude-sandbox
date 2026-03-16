@@ -1,6 +1,6 @@
 services:
   claude:
-    image: ghcr.io/claude-contrib/claude-sandbox:${CLAUDE_DOCKER_TAG}
+    image: 84ae9770bdcc
     working_dir: ${CLAUDE_DOCKER_WORKING_DIR}
     volumes:
       - claude-nix:/nix
