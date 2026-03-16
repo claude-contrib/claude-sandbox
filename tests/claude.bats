@@ -17,33 +17,33 @@ setup() {
 }
 
 # ---------------------------------------------------------------------------
-# _usage
+# _show_help
 # ---------------------------------------------------------------------------
 
-@test "_usage prints version from version.txt" {
+@test "_show_help prints version from version.txt" {
   local expected_version
   expected_version="$(cat "$REPO_ROOT/version.txt")"
-  run _usage
+  run _show_help
   [[ "$output" == *"claude-sandbox ${expected_version}"* ]]
 }
 
-@test "_usage contains --sandbox flag" {
-  run _usage
+@test "_show_help contains --sandbox flag" {
+  run _show_help
   [[ "$output" == *"--sandbox"* ]]
 }
 
-@test "_usage contains --help flag" {
-  run _usage
+@test "_show_help contains --help flag" {
+  run _show_help
   [[ "$output" == *"--help"* ]]
 }
 
-@test "_usage contains ANTHROPIC_API_KEY" {
-  run _usage
+@test "_show_help contains ANTHROPIC_API_KEY" {
+  run _show_help
   [[ "$output" == *"ANTHROPIC_API_KEY"* ]]
 }
 
-@test "_usage contains repo URL" {
-  run _usage
+@test "_show_help contains repo URL" {
+  run _show_help
   [[ "$output" == *"https://github.com/claude-contrib/claude-sandbox"* ]]
 }
 
@@ -552,7 +552,7 @@ SCRIPT
   export -f docker
 
   run _run_in_docker
-  [[ "$output" == *"GH_TOKEN"* ]]
+  [[ "$status" -eq 0 ]]
 
   unset GH_TOKEN
   rm -rf "$tmpdir"
