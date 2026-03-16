@@ -79,13 +79,31 @@ Joining Docker network 'myproject_default'
 
 ## Configuration
 
+### Environment variables
+
+The full list of host environment variables forwarded to the sandbox is defined in [`claude-sandbox.env`](claude-sandbox.env).
+
+Two additional variables are handled specially:
+
 | Variable | Description |
 |----------|-------------|
-| `ANTHROPIC_API_KEY` | Anthropic API key (required, forwarded to sandbox) |
-| `GH_TOKEN` | GitHub personal access token (forwarded to sandbox) |
-| `GITHUB_TOKEN` | Alias for `GH_TOKEN` — used when `GH_TOKEN` is not set |
-| `SSH_AUTH_SOCK` | SSH agent socket (forwarded to sandbox) |
+| `SSH_AUTH_SOCK` | SSH agent socket — bind-mounted into the container at `/run/ssh-agent` |
 | `DEBUG` | Enable debug tracing (`set -x`) |
+
+### Settings
+
+The sandbox ships with a baked-in [`docker/settings.json`](docker/settings.json) that enables `bypassPermissions` and configures other container defaults.
+
+To layer your own settings on top, create `~/.claude/settings.docker.json` on your host:
+
+```json
+{
+  "theme": "dark",
+  "autoUpdates": false
+}
+```
+
+At startup, any `settings.*.json` files found in `CLAUDE_CONFIG_DIR` inside the container are merged left-to-right with the baked-in settings appended last. This means the baked-in values (such as `bypassPermissions`) always take final precedence and cannot be overridden.
 
 ## The claude-contrib Ecosystem
 
