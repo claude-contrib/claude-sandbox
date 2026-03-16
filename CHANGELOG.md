@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.10.4](https://github.com/claude-contrib/claude-sandbox/compare/v0.10.3...v0.10.4) (2026-03-16)
+
+
+### Bug Fixes
+
+* move git environment resolution earlier in docker setup ([078da34](https://github.com/claude-contrib/claude-sandbox/commit/078da340cb108e5a37b148012f8a968394862912))
+
 ## [0.10.3](https://github.com/claude-contrib/claude-sandbox/compare/v0.10.2...v0.10.3) (2026-03-16)
 
 
