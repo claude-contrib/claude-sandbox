@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.9.1](https://github.com/claude-contrib/claude-sandbox/compare/v0.9.0...v0.9.1) (2026-03-16)
+
+
+### Bug Fixes
+
+* **docker:** mount known_hosts to claude user's SSH directory ([b280a2e](https://github.com/claude-contrib/claude-sandbox/commit/b280a2e01c9fe62e50d898f8454ef234e07101bf))
+
 ## [0.9.0](https://github.com/claude-contrib/claude-sandbox/compare/v0.8.1...v0.9.0) (2026-03-16)
 
 
