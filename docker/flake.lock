@@ -1,5 +1,51 @@
 {
   "nodes": {
+    "claude-code-nix": {
+      "inputs": {
+        "flake-utils": [
+          "flake-utils"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1773504138,
+        "narHash": "sha256-CQZelDz8KtJBcY88cP9KKpqD5WNYkkwOR2U7RhW53T8=",
+        "owner": "sadjow",
+        "repo": "claude-code-nix",
+        "rev": "57fec627abf180c338ebdf1b0c5230b59e536ce0",
+        "type": "github"
+      },
+      "original": {
+        "owner": "sadjow",
+        "repo": "claude-code-nix",
+        "type": "github"
+      }
+    },
+    "claude-status-nix": {
+      "inputs": {
+        "flake-utils": [
+          "flake-utils"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1773564303,
+        "narHash": "sha256-L1WWxctVwB3J1a9u7zmMhC0mUq1iixT60mw2aiWmrDg=",
+        "owner": "claude-contrib",
+        "repo": "claude-status",
+        "rev": "8264d3c2739137cafefd2747944726e2b8202773",
+        "type": "github"
+      },
+      "original": {
+        "owner": "claude-contrib",
+        "repo": "claude-status",
+        "type": "github"
+      }
+    },
     "flake-utils": {
       "inputs": {
         "systems": "systems"
@@ -36,6 +82,8 @@
     },
     "root": {
       "inputs": {
+        "claude-code-nix": "claude-code-nix",
+        "claude-status-nix": "claude-status-nix",
         "flake-utils": "flake-utils",
         "nixpkgs": "nixpkgs"
       }
