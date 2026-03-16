@@ -25,9 +25,7 @@ Flags:
   --help       Show this help message and exit
 
 Environment variables:
-  ANTHROPIC_API_KEY   Anthropic API key (required)
-  GH_TOKEN            GitHub personal access token (forwarded to sandbox)
-                      (also reads GITHUB_TOKEN)
+  CLAUDE_SANDBOX      Always run in sandbox mode (same as passing --sandbox)
   SSH_AUTH_SOCK       SSH agent socket (forwarded to sandbox)
   DEBUG               Enable debug tracing (set -x)
 
@@ -117,6 +115,10 @@ _run_in_host() {
 main() {
   local run_in_docker
   run_in_docker=false
+
+  if [ -n "${CLAUDE_SANDBOX:-}" ]; then
+    run_in_docker=true
+  fi
 
   local args
   args=()

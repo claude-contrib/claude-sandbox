@@ -86,6 +86,7 @@ Two additional variables are handled specially:
 
 | Variable | Description |
 |----------|-------------|
+| `CLAUDE_SANDBOX` | Always run in sandbox mode — equivalent to passing `--sandbox` on every invocation |
 | `SSH_AUTH_SOCK` | SSH agent socket — bind-mounted into the container at `/run/ssh-agent` |
 | `DEBUG` | Enable debug tracing (`set -x`) |
 
