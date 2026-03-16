@@ -11,23 +11,27 @@ WORKDIR /build
 
 COPY flake.nix flake.lock ./
 
-RUN nix profile add .#claude-sandbox && nix store gc
+RUN nix profile add \
+      --option keep-outputs false \
+      --option keep-derivations false \
+      .#claude-sandbox && \
+    nix store gc && \
+    nix store optimise
 
 # Stage 2: Runtime — minimal base with nix store copied in
-FROM debian:bookworm-slim
+FROM debian:bookworm-20250407-slim
 
 RUN useradd -m -u 1000 -s /bin/bash claude
 
-COPY --from=builder /etc/nix /etc/nix
-COPY --from=builder /nix/var /nix/var
 COPY --from=builder /nix/store /nix/store
-COPY --from=builder /root/.nix-profile /home/claude/.nix-profile
+COPY --from=builder --chown=claude:claude /etc/nix /etc/nix
+COPY --from=builder --chown=claude:claude /nix/var /nix/var
+COPY --from=builder --chown=claude:claude /root/.nix-profile /home/claude/.nix-profile
 
 RUN chmod 1777 /nix/store && \
-    mkdir -p /home/claude/.local/bin && \
-    mkdir -p /home/claude/.local/share/claude && \
-    mkdir -p /home/claude/.config/claude && \
-    chown -R claude:claude /nix/var && \
+    mkdir -p /home/claude/.local/bin \
+             /home/claude/.local/share/claude \
+             /home/claude/.config/claude && \
     chown -R claude:claude /home/claude
 
 USER claude
@@ -35,7 +39,7 @@ USER claude
 ENV LANG=C.UTF-8
 ENV TERM=xterm-256color
 ENV COLORTERM=truecolor
-ENV PATH="/home/claude/.nix-profile/bin:/home/claude/.local/bin:$PATH"
+ENV PATH="/home/claude/.nix-profile/bin:/home/claude/.local/bin:/nix/var/nix/profiles/default/bin:$PATH"
 
 WORKDIR /home/claude
 
