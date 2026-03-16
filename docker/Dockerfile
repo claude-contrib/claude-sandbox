@@ -24,12 +24,15 @@ FROM debian:bookworm-20250407-slim
 RUN useradd -m -u 1000 -s /bin/bash claude
 
 COPY --from=builder /nix/store /nix/store
-COPY --from=builder --chown=claude:claude /etc/nix /etc/nix
-COPY --from=builder --chown=claude:claude /nix/var /nix/var
-COPY --from=builder --chown=claude:claude /root/.nix-profile /home/claude/.nix-profile
+COPY --from=builder /etc/nix /etc/nix
+COPY --from=builder /nix/var /nix/var
+COPY --from=builder /root/.nix-profile /home/claude/.nix-profile
 
-RUN chmod 1777 /nix/store && \
-    mkdir -p /home/claude/.local/bin \
+RUN sed -i '/^build-users-group/d' /etc/nix/nix.conf && \
+    chmod 1777 /nix/store && \
+    chown -R claude:claude /nix/var && \
+    mkdir -p /home/claude/.cache \
+             /home/claude/.local/bin \
              /home/claude/.local/share/claude \
              /home/claude/.config/claude && \
     chown -R claude:claude /home/claude
@@ -39,7 +42,7 @@ USER claude
 ENV LANG=C.UTF-8
 ENV TERM=xterm-256color
 ENV COLORTERM=truecolor
-ENV PATH="/home/claude/.nix-profile/bin:/home/claude/.local/bin:/nix/var/nix/profiles/default/bin:$PATH"
+ENV PATH="/home/claude/.nix-profile/bin:/home/claude/.local/bin:$PATH"
 
 WORKDIR /home/claude
 
