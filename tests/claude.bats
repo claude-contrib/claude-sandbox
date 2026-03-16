@@ -284,7 +284,7 @@ setup() {
 # ---------------------------------------------------------------------------
 
 @test "_get_container_image succeeds without pulling when image exists locally" {
-  CLAUDE_HOST_VERSION="1.0.0"
+  CLAUDE_DOCKER_TAG="1.0.0"
   docker() {
     case "$1" in
       image) return 0 ;;
@@ -299,7 +299,7 @@ setup() {
 }
 
 @test "_get_container_image pulls when image not found" {
-  CLAUDE_HOST_VERSION="1.0.0"
+  CLAUDE_DOCKER_TAG="1.0.0"
   unset _gum_available
   unset -f gum
   PATH="/nonexistent"

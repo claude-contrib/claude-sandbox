@@ -144,7 +144,7 @@ _get_container_network() {
 
 # Ensure the container image is available locally, pulling if needed.
 _get_container_image() {
-  local image="ghcr.io/claude-contrib/claude-sandbox:${CLAUDE_HOST_VERSION}"
+  local image="ghcr.io/claude-contrib/claude-sandbox:${CLAUDE_DOCKER_TAG}"
   if docker image inspect "$image" &>/dev/null; then
     return 0
   fi
@@ -157,10 +157,10 @@ _get_container_image() {
 # Args: forwarded to the claude binary inside the container.
 _run_in_docker() {
   CLAUDE_HOST_WORKING_DIR="$PWD"
-  CLAUDE_HOST_VERSION="$(cat "$_claude_script_dir/version.txt")"
-  CLAUDE_HOST_VERSION="${CLAUDE_HOST_VERSION:-latest}"
+  CLAUDE_DOCKER_TAG="$(cat "$_claude_script_dir/version.txt")"
+  CLAUDE_DOCKER_TAG="${CLAUDE_DOCKER_TAG:-latest}"
 
-  export CLAUDE_HOST_VERSION
+  export CLAUDE_DOCKER_TAG
   export CLAUDE_HOST_WORKING_DIR
 
   _get_container_image

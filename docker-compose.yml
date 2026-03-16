@@ -1,6 +1,6 @@
 services:
   claude:
-    image: ghcr.io/claude-contrib/claude-sandbox:${CLAUDE_HOST_VERSION}
+    image: ghcr.io/claude-contrib/claude-sandbox:${CLAUDE_DOCKER_TAG}
     volumes:
       - claude-nix:/nix
       - claude-cache:/home/claude/.cache
