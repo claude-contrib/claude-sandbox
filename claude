@@ -59,14 +59,14 @@ _run_in_docker() {
   export CLAUDE_DOCKER_CONFIG_DIR
   export CLAUDE_DOCKER_WORKING_DIR
 
-  CLAUDE_DOCKER_COMPOSE="$_claude_script_dir/docker-compose.yml"
+  CLAUDE_DOCKER_COMPOSE="$_claude_script_dir/docker-sandbox.yml"
   local -a docker_compose_files=(-f "$CLAUDE_DOCKER_COMPOSE")
 
   local docker_network
   if docker_network="$(_get_container_network)"; then
     _gum log --level info "Joining Docker network '$docker_network'"
     export CLAUDE_DOCKER_NETWORK="$docker_network"
-    docker_compose_files+=(-f "$_claude_script_dir/docker-compose.net.yml")
+    docker_compose_files+=(-f "$_claude_script_dir/docker-sandbox.net.yml")
   fi
 
   local -a run_opts=()
