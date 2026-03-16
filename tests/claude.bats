@@ -399,6 +399,24 @@ SCRIPT
 }
 
 # ---------------------------------------------------------------------------
+# _check_docker
+# ---------------------------------------------------------------------------
+
+@test "_check_docker returns 0 when docker info succeeds" {
+  docker() { return 0; }
+  export -f docker
+  run _check_docker
+  [[ "$status" -eq 0 ]]
+}
+
+@test "_check_docker returns 1 when docker info fails" {
+  docker() { return 1; }
+  export -f docker
+  run _check_docker
+  [[ "$status" -eq 1 ]]
+}
+
+# ---------------------------------------------------------------------------
 # _run_in_docker
 # ---------------------------------------------------------------------------
 
@@ -552,4 +570,17 @@ SCRIPT
 
   unset GH_TOKEN
   rm -rf "$tmpdir"
+}
+
+@test "_run_in_docker exits with error when Docker is not running" {
+  unset _gum_available
+  unset -f gum
+  PATH="/nonexistent"
+
+  docker() { return 1; }   # all docker calls fail — daemon is down
+  export -f docker
+
+  run _run_in_docker
+  [[ "$status" -eq 1 ]]
+  [[ "$output" == *"Docker is not running"* ]]
 }

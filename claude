@@ -38,6 +38,11 @@ EOF
 # and forwards SSH agent and GitHub token if available.
 # Args: forwarded to the claude binary inside the container.
 _run_in_docker() {
+  if ! _check_docker; then
+    _gum log --level error "Docker is not running. Please start Docker and try again."
+    return 1
+  fi
+
   CLAUDE_HOST_WORKING_DIR="$PWD"
   CLAUDE_DOCKER_TAG="$(cat "$_claude_script_dir/version.txt")"
   CLAUDE_DOCKER_TAG="${CLAUDE_DOCKER_TAG:-latest}"

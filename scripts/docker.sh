@@ -93,3 +93,9 @@ _get_container_env() {
     [ -n "$key" ] && [ -n "${!key+x}" ] && printf '%s\n' "-e" "$key"
   done <"$env_file"
 }
+
+# Check if the Docker daemon is reachable.
+# Returns: 0 if Docker is running, 1 otherwise.
+_check_docker() {
+  docker info &>/dev/null
+}
