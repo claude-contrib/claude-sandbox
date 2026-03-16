@@ -2,14 +2,14 @@
 
 # Check if gum is available (memoized).
 _has_gum() {
-  if [ -z "${_gum_available+x}" ]; then
+  if [[ -z "${_gum_available+x}" ]]; then
     if command -v gum &>/dev/null; then
       _gum_available=1
     else
       _gum_available=0
     fi
   fi
-  [ "$_gum_available" -eq 1 ]
+  [[ "$_gum_available" -eq 1 ]]
 }
 
 # Gum wrapper. Dispatches to the matching gum subcommand when available,
@@ -37,6 +37,9 @@ _gum() {
       printf '%s\n' "$title" >&2
       "$@"
     fi
+    ;;
+  *)
+    return 1
     ;;
   esac
 }

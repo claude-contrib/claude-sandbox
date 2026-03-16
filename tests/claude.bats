@@ -314,6 +314,50 @@ setup() {
 }
 
 # ---------------------------------------------------------------------------
+# _get_container_env
+# ---------------------------------------------------------------------------
+
+@test "_get_container_env includes -e flag for set variables" {
+  local tmpfile
+  tmpfile="$(mktemp)"
+  printf 'MY_TEST_VAR\n' >"$tmpfile"
+  export MY_TEST_VAR="hello"
+  run _get_container_env "$tmpfile"
+  unset MY_TEST_VAR
+  rm -f "$tmpfile"
+  [[ "$output" == *"-e"* ]]
+  [[ "$output" == *"MY_TEST_VAR"* ]]
+}
+
+@test "_get_container_env omits unset variables" {
+  local tmpfile
+  tmpfile="$(mktemp)"
+  printf 'DEFINITELY_UNSET_VAR_XYZ\n' >"$tmpfile"
+  unset DEFINITELY_UNSET_VAR_XYZ
+  run _get_container_env "$tmpfile"
+  rm -f "$tmpfile"
+  [[ -z "$output" ]]
+}
+
+@test "_get_container_env skips comment lines" {
+  local tmpfile
+  tmpfile="$(mktemp)"
+  printf '# this is a comment\n' >"$tmpfile"
+  run _get_container_env "$tmpfile"
+  rm -f "$tmpfile"
+  [[ -z "$output" ]]
+}
+
+@test "_get_container_env skips blank lines" {
+  local tmpfile
+  tmpfile="$(mktemp)"
+  printf '\n   \n' >"$tmpfile"
+  run _get_container_env "$tmpfile"
+  rm -f "$tmpfile"
+  [[ -z "$output" ]]
+}
+
+# ---------------------------------------------------------------------------
 # _run_in_host
 # ---------------------------------------------------------------------------
 
@@ -547,7 +591,7 @@ SCRIPT
   rm -rf "$tmpdir"
 }
 
-@test "_run_in_docker forwards GH_TOKEN when set" {
+@test "_run_in_docker exposes GH_TOKEN to docker compose environment" {
   local tmpdir
   tmpdir="$(mktemp -d)"
   HOME="$tmpdir"
@@ -559,14 +603,15 @@ SCRIPT
 
   docker() {
     case "$1" in
-      image) return 0 ;;
-      compose) echo "ARGS: $*" ;;
+      info)    return 0 ;;
+      image)   return 0 ;;
+      compose) echo "GH_TOKEN=${GH_TOKEN}" ;;
     esac
   }
   export -f docker
 
   run _run_in_docker
-  [[ "$status" -eq 0 ]]
+  [[ "$output" == *"GH_TOKEN=test-token"* ]]
 
   unset GH_TOKEN
   rm -rf "$tmpdir"

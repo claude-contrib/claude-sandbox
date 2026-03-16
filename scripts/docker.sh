@@ -9,8 +9,8 @@ _get_project_path() {
   local project_path
   project_path="$(git rev-parse --show-toplevel 2>/dev/null)" || return 1
 
-  [ -f "$project_path/.devcontainer/devcontainer.json" ] && echo "$project_path" && return 0
-  [ -f "$project_path/.devcontainer.json" ] && echo "$project_path" && return 0
+  [[ -f "$project_path/.devcontainer/devcontainer.json" ]] && echo "$project_path" && return 0
+  [[ -f "$project_path/.devcontainer.json" ]] && echo "$project_path" && return 0
 
   return 1
 }
@@ -30,7 +30,7 @@ _get_container_id() {
     --filter "status=running" \
     2>/dev/null | head -n1)" || return 1
 
-  if [ -n "$container_id" ]; then
+  if [[ -n "$container_id" ]]; then
     echo "$container_id"
   else
     return 1
@@ -63,10 +63,12 @@ _get_container_network() {
     esac
   done <<<"$network_list"
 
-  # fallback: use first network even if it's a default type
+  # No non-default network found; fall back to the first network on the list.
+  # This can happen when the devcontainer only uses default Docker networks
+  # (bridge/host/none), which is unusual but should still be usable.
   network="$(echo "$network_list" | head -n1)"
 
-  if [ -n "$network" ]; then
+  if [[ -n "$network" ]]; then
     echo "$network"
   else
     return 1

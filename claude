@@ -63,6 +63,10 @@ _run_in_docker() {
   export CLAUDE_DOCKER_WORKING_DIR
 
   CLAUDE_DOCKER_COMPOSE="$_claude_script_dir/claude-sandbox.yml"
+  if [[ ! -f "$CLAUDE_DOCKER_COMPOSE" ]]; then
+    _gum log --level error "Docker compose file not found: $CLAUDE_DOCKER_COMPOSE"
+    return 1
+  fi
   local -a docker_compose_files=(-f "$CLAUDE_DOCKER_COMPOSE")
 
   local docker_network
@@ -77,16 +81,19 @@ _run_in_docker() {
   mapfile -t env_opts < <(_get_container_env "$_claude_script_dir/claude-sandbox.env")
   run_opts+=("${env_opts[@]}")
 
-  if [ -n "${SSH_AUTH_SOCK:-}" ]; then
+  if [[ -n "${SSH_AUTH_SOCK:-}" ]]; then
     run_opts+=(-v "$SSH_AUTH_SOCK:/run/ssh-agent" -e "SSH_AUTH_SOCK=/run/ssh-agent")
   fi
 
   local claude_host_settings="${CLAUDE_CONFIG_DIR:-$HOME/.claude}/settings.docker.json"
-  if [ -f "$claude_host_settings" ]; then
+  if [[ -f "$claude_host_settings" ]]; then
     run_opts+=(-v "$claude_host_settings:$CLAUDE_DOCKER_CONFIG_DIR/settings.docker.json:ro")
   fi
 
-  if ! [ -t 0 ]; then
+  # When stdin is a pipe: if /dev/tty is reachable, slurp piped content as the
+  # last argument and reconnect stdin to the terminal so claude stays interactive.
+  # If /dev/tty is unavailable (e.g. CI), disable pseudo-TTY allocation (-T).
+  if ! [[ -t 0 ]]; then
     if (: </dev/tty) 2>/dev/null; then
       set -- "$@" "$(cat)"
       exec 0</dev/tty
@@ -105,7 +112,7 @@ _run_in_host() {
 
   for dir in $PATH; do
     entry="$dir/claude"
-    if [ -x "$entry" ] && [ "$(realpath "$entry")" != "$_claude_script_this" ]; then
+    if [[ -x "$entry" && "$(realpath "$entry")" != "$_claude_script_this" ]]; then
       "$entry" "$@"
       return
     fi
@@ -118,12 +125,8 @@ _run_in_host() {
 # Parse --sandbox flag and dispatch to docker or host exec.
 # Args: all command-line arguments passed to the script.
 main() {
-  local run_in_docker
-  run_in_docker=false
-
-  if [ -n "${CLAUDE_SANDBOX:-}" ]; then
-    run_in_docker=true
-  fi
+  local run_in_docker=false
+  [[ -n "${CLAUDE_SANDBOX:-}" ]] && run_in_docker=true
 
   local args
   args=()
@@ -143,10 +146,10 @@ main() {
     esac
   done
 
-  if [ "$run_in_docker" = true ]; then
+  if [[ "$run_in_docker" == true ]]; then
     _run_in_docker ${args[@]+"${args[@]}"}
   else
-    _run_in_host "$@"
+    _run_in_host ${args[@]+"${args[@]}"}
   fi
 }
 
