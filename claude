@@ -7,42 +7,8 @@ set -euo pipefail
 _claude_script_this="$(realpath "${BASH_SOURCE[0]}")"
 _claude_script_dir="$(cd "$(dirname "$_claude_script_this")" && pwd)"
 
-# Check if gum is available (memoized).
-_has_gum() {
-  if [ -z "${_gum_available+x}" ]; then
-    if command -v gum &>/dev/null; then
-      _gum_available=1
-    else
-      _gum_available=0
-    fi
-  fi
-  [ "$_gum_available" -eq 1 ]
-}
-
-# Log a message. Uses gum log when available, falls back to printf.
-# Usage: _gum_log --level info "message"
-_gum_log() {
-  if _has_gum; then
-    gum log "$@"
-  else
-    local msg="${*: -1}"
-    printf '%s\n' "$msg" >&2
-  fi
-}
-
-# Run a command with a spinner. Uses gum spin when available,
-# falls back to printing the title then running the command directly.
-# Usage: _gum_spin "title" cmd [args...]
-_gum_spin() {
-  local title="$1"
-  shift
-  if _has_gum; then
-    gum spin --spinner dot --title "$title" -- "$@"
-  else
-    printf '%s\n' "$title" >&2
-    "$@"
-  fi
-}
+source "$_claude_script_dir/scripts/core.sh"
+source "$_claude_script_dir/scripts/docker.sh"
 
 # Print usage information and exit.
 _show_help() {
@@ -67,88 +33,6 @@ Environment variables:
 
 https://github.com/claude-contrib/claude-sandbox
 EOF
-}
-
-# Get the project root if it has a devcontainer configuration.
-# Uses git to resolve the project root, then checks for
-# .devcontainer/devcontainer.json or .devcontainer.json.
-# Stdout: absolute path to the project root.
-# Returns: 0 if a devcontainer config exists, 1 otherwise.
-_get_project_path() {
-  local project_path
-  project_path="$(git rev-parse --show-toplevel 2>/dev/null)" || return 1
-
-  [ -f "$project_path/.devcontainer/devcontainer.json" ] && echo "$project_path" && return 0
-  [ -f "$project_path/.devcontainer.json" ] && echo "$project_path" && return 0
-
-  return 1
-}
-
-# Get the container ID of a running devcontainer for the current project.
-# Queries docker for containers with the devcontainer.local_folder label
-# matching the project root. Returns the first running match.
-# Stdout: short container ID.
-# Returns: 0 if a running devcontainer is found, 1 otherwise.
-_get_container_id() {
-  local project_path
-  project_path="$(_get_project_path)" || return 1
-
-  local container_id
-  container_id="$(docker ps -q \
-    --filter "label=devcontainer.local_folder=$project_path" \
-    --filter "status=running" \
-    2>/dev/null | head -n1)" || return 1
-
-  if [ -n "$container_id" ]; then
-    echo "$container_id"
-  else
-    return 1
-  fi
-}
-
-# Get the Docker network of a running devcontainer for the current project.
-# Inspects the container's attached networks and returns the first
-# non-default one (preferring compose-created networks like myproject_default).
-# Falls back to the first network if all are default types.
-# Stdout: Docker network name.
-# Returns: 0 if a network is found, 1 otherwise.
-_get_container_network() {
-  local container_id
-  container_id="$(_get_container_id)" || return 1
-
-  local network_list
-  network_list="$(docker inspect "$container_id" \
-    --format '{{range $name, $_ := .NetworkSettings.Networks}}{{$name}}{{"\n"}}{{end}}' \
-    2>/dev/null)" || return 1
-
-  local network
-  while IFS= read -r network; do
-    case "$network" in
-    bridge | host | none | "") continue ;;
-    *)
-      echo "$network"
-      return 0
-      ;;
-    esac
-  done <<<"$network_list"
-
-  # fallback: use first network even if it's a default type
-  network="$(echo "$network_list" | head -n1)"
-
-  if [ -n "$network" ]; then
-    echo "$network"
-  else
-    return 1
-  fi
-}
-
-# Ensure the container image is available locally, pulling if needed.
-_get_container_image() {
-  local image="ghcr.io/claude-contrib/claude-sandbox:${CLAUDE_DOCKER_TAG}"
-  if docker image inspect "$image" &>/dev/null; then
-    return 0
-  fi
-  _gum_spin "Pulling Docker image $image" docker pull "$image"
 }
 
 # Run claude in a Docker sandbox container.
@@ -180,7 +64,7 @@ _run_in_docker() {
 
   local docker_network
   if docker_network="$(_get_container_network)"; then
-    _gum_log --level info "Joining Docker network '$docker_network'"
+    _gum log --level info "Joining Docker network '$docker_network'"
     export CLAUDE_DOCKER_NETWORK="$docker_network"
     docker_compose_files+=(-f "$_claude_script_dir/docker-compose.net.yml")
   fi

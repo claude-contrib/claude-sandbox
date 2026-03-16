@@ -82,42 +82,42 @@ setup() {
 }
 
 # ---------------------------------------------------------------------------
-# _gum_log
+# _gum log
 # ---------------------------------------------------------------------------
 
-@test "_gum_log falls back to stderr message when no gum" {
+@test "_gum log falls back to stderr message when no gum" {
   unset _gum_available
   unset -f gum
   PATH="/nonexistent"
-  run _gum_log --level info "hello world"
+  run _gum log --level info "hello world"
   [[ "$output" == *"hello world"* ]]
 }
 
-@test "_gum_log calls gum when available" {
+@test "_gum log calls gum when available" {
   unset _gum_available
   gum() { echo "gum called: $*"; }
   export -f gum
-  run _gum_log --level info "hello world"
+  run _gum log --level info "hello world"
   [[ "$output" == *"gum called: log --level info hello world"* ]]
 }
 
 # ---------------------------------------------------------------------------
-# _gum_spin
+# _gum spin
 # ---------------------------------------------------------------------------
 
-@test "_gum_spin falls back to running command directly when no gum" {
+@test "_gum spin falls back to running command directly when no gum" {
   unset _gum_available
   unset -f gum
   PATH="/nonexistent"
-  run _gum_spin "doing stuff" echo "direct output"
+  run _gum spin "doing stuff" echo "direct output"
   [[ "$output" == *"direct output"* ]]
 }
 
-@test "_gum_spin calls gum spin when available" {
+@test "_gum spin calls gum spin when available" {
   unset _gum_available
   gum() { echo "gum: $*"; }
   export -f gum
-  run _gum_spin "doing stuff" echo "hello"
+  run _gum spin "doing stuff" echo "hello"
   [[ "$output" == *"gum: spin --spinner dot --title doing stuff -- echo hello"* ]]
 }
 
