@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.9.0](https://github.com/claude-contrib/claude-sandbox/compare/v0.8.1...v0.9.0) (2026-03-16)
+
+
+### Features
+
+* **docker:** forward host git config and identity into sandbox container ([03268c9](https://github.com/claude-contrib/claude-sandbox/commit/03268c91826d3733bdc6784d1dc4c7174065c63b))
+* **docker:** mount host paths for shared settings and session resumption ([e22e687](https://github.com/claude-contrib/claude-sandbox/commit/e22e687a74fc11d930bcc5d58298d405913f9901))
+
 ## [0.8.1](https://github.com/claude-contrib/claude-sandbox/compare/v0.8.0...v0.8.1) (2026-03-16)
 
 
