@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.8.1](https://github.com/claude-contrib/claude-sandbox/compare/v0.8.0...v0.8.1) (2026-03-16)
+
+
+### Bug Fixes
+
+* **test:** use -e instead of -S for SSH_AUTH_SOCK check ([1acbf72](https://github.com/claude-contrib/claude-sandbox/commit/1acbf72b246843de50642620465f207eb3f01f72))
+
 ## [0.8.0](https://github.com/claude-contrib/claude-sandbox/compare/v0.7.0...v0.8.0) (2026-03-16)
 
 
