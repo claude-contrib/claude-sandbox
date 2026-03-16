@@ -18,7 +18,6 @@ The `claude` wrapper script sits in your `$PATH` ahead of the real binary:
 | **Sandbox** | `claude --sandbox` | Launches Claude Code inside a Docker container with full permissions |
 
 The sandbox container comes pre-configured with:
-- **`bypassPermissions`** — no confirmation prompts
 - **Nix flakes** — auto-activates `flake.nix` if present, giving Claude access to the same compilers, linters, and dev tools you use — an equal developer in your environment
 - **Project mount** — your working directory is mounted read-write, so Claude reads and edits your code directly, just as you would
 - **Devcontainer network** — auto-joins the devcontainer's Docker network, giving Claude access to the same databases, APIs, and services your environment exposes
