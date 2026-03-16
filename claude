@@ -83,8 +83,16 @@ _run_in_docker() {
     < <(_get_container_env "$_claude_script_dir/claude-sandbox.env")
   run_opts+=("${env_opts[@]+"${env_opts[@]}"}")
 
-  if [[ -n "${SSH_AUTH_SOCK:-}" ]]; then
+  local _docker_ssh_sock="/run/host-services/ssh-auth.sock"
+  if [[ -S "$_docker_ssh_sock" ]]; then
+    run_opts+=(-v "$_docker_ssh_sock:$_docker_ssh_sock" -e "SSH_AUTH_SOCK=$_docker_ssh_sock")
+  elif [[ -n "${SSH_AUTH_SOCK:-}" ]]; then
     run_opts+=(-v "$SSH_AUTH_SOCK:/run/ssh-agent" -e "SSH_AUTH_SOCK=/run/ssh-agent")
+  fi
+
+  local _known_hosts="${HOME}/.ssh/known_hosts"
+  if [[ -f "$_known_hosts" ]]; then
+    run_opts+=(-v "$_known_hosts:/home/claude/.ssh/known_hosts:ro")
   fi
 
   local claude_host_settings="${CLAUDE_CONFIG_DIR:-$HOME/.claude}/settings.docker.json"
