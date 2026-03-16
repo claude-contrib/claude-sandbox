@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.6.0](https://github.com/claude-contrib/claude-sandbox/compare/v0.5.0...v0.6.0) (2026-03-16)
+
+
+### Features
+
+* add CLAUDE_SANDBOX env var to enable sandbox mode without a flag ([54dc609](https://github.com/claude-contrib/claude-sandbox/commit/54dc609de56d53e53fad20615e77c230eaee4ad3))
+* forward host environment variables via claude-sandbox.env ([aacc08e](https://github.com/claude-contrib/claude-sandbox/commit/aacc08e4e550192261ba179947572c5756eb2fb1))
+* merge host settings.docker.json over baked-in settings at startup ([1229480](https://github.com/claude-contrib/claude-sandbox/commit/12294802a42dfd7a8b7888670981b589dfae93ca))
+
+
+### Bug Fixes
+
+* **tests:** update tests to match _usage→_show_help rename and GH_TOKEN refactor ([dd782dd](https://github.com/claude-contrib/claude-sandbox/commit/dd782ddc6fcacec67b4b6aa0086e030930d3d45f))
+
 ## [0.5.0](https://github.com/claude-contrib/claude-sandbox/compare/v0.4.2...v0.5.0) (2026-03-15)
 
 
