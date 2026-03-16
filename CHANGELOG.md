@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.8.0](https://github.com/claude-contrib/claude-sandbox/compare/v0.7.0...v0.8.0) (2026-03-16)
+
+
+### Features
+
+* **docker:** replace hardcoded SSH group ID with dynamic container lookup ([4188572](https://github.com/claude-contrib/claude-sandbox/commit/41885725e26c137a3c502988afbe27cc0d0b9d0d))
+
 ## [0.7.0](https://github.com/claude-contrib/claude-sandbox/compare/v0.6.1...v0.7.0) (2026-03-16)
 
 
