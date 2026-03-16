@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.7.0](https://github.com/claude-contrib/claude-sandbox/compare/v0.6.1...v0.7.0) (2026-03-16)
+
+
+### Features
+
+* **debug:** add DEBUG environment variable support ([4ca800c](https://github.com/claude-contrib/claude-sandbox/commit/4ca800cf4fbef34274b1ed783b5452510ceb1e06))
+* **docker:** add user group mapping support ([44ca6d9](https://github.com/claude-contrib/claude-sandbox/commit/44ca6d933397e002b2dd0a0a644bd3501e990a84))
+* **docker:** improve ssh and ssl certificate handling ([ab3178a](https://github.com/claude-contrib/claude-sandbox/commit/ab3178a62064e9857f02f604db3f0d1f120e6898))
+* use nixos/nix docker image ([9092924](https://github.com/claude-contrib/claude-sandbox/commit/909292433dc0e5a939f36e18f32ce8fa8f2b427a))
+
+
+### Bug Fixes
+
+* **docker:** restore ghcr image reference ([28fbb69](https://github.com/claude-contrib/claude-sandbox/commit/28fbb6971c685f1c209b28449e472c7b0b69f6a6))
+
 ## [0.6.1](https://github.com/claude-contrib/claude-sandbox/compare/v0.6.0...v0.6.1) (2026-03-16)
 
 
