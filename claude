@@ -103,22 +103,11 @@ _run_in_docker() {
   # Mount the host SSH known_hosts file (read-only).
   local _known_hosts="${HOME}/.ssh/known_hosts"
   if [[ -f "$_known_hosts" ]]; then
-    run_opts+=(-v "$_known_hosts:$CLAUDE_DOCKER_HOME/.ssh/known_hosts:ro")
+    run_opts+=(-v "$_known_hosts:$_known_hosts:ro")
   fi
 
-  # Mount host git config dir so includeIf profiles resolve under ~/
-  local _git_config_dir="${HOME}/.config/git"
-  if [[ -d "$_git_config_dir" ]]; then
-    run_opts+=(-v "$_git_config_dir:$CLAUDE_DOCKER_HOME/.config/git:ro")
-  fi
-
-  # Forward GIT_CONFIG_GLOBAL, rewriting host $HOME → container $CLAUDE_DOCKER_HOME.
-  # Fall back to ~/.gitconfig for users not using GIT_CONFIG_GLOBAL.
-  if [[ -n "${GIT_CONFIG_GLOBAL:-}" ]]; then
-    run_opts+=(-e "GIT_CONFIG_GLOBAL=${GIT_CONFIG_GLOBAL/#"$HOME"/$CLAUDE_DOCKER_HOME}")
-  elif [[ -f "${HOME}/.gitconfig" ]]; then
-    run_opts+=(-v "${HOME}/.gitconfig:$CLAUDE_DOCKER_HOME/.gitconfig:ro")
-  fi
+  # Export host git identity so claude-sandbox.env forwards them.
+  _resolve_git_env
 
   # When stdin is a pipe: if /dev/tty is reachable, slurp piped content as the
   # last argument and reconnect stdin to the terminal so claude stays interactive.
