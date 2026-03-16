@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.10.3](https://github.com/claude-contrib/claude-sandbox/compare/v0.10.2...v0.10.3) (2026-03-16)
+
+
+### Bug Fixes
+
+* add required hookEventName to SessionStart hook output ([a161e4b](https://github.com/claude-contrib/claude-sandbox/commit/a161e4bb58a77eb8618a45bc633291052ecc99a8))
+* normalize indentation in docker exec script ([9e24fd6](https://github.com/claude-contrib/claude-sandbox/commit/9e24fd665adf884142506adbd256f3a1c6be7697))
+
 ## [0.10.2](https://github.com/claude-contrib/claude-sandbox/compare/v0.10.1...v0.10.2) (2026-03-16)
 
 
