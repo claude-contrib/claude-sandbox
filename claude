@@ -43,11 +43,14 @@ _resolve_docker_env() {
   export CLAUDE_DOCKER_TAG
   export CLAUDE_HOST_WORKING_DIR
 
-  CLAUDE_DOCKER_CONFIG_DIR=/home/claude/.config/claude
+  CLAUDE_DOCKER_HOME="/home/claude"
+  export CLAUDE_DOCKER_HOME
+
+  CLAUDE_DOCKER_CONFIG_DIR="$CLAUDE_DOCKER_HOME/.config/claude"
   if [[ "$CLAUDE_HOST_WORKING_DIR" == "$HOME"/* ]]; then
-    CLAUDE_DOCKER_WORKING_DIR="/home/claude/${CLAUDE_HOST_WORKING_DIR#"$HOME"/}"
+    CLAUDE_DOCKER_WORKING_DIR="$CLAUDE_DOCKER_HOME/${CLAUDE_HOST_WORKING_DIR#"$HOME"/}"
   else
-    CLAUDE_DOCKER_WORKING_DIR="/home/claude/workspace"
+    CLAUDE_DOCKER_WORKING_DIR="/workspace"
   fi
   export CLAUDE_DOCKER_CONFIG_DIR
   export CLAUDE_DOCKER_WORKING_DIR
@@ -106,7 +109,7 @@ _run_in_docker() {
   # Mount the host SSH known_hosts file (read-only).
   local _known_hosts="${HOME}/.ssh/known_hosts"
   if [[ -f "$_known_hosts" ]]; then
-    run_opts+=(-v "$_known_hosts:/home/claude/.ssh/known_hosts:ro")
+    run_opts+=(-v "$_known_hosts:$CLAUDE_DOCKER_HOME/.ssh/known_hosts:ro")
   fi
 
   # Mount the docker-specific Claude settings file (read-only).
