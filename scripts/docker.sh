@@ -81,3 +81,15 @@ _get_container_image() {
   fi
   _gum spin "Pulling Docker image $image" docker pull "$image"
 }
+
+# Collect environment variables listed in the given env file that are
+# set on the host. Prints -e KEY flags to stdout, one token per line.
+_get_container_env() {
+  local env_file="$1"
+  local key
+  while IFS= read -r key; do
+    key="${key%%#*}"
+    key="${key// /}"
+    [ -n "$key" ] && [ -n "${!key+x}" ] && printf '%s\n' "-e" "$key"
+  done <"$env_file"
+}

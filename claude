@@ -71,6 +71,9 @@ _run_in_docker() {
 
   local -a run_opts=()
 
+  mapfile -t env_opts < <(_get_container_env "$_claude_script_dir/claude-sandbox.env")
+  run_opts+=("${env_opts[@]}")
+
   if [ -n "${SSH_AUTH_SOCK:-}" ]; then
     run_opts+=(-v "$SSH_AUTH_SOCK:/run/ssh-agent" -e "SSH_AUTH_SOCK=/run/ssh-agent")
   fi

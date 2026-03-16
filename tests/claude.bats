@@ -475,7 +475,7 @@ SCRIPT
   export -f docker
 
   run _run_in_docker
-  [[ "$output" == *"run -T"* ]]
+  [[ "$output" == *"-T"* ]]
 
   rm -rf "$tmpdir"
 }
