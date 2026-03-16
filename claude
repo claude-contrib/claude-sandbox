@@ -45,7 +45,7 @@ _gum_spin() {
 }
 
 # Print usage information and exit.
-_usage() {
+_show_help() {
   local version
   version="$(cat "$_claude_script_dir/version.txt" 2>/dev/null || echo "unknown")"
 
@@ -191,12 +191,6 @@ _run_in_docker() {
     run_opts+=(-v "$SSH_AUTH_SOCK:/run/ssh-agent" -e "SSH_AUTH_SOCK=/run/ssh-agent")
   fi
 
-  export GH_TOKEN="${GH_TOKEN:-${GITHUB_TOKEN:-}}"
-
-  if [ -n "${GH_TOKEN:-}" ]; then
-    run_opts+=(-e "GH_TOKEN")
-  fi
-
   if ! [ -t 0 ]; then
     if (: </dev/tty) 2>/dev/null; then
       set -- "$@" "$(cat)"
@@ -238,7 +232,7 @@ main() {
   for arg in "$@"; do
     case "$arg" in
     --help)
-      _usage
+      _show_help
       exit 0
       ;;
     --sandbox)
