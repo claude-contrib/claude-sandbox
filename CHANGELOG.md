@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.10.1](https://github.com/claude-contrib/claude-sandbox/compare/v0.10.0...v0.10.1) (2026-03-16)
+
+
+### Bug Fixes
+
+* concatenate multiple --append-system-prompt flags into one ([4433a75](https://github.com/claude-contrib/claude-sandbox/commit/4433a75aaa76ea462fbcb0258b7c7185f3063dc6))
+* defer --help handling to sandbox wrapper ([12c1af7](https://github.com/claude-contrib/claude-sandbox/commit/12c1af7c788a03e00be6b08d2cd28ba8c48ec786))
+* replace --help flag with --sandbox-help for wrapper ([32182fb](https://github.com/claude-contrib/claude-sandbox/commit/32182fb18d26df194e36d1982d5e097545fb32ff))
+* resolve git config from working directory ([66746ae](https://github.com/claude-contrib/claude-sandbox/commit/66746ae92b066c54b1a136280cafad3705ca57d5))
+
 ## [0.10.0](https://github.com/claude-contrib/claude-sandbox/compare/v0.9.1...v0.10.0) (2026-03-16)
 
 
