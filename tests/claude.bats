@@ -573,7 +573,9 @@ SCRIPT
   cd "$tmpdir"
 
   _claude_script_dir="$REPO_ROOT"
-  export SSH_AUTH_SOCK="/tmp/test-ssh.sock"
+  local ssh_sock="$tmpdir/test-ssh.sock"
+  touch "$ssh_sock"
+  export SSH_AUTH_SOCK="$ssh_sock"
   unset GH_TOKEN GITHUB_TOKEN
 
   docker() {
@@ -585,7 +587,7 @@ SCRIPT
   export -f docker
 
   run _run_in_docker
-  [[ "$output" == *"/tmp/test-ssh.sock:/run/ssh-agent"* ]]
+  [[ "$output" == *"$ssh_sock:/run/ssh-agent"* ]]
 
   unset SSH_AUTH_SOCK
   rm -rf "$tmpdir"
