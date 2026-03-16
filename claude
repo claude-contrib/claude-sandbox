@@ -33,6 +33,26 @@ https://github.com/claude-contrib/claude-sandbox
 EOF
 }
 
+# Resolve and export sandbox environment variables.
+# Sets CLAUDE_DOCKER_TAG, CLAUDE_HOST_WORKING_DIR, CLAUDE_DOCKER_CONFIG_DIR,
+# and CLAUDE_DOCKER_WORKING_DIR.
+_resolve_docker_env() {
+  CLAUDE_HOST_WORKING_DIR="$PWD"
+  CLAUDE_DOCKER_TAG="$(cat "$_claude_script_dir/version.txt")"
+  CLAUDE_DOCKER_TAG="${CLAUDE_DOCKER_TAG:-latest}"
+  export CLAUDE_DOCKER_TAG
+  export CLAUDE_HOST_WORKING_DIR
+
+  CLAUDE_DOCKER_CONFIG_DIR=/home/claude/.config/claude
+  if [[ "$CLAUDE_HOST_WORKING_DIR" == "$HOME"/* ]]; then
+    CLAUDE_DOCKER_WORKING_DIR="/home/claude/${CLAUDE_HOST_WORKING_DIR#"$HOME"/}"
+  else
+    CLAUDE_DOCKER_WORKING_DIR="/home/claude/workspace"
+  fi
+  export CLAUDE_DOCKER_CONFIG_DIR
+  export CLAUDE_DOCKER_WORKING_DIR
+}
+
 # Run claude in a Docker sandbox container.
 # Builds the compose file list, detects devcontainer networks,
 # and forwards SSH agent and GitHub token if available.
@@ -44,27 +64,11 @@ _run_in_docker() {
     return 1
   fi
 
-  # Resolve host working directory and image tag.
-  CLAUDE_HOST_WORKING_DIR="$PWD"
-  CLAUDE_DOCKER_TAG="$(cat "$_claude_script_dir/version.txt")"
-  CLAUDE_DOCKER_TAG="${CLAUDE_DOCKER_TAG:-latest}"
+  # Resolve and export all CLAUDE_* environment variables.
+  _resolve_docker_env
 
-  export CLAUDE_DOCKER_TAG
-  export CLAUDE_HOST_WORKING_DIR
-
-  # Resolve the container image name/tag.
+  # Pull the container image if not present locally.
   _get_container_image
-
-  # Map host paths to their in-container equivalents.
-  CLAUDE_DOCKER_CONFIG_DIR=/home/claude/.config/claude
-  if [[ "$CLAUDE_HOST_WORKING_DIR" == "$HOME"/* ]]; then
-    CLAUDE_DOCKER_WORKING_DIR="/home/claude/${CLAUDE_HOST_WORKING_DIR#"$HOME"/}"
-  else
-    CLAUDE_DOCKER_WORKING_DIR="/home/claude/workspace"
-  fi
-
-  export CLAUDE_DOCKER_CONFIG_DIR
-  export CLAUDE_DOCKER_WORKING_DIR
 
   # Build the docker compose file list.
   CLAUDE_DOCKER_COMPOSE="$_claude_script_dir/claude-sandbox.yml"
