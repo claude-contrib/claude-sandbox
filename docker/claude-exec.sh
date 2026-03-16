@@ -2,6 +2,8 @@
 
 set -euo pipefail
 
+[ -z "${DEBUG:-}" ] || set -x
+
 claude_settings_list=()
 
 for f in "${CLAUDE_CONFIG_DIR}"/settings.*.json; do
