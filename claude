@@ -103,7 +103,7 @@ _run_in_docker() {
   # Mount the host SSH known_hosts file (read-only).
   local _known_hosts="${HOME}/.ssh/known_hosts"
   if [[ -f "$_known_hosts" ]]; then
-    run_args+=(-v "$_known_hosts:$_known_hosts:ro")
+    run_args+=(-v "$_known_hosts:$CLAUDE_DOCKER_HOME/.ssh/known_hosts:ro")
   fi
 
   # Export host git identity so claude-sandbox.env forwards them.
