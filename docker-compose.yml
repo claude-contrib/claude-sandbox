@@ -1,12 +1,12 @@
 services:
   claude:
     image: ghcr.io/claude-contrib/claude-sandbox:${CLAUDE_DOCKER_TAG}
+    working_dir: ${CLAUDE_DOCKER_WORKING_DIR}
     volumes:
       - claude-nix:/nix
       - claude-cache:/home/claude/.cache
       - claude-config:${CLAUDE_DOCKER_CONFIG_DIR}
       - ${CLAUDE_HOST_WORKING_DIR}:${CLAUDE_DOCKER_WORKING_DIR}
-    working_dir: ${CLAUDE_DOCKER_WORKING_DIR}
     environment:
       - ANTHROPIC_API_KEY
       - GH_TOKEN=${GH_TOKEN:-$GITHUB_TOKEN}
