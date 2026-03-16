@@ -37,11 +37,22 @@ zinit light claude-contrib/claude-sandbox
 github = "claude-contrib/claude-sandbox"
 ```
 
-### Manual
+### Manual (zsh)
+
+```zsh
+git clone https://github.com/claude-contrib/claude-sandbox.git ~/.claude-sandbox
+echo 'source ~/.claude-sandbox/claude-sandbox.plugin.zsh' >> ~/.zshrc
+source ~/.claude-sandbox/claude-sandbox.plugin.zsh
+```
+
+### Manual (bash)
+
+The `claude` wrapper is a plain bash script. Add it to your `PATH` in `~/.bashrc`:
 
 ```bash
 git clone https://github.com/claude-contrib/claude-sandbox.git ~/.claude-sandbox
-source ~/.claude-sandbox/claude-sandbox.plugin.zsh
+echo 'export PATH="$HOME/.claude-sandbox:$PATH"' >> ~/.bashrc
+export PATH="$HOME/.claude-sandbox:$PATH"
 ```
 
 ## Usage
