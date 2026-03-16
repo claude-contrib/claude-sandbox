@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.10.0](https://github.com/claude-contrib/claude-sandbox/compare/v0.9.1...v0.10.0) (2026-03-16)
+
+
+### Features
+
+* **docker:** add system prompt context to claude invocations ([bc051d6](https://github.com/claude-contrib/claude-sandbox/commit/bc051d6518a1d4a508dc6d2a7d849ddc140533ba))
+
 ## [0.9.1](https://github.com/claude-contrib/claude-sandbox/compare/v0.9.0...v0.9.1) (2026-03-16)
 
 
