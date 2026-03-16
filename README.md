@@ -67,8 +67,8 @@ claude --sandbox
 # Sandbox with args
 claude --sandbox --print "hello"
 
-# Show help
-claude --help
+# Show sandbox wrapper help
+claude --sandbox-help
 
 # Debug tracing
 DEBUG=1 claude --sandbox
