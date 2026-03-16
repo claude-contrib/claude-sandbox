@@ -42,7 +42,7 @@ USER claude
 ENV LANG=C.UTF-8
 ENV TERM=xterm-256color
 ENV COLORTERM=truecolor
-ENV PATH="/home/claude/.nix-profile/bin:/home/claude/.local/bin:$PATH"
+ENV PATH="/home/claude/.nix-profile/bin:/home/claude/.local/bin:/nix/var/nix/profiles/default/bin:$PATH"
 
 WORKDIR /home/claude
 
