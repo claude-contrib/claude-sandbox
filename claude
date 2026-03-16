@@ -38,11 +38,13 @@ EOF
 # and forwards SSH agent and GitHub token if available.
 # Args: forwarded to the claude binary inside the container.
 _run_in_docker() {
+  # Verify Docker is available and running.
   if ! _check_docker; then
     _gum log --level error "Docker is not running. Please start Docker and try again."
     return 1
   fi
 
+  # Resolve host working directory and image tag.
   CLAUDE_HOST_WORKING_DIR="$PWD"
   CLAUDE_DOCKER_TAG="$(cat "$_claude_script_dir/version.txt")"
   CLAUDE_DOCKER_TAG="${CLAUDE_DOCKER_TAG:-latest}"
@@ -50,8 +52,10 @@ _run_in_docker() {
   export CLAUDE_DOCKER_TAG
   export CLAUDE_HOST_WORKING_DIR
 
+  # Resolve the container image name/tag.
   _get_container_image
 
+  # Map host paths to their in-container equivalents.
   CLAUDE_DOCKER_CONFIG_DIR=/home/claude/.config/claude
   if [[ "$CLAUDE_HOST_WORKING_DIR" == "$HOME"/* ]]; then
     CLAUDE_DOCKER_WORKING_DIR="/home/claude/${CLAUDE_HOST_WORKING_DIR#"$HOME"/}"
@@ -62,6 +66,7 @@ _run_in_docker() {
   export CLAUDE_DOCKER_CONFIG_DIR
   export CLAUDE_DOCKER_WORKING_DIR
 
+  # Build the docker compose file list.
   CLAUDE_DOCKER_COMPOSE="$_claude_script_dir/claude-sandbox.yml"
   if [[ ! -f "$CLAUDE_DOCKER_COMPOSE" ]]; then
     _gum log --level error "Docker compose file not found: $CLAUDE_DOCKER_COMPOSE"
@@ -69,6 +74,7 @@ _run_in_docker() {
   fi
   local -a docker_compose_files=(-f "$CLAUDE_DOCKER_COMPOSE")
 
+  # Attach to a devcontainer network when detected.
   local docker_network
   if docker_network="$(_get_container_network)"; then
     _gum log --level info "Joining Docker network '$docker_network'"
@@ -76,13 +82,16 @@ _run_in_docker() {
     docker_compose_files+=(-f "$_claude_script_dir/claude-sandbox.net.yml")
   fi
 
+  # Accumulate extra docker run options.
   local -a run_opts=()
 
+  # Inject environment variables from the config file.
   local -a env_opts=()
   while IFS= read -r _env_opt; do env_opts+=("$_env_opt"); done \
     < <(_get_container_env "$_claude_script_dir/claude-sandbox.env")
   run_opts+=("${env_opts[@]+"${env_opts[@]}"}")
 
+  # Forward the SSH agent socket into the container.
   local _docker_ssh_sock="/run/host-services/ssh-auth.sock"
   if [[ -S "$_docker_ssh_sock" ]]; then
     run_opts+=(-v "$_docker_ssh_sock:$_docker_ssh_sock" -e "SSH_AUTH_SOCK=$_docker_ssh_sock")
@@ -94,11 +103,13 @@ _run_in_docker() {
   CLAUDE_USER_GROUP="${CLAUDE_USER_GROUP:-1000}"
   export CLAUDE_USER_GROUP
 
+  # Mount the host SSH known_hosts file (read-only).
   local _known_hosts="${HOME}/.ssh/known_hosts"
   if [[ -f "$_known_hosts" ]]; then
     run_opts+=(-v "$_known_hosts:/home/claude/.ssh/known_hosts:ro")
   fi
 
+  # Mount the docker-specific Claude settings file (read-only).
   local claude_host_settings="${CLAUDE_CONFIG_DIR:-$HOME/.claude}/settings.docker.json"
   if [[ -f "$claude_host_settings" ]]; then
     run_opts+=(-v "$claude_host_settings:$CLAUDE_DOCKER_CONFIG_DIR/settings.docker.json:ro")
@@ -116,6 +127,7 @@ _run_in_docker() {
     fi
   fi
 
+  # Launch the sandboxed claude session.
   docker compose "${docker_compose_files[@]}" run "${run_opts[@]}" --rm claude claude-exec.sh "$@"
 }
 
