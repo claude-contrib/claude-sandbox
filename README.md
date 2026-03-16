@@ -89,11 +89,9 @@ Joining Docker network 'myproject_default'
 
 ## Configuration
 
-### Environment variables
-
 The full list of host environment variables forwarded to the sandbox is defined in [`claude-sandbox.env`](claude-sandbox.env).
 
-Two additional variables are handled specially:
+These additional variables are handled specially:
 
 | Variable | Description |
 |----------|-------------|
@@ -105,7 +103,7 @@ Two additional variables are handled specially:
 
 The host `~/.claude` directory is bind-mounted into the container at the same absolute path. Claude Code automatically picks up your settings — no extra configuration needed. The sandbox ships with a baked-in [`docker/settings.json`](docker/settings.json) that enables `bypassPermissions`; it is passed via `--settings` and always takes final precedence.
 
-### Sessions
+## Sessions
 
 Sessions are shared between host and sandbox modes, so you can start a conversation on the host and continue it in the sandbox (or vice versa):
 
