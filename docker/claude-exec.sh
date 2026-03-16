@@ -5,7 +5,7 @@ set -euo pipefail
 [ -z "${DEBUG:-}" ] || set -x
 
 claude_settings_path="/home/claude/.local/share/claude/settings.json"
-claude_system_prompt="You are running inside a Docker container as user '$USER' (home: $HOME). The working directory path is a bind mount from the host — it does not reflect your user identity."
+claude_system_prompt="You are running inside a Docker container as user 'claude' (home: /home/claude). The working directory path is a bind mount from the host — it does not reflect your user identity."
 
 # Extract --append-system-prompt values from args and concatenate them
 # into claude_system_prompt, rebuilding the remaining args.
