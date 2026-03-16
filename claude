@@ -73,28 +73,28 @@ _run_in_docker() {
     _gum log --level error "Docker compose file not found: $CLAUDE_DOCKER_COMPOSE"
     return 1
   fi
-  local -a docker_compose_files=(-f "$CLAUDE_DOCKER_COMPOSE")
+  local -a compose_args=(-f "$CLAUDE_DOCKER_COMPOSE")
 
   # Attach to a devcontainer network when detected.
   local docker_network
   if docker_network="$(_get_container_network)"; then
     _gum log --level info "Joining Docker network '$docker_network'"
     export CLAUDE_DOCKER_NETWORK="$docker_network"
-    docker_compose_files+=(-f "$_claude_script_dir/claude-sandbox.net.yml")
+    compose_args+=(-f "$_claude_script_dir/claude-sandbox.net.yml")
   fi
 
   # Accumulate extra docker run options.
-  local -a run_opts=()
+  local -a run_args=()
 
   # Inject environment variables from the config file.
   local -a env_opts=()
   while IFS= read -r _env_opt; do env_opts+=("$_env_opt"); done \
     < <(_get_container_env "$_claude_script_dir/claude-sandbox.env")
-  run_opts+=("${env_opts[@]+"${env_opts[@]}"}")
+  run_args+=("${env_opts[@]+"${env_opts[@]}"}")
 
   if [[ -e "${SSH_AUTH_SOCK:-}" ]]; then
     CLAUDE_USER_GROUP="$(_get_container_group "$SSH_AUTH_SOCK")"
-    run_opts+=(-v "$SSH_AUTH_SOCK:/run/ssh-agent" -e "SSH_AUTH_SOCK=/run/ssh-agent")
+    run_args+=(-v "$SSH_AUTH_SOCK:/run/ssh-agent" -e "SSH_AUTH_SOCK=/run/ssh-agent")
   fi
 
   CLAUDE_USER_GROUP="${CLAUDE_USER_GROUP:-1000}"
@@ -103,7 +103,7 @@ _run_in_docker() {
   # Mount the host SSH known_hosts file (read-only).
   local _known_hosts="${HOME}/.ssh/known_hosts"
   if [[ -f "$_known_hosts" ]]; then
-    run_opts+=(-v "$_known_hosts:$_known_hosts:ro")
+    run_args+=(-v "$_known_hosts:$_known_hosts:ro")
   fi
 
   # Export host git identity so claude-sandbox.env forwards them.
@@ -117,12 +117,12 @@ _run_in_docker() {
       set -- "$@" "$(cat)"
       exec 0</dev/tty
     else
-      run_opts+=(-T)
+      run_args+=(-T)
     fi
   fi
 
   # Launch the sandboxed claude session.
-  docker compose "${docker_compose_files[@]}" run "${run_opts[@]}" --rm claude claude-exec.sh "$@"
+  docker compose "${compose_args[@]}" run "${run_args[@]}" --rm claude claude-exec.sh "$@"
 }
 
 # Run the host claude binary, skipping this wrapper in PATH.
