@@ -420,17 +420,34 @@ SCRIPT
 # main (invoked directly, not sourced)
 # ---------------------------------------------------------------------------
 
-@test "main --help exits 0 and shows usage" {
+@test "main --help forwards to host claude" {
+  _run_in_host() { echo "host: $*"; }
+  export -f _run_in_host
+
   run main --help
   [[ "$status" -eq 0 ]]
-  [[ "$output" == *"claude-sandbox"* ]]
-  [[ "$output" == *"--sandbox"* ]]
+  [[ "$output" == *"host: --help"* ]]
 }
 
-@test "main --sandbox --help shows help" {
+@test "main --sandbox --help shows wrapper help" {
   run main --sandbox --help
   [[ "$status" -eq 0 ]]
   [[ "$output" == *"claude-sandbox"* ]]
+}
+
+@test "main --help with CLAUDE_SANDBOX shows wrapper help" {
+  CLAUDE_SANDBOX=1 run main --help
+  [[ "$status" -eq 0 ]]
+  [[ "$output" == *"claude-sandbox"* ]]
+}
+
+@test "main --help with other args forwards all to host" {
+  _run_in_host() { echo "host: $*"; }
+  export -f _run_in_host
+
+  run main --print hello --help
+  [[ "$status" -eq 0 ]]
+  [[ "$output" == *"host: --print hello --help"* ]]
 }
 
 @test "main with no args and no host claude errors gracefully" {

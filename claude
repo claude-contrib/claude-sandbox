@@ -148,14 +148,15 @@ main() {
   local run_in_docker=false
   [[ -n "${CLAUDE_SANDBOX:-}" ]] && run_in_docker=true
 
+  local has_help=false
   local args
   args=()
 
   for arg in "$@"; do
     case "$arg" in
     --help)
-      _show_help
-      exit 0
+      has_help=true
+      args+=("$arg")
       ;;
     --sandbox)
       run_in_docker=true
@@ -167,7 +168,11 @@ main() {
   done
 
   if [[ "$run_in_docker" == true ]]; then
-    _run_in_docker ${args[@]+"${args[@]}"}
+    if [[ "$has_help" == true ]]; then
+      _show_help
+    else
+      _run_in_docker ${args[@]+"${args[@]}"}
+    fi
   else
     _run_in_host ${args[@]+"${args[@]}"}
   fi
