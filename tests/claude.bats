@@ -32,9 +32,9 @@ setup() {
   [[ "$output" == *"--sandbox"* ]]
 }
 
-@test "_show_help contains --help flag" {
+@test "_show_help contains --sandbox-help flag" {
   run _show_help
-  [[ "$output" == *"--help"* ]]
+  [[ "$output" == *"--sandbox-help"* ]]
 }
 
 
@@ -420,6 +420,13 @@ SCRIPT
 # main (invoked directly, not sourced)
 # ---------------------------------------------------------------------------
 
+@test "main --sandbox-help shows wrapper help and exits" {
+  run main --sandbox-help
+  [[ "$status" -eq 0 ]]
+  [[ "$output" == *"claude-sandbox"* ]]
+  [[ "$output" == *"--sandbox"* ]]
+}
+
 @test "main --help forwards to host claude" {
   _run_in_host() { echo "host: $*"; }
   export -f _run_in_host
@@ -429,16 +436,13 @@ SCRIPT
   [[ "$output" == *"host: --help"* ]]
 }
 
-@test "main --sandbox --help shows wrapper help" {
+@test "main --sandbox --help forwards --help to docker claude" {
+  _run_in_docker() { echo "docker: $*"; }
+  export -f _run_in_docker
+
   run main --sandbox --help
   [[ "$status" -eq 0 ]]
-  [[ "$output" == *"claude-sandbox"* ]]
-}
-
-@test "main --help with CLAUDE_SANDBOX shows wrapper help" {
-  CLAUDE_SANDBOX=1 run main --help
-  [[ "$status" -eq 0 ]]
-  [[ "$output" == *"claude-sandbox"* ]]
+  [[ "$output" == *"docker: --help"* ]]
 }
 
 @test "main --help with other args forwards all to host" {

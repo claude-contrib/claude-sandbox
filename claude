@@ -22,7 +22,7 @@ Usage: claude [flags] [claude args...]
 
 Flags:
   --sandbox    Run claude inside a Docker sandbox container
-  --help       Show this help message and exit
+  --sandbox-help  Show this help message and exit
 
 Environment variables:
   CLAUDE_SANDBOX      Always run in sandbox mode (same as passing --sandbox)
@@ -148,18 +148,17 @@ main() {
   local run_in_docker=false
   [[ -n "${CLAUDE_SANDBOX:-}" ]] && run_in_docker=true
 
-  local has_help=false
   local args
   args=()
 
   for arg in "$@"; do
     case "$arg" in
-    --help)
-      has_help=true
-      args+=("$arg")
-      ;;
     --sandbox)
       run_in_docker=true
+      ;;
+    --sandbox-help)
+      _show_help
+      exit 0
       ;;
     *)
       args+=("$arg")
@@ -168,11 +167,7 @@ main() {
   done
 
   if [[ "$run_in_docker" == true ]]; then
-    if [[ "$has_help" == true ]]; then
-      _show_help
-    else
-      _run_in_docker ${args[@]+"${args[@]}"}
-    fi
+    _run_in_docker ${args[@]+"${args[@]}"}
   else
     _run_in_host ${args[@]+"${args[@]}"}
   fi
