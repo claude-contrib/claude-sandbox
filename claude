@@ -91,12 +91,8 @@ _run_in_docker() {
     < <(_get_container_env "$_claude_script_dir/claude-sandbox.env")
   run_opts+=("${env_opts[@]+"${env_opts[@]}"}")
 
-  # Forward the SSH agent socket into the container.
-  local _docker_ssh_sock="/run/host-services/ssh-auth.sock"
-  if [[ -S "$_docker_ssh_sock" ]]; then
-    run_opts+=(-v "$_docker_ssh_sock:$_docker_ssh_sock" -e "SSH_AUTH_SOCK=$_docker_ssh_sock")
-  elif [[ -n "${SSH_AUTH_SOCK:-}" ]]; then
-    CLAUDE_USER_GROUP="67278"
+  if [[ -S "${SSH_AUTH_SOCK:-}" ]]; then
+    CLAUDE_USER_GROUP="$(_get_container_group "$SSH_AUTH_SOCK")"
     run_opts+=(-v "$SSH_AUTH_SOCK:/run/ssh-agent" -e "SSH_AUTH_SOCK=/run/ssh-agent")
   fi
 
