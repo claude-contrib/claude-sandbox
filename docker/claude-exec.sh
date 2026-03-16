@@ -9,21 +9,21 @@ claude_system_prompt="You are running inside a Docker container as user 'claude'
 
 # Extract --append-system-prompt values from args and concatenate them
 # into claude_system_prompt, rebuilding the remaining args.
-filtered_args=()
+claude_args=()
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    --append-system-prompt=*)
-      claude_system_prompt+=$'\n'"${1#--append-system-prompt=}"
-      shift
-      ;;
-    --append-system-prompt)
-      claude_system_prompt+=$'\n'"${2:-}"
-      shift 2
-      ;;
-    *)
-      filtered_args+=("$1")
-      shift
-      ;;
+  --append-system-prompt=*)
+    claude_system_prompt+=$'\n'"${1#--append-system-prompt=}"
+    shift
+    ;;
+  --append-system-prompt)
+    claude_system_prompt+=$'\n'"${2:-}"
+    shift 2
+    ;;
+  *)
+    claude_args+=("$1")
+    shift
+    ;;
   esac
 done
 
@@ -31,7 +31,7 @@ if [ -f flake.nix ]; then
   nix develop .# \
     --accept-flake-config \
     --no-update-lock-file \
-    --command claude --settings "$claude_settings_path" --append-system-prompt "$claude_system_prompt" "${filtered_args[@]}"
+    --command claude --settings "$claude_settings_path" --append-system-prompt "$claude_system_prompt" "${claude_args[@]}"
 else
-  claude --settings "$claude_settings_path" --append-system-prompt "$claude_system_prompt" "${filtered_args[@]}"
+  claude --settings "$claude_settings_path" --append-system-prompt "$claude_system_prompt" "${claude_args[@]}"
 fi
