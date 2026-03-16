@@ -464,7 +464,7 @@ SCRIPT
 # _run_in_docker
 # ---------------------------------------------------------------------------
 
-@test "_run_in_docker maps working dir for path under HOME" {
+@test "_run_in_docker uses host working dir path" {
   local tmpdir
   tmpdir="$(mktemp -d)"
   HOME="$tmpdir"
@@ -477,18 +477,18 @@ SCRIPT
   docker() {
     case "$1" in
       image) return 0 ;;
-      compose) echo "DOCKER_WORKING_DIR=$CLAUDE_DOCKER_WORKING_DIR" ;;
+      compose) echo "WORKING_DIR=$CLAUDE_HOST_WORKING_DIR" ;;
     esac
   }
   export -f docker
 
   run _run_in_docker
-  [[ "$output" == *"DOCKER_WORKING_DIR=/home/claude/projects/myapp"* ]]
+  [[ "$output" == *"WORKING_DIR=$tmpdir/projects/myapp"* ]]
 
   rm -rf "$tmpdir"
 }
 
-@test "_run_in_docker falls back to /home/claude/workspace for path outside HOME" {
+@test "_run_in_docker uses absolute path for dir outside HOME" {
   local tmpdir
   tmpdir="$(mktemp -d)"
   HOME="/nonexistent-home-dir"
@@ -500,13 +500,13 @@ SCRIPT
   docker() {
     case "$1" in
       image) return 0 ;;
-      compose) echo "DOCKER_WORKING_DIR=$CLAUDE_DOCKER_WORKING_DIR" ;;
+      compose) echo "WORKING_DIR=$CLAUDE_HOST_WORKING_DIR" ;;
     esac
   }
   export -f docker
 
   run _run_in_docker
-  [[ "$output" == *"DOCKER_WORKING_DIR=/home/claude/workspace"* ]]
+  [[ "$output" == *"WORKING_DIR=$tmpdir"* ]]
 
   rm -rf "$tmpdir"
 }

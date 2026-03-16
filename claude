@@ -34,8 +34,8 @@ EOF
 }
 
 # Resolve and export sandbox environment variables.
-# Sets CLAUDE_DOCKER_TAG, CLAUDE_HOST_WORKING_DIR, CLAUDE_DOCKER_CONFIG_DIR,
-# and CLAUDE_DOCKER_WORKING_DIR.
+# Sets CLAUDE_DOCKER_TAG, CLAUDE_HOST_WORKING_DIR, CLAUDE_HOST_CONFIG_DIR,
+# and CLAUDE_DOCKER_HOME.
 _resolve_docker_env() {
   CLAUDE_HOST_WORKING_DIR="$PWD"
   CLAUDE_DOCKER_TAG="$(cat "$_claude_script_dir/version.txt")"
@@ -46,14 +46,8 @@ _resolve_docker_env() {
   CLAUDE_DOCKER_HOME="/home/claude"
   export CLAUDE_DOCKER_HOME
 
-  CLAUDE_DOCKER_CONFIG_DIR="$CLAUDE_DOCKER_HOME/.config/claude"
-  if [[ "$CLAUDE_HOST_WORKING_DIR" == "$HOME"/* ]]; then
-    CLAUDE_DOCKER_WORKING_DIR="$CLAUDE_DOCKER_HOME/${CLAUDE_HOST_WORKING_DIR#"$HOME"/}"
-  else
-    CLAUDE_DOCKER_WORKING_DIR="/workspace"
-  fi
-  export CLAUDE_DOCKER_CONFIG_DIR
-  export CLAUDE_DOCKER_WORKING_DIR
+  CLAUDE_HOST_CONFIG_DIR="${CLAUDE_CONFIG_DIR:-$HOME/.claude}"
+  export CLAUDE_HOST_CONFIG_DIR
 }
 
 # Run claude in a Docker sandbox container.
@@ -124,12 +118,6 @@ _run_in_docker() {
     run_opts+=(-e "GIT_CONFIG_GLOBAL=${GIT_CONFIG_GLOBAL/#"$HOME"/$CLAUDE_DOCKER_HOME}")
   elif [[ -f "${HOME}/.gitconfig" ]]; then
     run_opts+=(-v "${HOME}/.gitconfig:$CLAUDE_DOCKER_HOME/.gitconfig:ro")
-  fi
-
-  # Mount the docker-specific Claude settings file (read-only).
-  local claude_host_settings="${CLAUDE_CONFIG_DIR:-$HOME/.claude}/settings.docker.json"
-  if [[ -f "$claude_host_settings" ]]; then
-    run_opts+=(-v "$claude_host_settings:$CLAUDE_DOCKER_CONFIG_DIR/settings.docker.json:ro")
   fi
 
   # When stdin is a pipe: if /dev/tty is reachable, slurp piped content as the

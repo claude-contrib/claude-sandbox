@@ -103,18 +103,21 @@ Two additional variables are handled specially:
 
 ### Settings
 
-The sandbox ships with a baked-in [`docker/settings.json`](docker/settings.json) that enables `bypassPermissions` and configures other container defaults.
+The host `~/.claude` directory is bind-mounted into the container at the same absolute path. Claude Code automatically picks up your settings — no extra configuration needed. The sandbox ships with a baked-in [`docker/settings.json`](docker/settings.json) that enables `bypassPermissions`; it is passed via `--settings` and always takes final precedence.
 
-To layer your own settings on top, create `~/.claude/settings.docker.json` on your host:
+### Sessions
 
-```json
-{
-  "theme": "dark",
-  "autoUpdates": false
-}
+Sessions are shared between host and sandbox modes, so you can start a conversation on the host and continue it in the sandbox (or vice versa):
+
+```bash
+# Start on the host
+claude
+
+# Later, resume the same session in the sandbox
+claude --sandbox --resume <session-id>
 ```
 
-At startup, any `settings.*.json` files found in `CLAUDE_CONFIG_DIR` inside the container are merged left-to-right with the baked-in settings appended last. This means the baked-in values (such as `bypassPermissions`) always take final precedence and cannot be overridden.
+> **macOS note:** The host Claude Code stores its auth credentials in the macOS Keychain, which is not available inside the container. Run `claude` once inside the sandbox to log in — the credentials will be saved in `~/.claude` and reused on subsequent launches.
 
 ## The claude-contrib Ecosystem
 
