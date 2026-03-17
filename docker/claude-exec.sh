@@ -33,8 +33,8 @@ install -d -o "$CLAUDE_HOST_UID" -g "$CLAUDE_HOST_GID" \
   "$CLAUDE_HOST_HOME/.local/share/claude" \
   "$CLAUDE_HOST_HOME/.config/claude"
 
-# Fix ownership of nix state and user cache (volumes may have stale ownership).
-chown -R "$CLAUDE_HOST_UID:$CLAUDE_HOST_GID" /nix/var
+# Fix ownership of nix state and named volumes (may have stale ownership).
+chown -R "$CLAUDE_HOST_UID:$CLAUDE_HOST_GID" /nix/var "$CLAUDE_HOST_HOME/.cache" "$CLAUDE_HOST_HOME/.local"
 
 # Copy managed settings to the user's settings location.
 claude_settings_path="/etc/claude/settings.json"

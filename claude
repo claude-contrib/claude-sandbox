@@ -74,6 +74,7 @@ _run_in_docker() {
 
   local -a compose_args=()
 
+  compose_args+=(--project-name claude-sandbox)
   compose_args+=(-f "$_claude_script_dir/claude-sandbox.yml")
   compose_args+=(-f "$_claude_script_dir/claude-sandbox.env.yml")
 
