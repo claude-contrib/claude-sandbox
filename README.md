@@ -29,7 +29,7 @@ The sandbox container comes pre-configured with:
 - **Nix flakes** — auto-activates `flake.nix` if present, giving Claude access to the same compilers, linters, and dev tools you use — an equal developer in your environment
 - **Project mount** — your working directory is mounted read-write, so Claude reads and edits your code directly, just as you would
 - **User identity** — the container dynamically creates a user matching your host UID, GID, and username, so file ownership on bind mounts is always correct
-- **Volume isolation** — `~/.cache` uses a dedicated Docker volume to prevent cross-platform conflicts between host (macOS) and container (Linux)
+- **Persistent volumes** — `~/.cache` and `/nix` use dedicated Docker volumes so Nix store and cached artifacts survive container restarts without re-downloading
 - **Devcontainer network** — auto-detects a running devcontainer and joins its Docker network (user-defined or bridge), giving Claude access to the same databases, APIs, and services your environment exposes
 
 ## Isolation Model
@@ -41,7 +41,7 @@ The sandbox uses Docker process isolation — Claude runs in a separate containe
 - System files — no access to `/etc`, `/usr`, or host-installed packages
 - Host processes — cannot see, signal, or interact with processes outside the container
 - Package installation — `apt`, `brew`, and other system package managers are unavailable
-- Caches — `~/.cache` uses a dedicated Docker volume, preventing cross-platform conflicts between macOS (host) and Linux (container)
+- Caches — `~/.cache` and `/nix` use dedicated Docker volumes for performance, persisting across container restarts
 
 **Shared (by design):**
 - `~/.config` — mounted **read-only** so that git config (`GIT_CONFIG_GLOBAL`) and other host settings are available without manual setup; `CLAUDE_CONFIG_DIR` is mounted separately as read-write so Claude Code can persist its own state. Both must point to paths under `~/.config` (see [Configuration](#configuration))
