@@ -37,9 +37,10 @@
           paths = with pkgs; [
             claude-code
             claude-status
+            ripgrep
+            gosu
             gh
             jq
-            ripgrep
           ];
         };
       }

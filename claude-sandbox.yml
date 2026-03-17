@@ -2,16 +2,18 @@ services:
   claude:
     image: ghcr.io/claude-contrib/claude-sandbox:${CLAUDE_DOCKER_TAG}
     working_dir: ${CLAUDE_HOST_WORKING_DIR}
-    group_add:
-      - "${CLAUDE_USER_GROUP}"
     volumes:
       - claude-nix:/nix
-      - claude-cache:${CLAUDE_DOCKER_HOME}/.cache
-      - ${CLAUDE_HOST_CONFIG_DIR}:${CLAUDE_HOST_CONFIG_DIR}
+      - claude-cache:${CLAUDE_HOST_HOME}/.cache
+      - ${CLAUDE_HOST_HOME}:${CLAUDE_HOST_HOME}
       - ${CLAUDE_HOST_WORKING_DIR}:${CLAUDE_HOST_WORKING_DIR}
     environment:
       - GH_TOKEN=${GH_TOKEN:-$GITHUB_TOKEN}
-      - CLAUDE_CONFIG_DIR=${CLAUDE_HOST_CONFIG_DIR}
+      - CLAUDE_HOST_USER
+      - CLAUDE_HOST_UID
+      - CLAUDE_HOST_GID
+      - CLAUDE_HOST_HOME
+
 
 volumes:
   claude-nix:

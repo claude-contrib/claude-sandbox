@@ -564,7 +564,7 @@ SCRIPT
   export -f docker
 
   run _run_in_docker
-  [[ "$output" == *"$ssh_sock:/run/ssh-agent"* ]]
+  [[ "$output" == *"$ssh_sock:$ssh_sock"* ]]
 
   unset SSH_AUTH_SOCK
   rm -rf "$tmpdir"
@@ -594,6 +594,42 @@ SCRIPT
 
   unset GH_TOKEN
   rm -rf "$tmpdir"
+}
+
+# ---------------------------------------------------------------------------
+# _resolve_docker_env — host identity vars
+# ---------------------------------------------------------------------------
+
+@test "_resolve_docker_env sets CLAUDE_HOST_USER to current username" {
+  _resolve_docker_env
+  [[ "$CLAUDE_HOST_USER" == "$(id -un)" ]]
+}
+
+@test "_resolve_docker_env sets CLAUDE_HOST_UID to current user ID" {
+  _resolve_docker_env
+  [[ "$CLAUDE_HOST_UID" == "$(id -u)" ]]
+}
+
+@test "_resolve_docker_env sets CLAUDE_HOST_GID to current group ID" {
+  _resolve_docker_env
+  [[ "$CLAUDE_HOST_GID" == "$(id -g)" ]]
+}
+
+@test "_resolve_docker_env sets CLAUDE_HOST_HOME to HOME" {
+  local tmpdir
+  tmpdir="$(mktemp -d)"
+  HOME="$tmpdir"
+
+  _resolve_docker_env
+  [[ "$CLAUDE_HOST_HOME" == "$tmpdir" ]]
+
+  rm -rf "$tmpdir"
+}
+
+@test "_resolve_docker_env does not set CLAUDE_DOCKER_HOME" {
+  unset CLAUDE_DOCKER_HOME
+  _resolve_docker_env
+  [[ -z "${CLAUDE_DOCKER_HOME:-}" ]]
 }
 
 @test "_run_in_docker exits with error when Docker is not running" {

@@ -34,20 +34,22 @@ EOF
 }
 
 # Resolve and export sandbox environment variables.
-# Sets CLAUDE_DOCKER_TAG, CLAUDE_HOST_WORKING_DIR, CLAUDE_HOST_CONFIG_DIR,
-# and CLAUDE_DOCKER_HOME.
+# Sets CLAUDE_DOCKER_TAG, CLAUDE_HOST_WORKING_DIR, and host user identity vars.
 _resolve_docker_env() {
-  CLAUDE_HOST_WORKING_DIR="$PWD"
   CLAUDE_DOCKER_TAG="$(cat "$_claude_script_dir/version.txt")"
   CLAUDE_DOCKER_TAG="${CLAUDE_DOCKER_TAG:-latest}"
   export CLAUDE_DOCKER_TAG
+
+  CLAUDE_HOST_UID="$(id -u)"
+  CLAUDE_HOST_GID="$(id -g)"
+  CLAUDE_HOST_USER="$(id -un)"
+  CLAUDE_HOST_HOME="$HOME"
+  CLAUDE_HOST_WORKING_DIR="$PWD"
+  export CLAUDE_HOST_UID
+  export CLAUDE_HOST_GID
+  export CLAUDE_HOST_USER
+  export CLAUDE_HOST_HOME
   export CLAUDE_HOST_WORKING_DIR
-
-  CLAUDE_DOCKER_HOME="/home/claude"
-  export CLAUDE_DOCKER_HOME
-
-  CLAUDE_HOST_CONFIG_DIR="${CLAUDE_CONFIG_DIR:-$HOME/.claude}"
-  export CLAUDE_HOST_CONFIG_DIR
 }
 
 # Run claude in a Docker sandbox container.
@@ -63,6 +65,9 @@ _run_in_docker() {
 
   # Resolve and export all CLAUDE_* environment variables.
   _resolve_docker_env
+
+  # Export host git identity so claude-sandbox.env forwards them.
+  _resolve_git_env
 
   # Pull the container image if not present locally.
   _get_container_image
@@ -80,24 +85,10 @@ _run_in_docker() {
     compose_args+=(-f "$_claude_script_dir/claude-sandbox.net.yml")
   fi
 
-  # Export host git identity so claude-sandbox.env forwards them.
-  _resolve_git_env
-
   # Accumulate extra docker run options.
   local -a run_args=()
-
   if [[ -e "${SSH_AUTH_SOCK:-}" ]]; then
-    CLAUDE_USER_GROUP="$(_get_container_group "$SSH_AUTH_SOCK")"
-    run_args+=(-v "$SSH_AUTH_SOCK:/run/ssh-agent" -e "SSH_AUTH_SOCK=/run/ssh-agent")
-  fi
-
-  CLAUDE_USER_GROUP="${CLAUDE_USER_GROUP:-1000}"
-  export CLAUDE_USER_GROUP
-
-  # Mount the host SSH known_hosts file (read-only).
-  local _known_hosts="${HOME}/.ssh/known_hosts"
-  if [[ -f "$_known_hosts" ]]; then
-    run_args+=(-v "$_known_hosts:$CLAUDE_DOCKER_HOME/.ssh/known_hosts:ro")
+    run_args+=(-v "$SSH_AUTH_SOCK:$SSH_AUTH_SOCK")
   fi
 
   # When stdin is a pipe: if /dev/tty is reachable, slurp piped content as the

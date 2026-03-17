@@ -89,17 +89,3 @@ _get_container_image() {
   fi
   _gum spin "Pulling Docker image $image" docker pull "$image"
 }
-
-# Get the group ID of a file as seen from inside the sandbox container.
-# Mounts the file into a temporary container and stats it, ensuring the GID
-# reflects the container's view rather than the host's. Used to map the SSH
-# agent socket group so the in-container user can access it.
-# Args: $1 - absolute path to the file to stat (e.g. $SSH_AUTH_SOCK).
-# Stdout: numeric group ID.
-# Returns: 0 on success; on failure outputs nothing and the caller falls back
-#          to the default group (CLAUDE_USER_GROUP:-1000).
-_get_container_group() {
-  local fpath="$1"
-  local image="ghcr.io/claude-contrib/claude-sandbox:${CLAUDE_DOCKER_TAG}"
-  docker run --rm -v "$fpath:/var/group" "$image" stat -c "%g" /var/group 2>/dev/null
-}
