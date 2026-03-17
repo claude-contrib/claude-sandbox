@@ -33,11 +33,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1773645480,
-        "narHash": "sha256-r5Pdp6aQMIRHy+FbmEGkNSvIVc4uFMvO8nFO1XQtlx0=",
+        "lastModified": 1773726132,
+        "narHash": "sha256-5Aaj+JTfaUfTZJvCpoPRhtg9WBCM1MwUZ0LzlsHt160=",
         "owner": "claude-contrib",
         "repo": "claude-status",
-        "rev": "7aa11bcde48817a87d1f3f3e76a6638bee4184b1",
+        "rev": "c13ec3cc8f720b2aee4bdb1111e2689363dcb209",
         "type": "github"
       },
       "original": {
