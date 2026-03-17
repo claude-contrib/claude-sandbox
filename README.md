@@ -19,8 +19,8 @@ The `claude` wrapper script sits in your `$PATH` ahead of the real binary:
 
 ```
 claude --sandbox "fix the bug"
-└── wrapper detects --sandbox, resolves host identity
-      └── docker compose launches container with ~/.config + workdir mounted
+└── wrapper detects --sandbox, resolves host identity, volumes, network
+      └── docker compose starts container, mounts ~/.config (ro), repo root (rw), SSH agent
             └── claude-exec.sh creates user (matching host UID/GID), drops privileges
                   └── claude runs as your user inside the sandbox
 ```
