@@ -1,6 +1,6 @@
 # Claude Sandbox
 
-> Sandboxed Docker environment for [Claude Code](https://claude.ai/code) — full autonomy, zero risk to your host.
+> Sandboxed Docker environment for [Claude Code](https://claude.ai/code) — full autonomy, system-level isolation.
 
 [![Release](https://img.shields.io/github/v/release/claude-contrib/claude-sandbox)](https://github.com/claude-contrib/claude-sandbox/releases/latest)
 [![Docker](https://img.shields.io/badge/ghcr.io-claude--sandbox-blue?logo=docker)](https://ghcr.io/claude-contrib/claude-sandbox)
@@ -31,6 +31,25 @@ The sandbox container comes pre-configured with:
 - **User identity** — the container dynamically creates a user matching your host UID, GID, and username, so file ownership on bind mounts is always correct
 - **Volume isolation** — `~/.cache` and `~/.local` use dedicated Docker volumes to prevent cross-platform conflicts between host (macOS) and container (Linux)
 - **Devcontainer network** — auto-joins the devcontainer's Docker network, giving Claude access to the same databases, APIs, and services your environment exposes
+
+## Isolation Model
+
+The sandbox uses Docker process isolation — Claude runs in a separate container as your user but cannot affect the host system.
+
+**Isolated:**
+- System files — no access to `/etc`, `/usr`, or host-installed packages
+- Host processes — cannot see, signal, or interact with processes outside the container
+- Package installation — `apt`, `brew`, and other system package managers are unavailable
+- Caches — `~/.cache` and `~/.local` use dedicated Docker volumes, preventing cross-platform conflicts between macOS (host) and Linux (container)
+
+**Shared (by design):**
+- `$HOME` — mounted read-write so that git config (including `[include]` chains), Claude Code config (`~/.claude`, `~/.claude.json`), and other dotfiles work without manual setup
+- Project directory — mounted read-write for code editing
+- Credentials — API keys, cloud provider tokens, and `GH_TOKEN` are forwarded via environment variables (see [Configuration](#configuration))
+- SSH agent — forwarded when `SSH_AUTH_SOCK` is set
+- Network — the container has outbound internet access (required for the Claude API)
+
+The sandbox prevents Claude from damaging your operating system or installing unwanted software. It does not restrict read access to files under your home directory.
 
 ## Installation
 
