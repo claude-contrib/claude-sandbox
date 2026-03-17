@@ -126,7 +126,7 @@ _run_in_docker() {
   fi
 
   # Launch the sandboxed claude session.
-  _gum log --level info "Starting sandbox..."
+  _gum log --level info "Starting Claude sandbox..."
   docker compose "${compose_args[@]}" run ${run_args[@]+"${run_args[@]}"} --rm claude claude-exec.sh "$@"
 }
 

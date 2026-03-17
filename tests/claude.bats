@@ -256,7 +256,7 @@ setup() {
   rm -rf "$tmpdir"
 }
 
-@test "_get_container_network falls back to first network when all are defaults" {
+@test "_get_container_network fails when all networks are defaults" {
   local tmpdir
   tmpdir="$(mktemp -d)"
   mkdir -p "$tmpdir/.devcontainer"
@@ -272,8 +272,7 @@ setup() {
   export -f git docker
 
   run _get_container_network
-  [[ "$status" -eq 0 ]]
-  [[ "$output" == "bridge" ]]
+  [[ "$status" -eq 1 ]]
 
   rm -rf "$tmpdir"
 }

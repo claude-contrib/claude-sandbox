@@ -69,16 +69,9 @@ _get_container_network() {
     esac
   done <<<"$network_list"
 
-  # No non-default network found; fall back to the first network on the list.
-  # This can happen when the devcontainer only uses default Docker networks
-  # (bridge/host/none), which is unusual but should still be usable.
-  network="$(echo "$network_list" | head -n1)"
-
-  if [[ -n "$network" ]]; then
-    echo "$network"
-  else
-    return 1
-  fi
+  # No user-defined network found — default networks (bridge/host/none) cannot
+  # be used with network-scoped aliases, so there is nothing useful to join.
+  return 1
 }
 
 # Ensure the container image is available locally, pulling if needed.
