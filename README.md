@@ -17,9 +17,19 @@ The `claude` wrapper script sits in your `$PATH` ahead of the real binary:
 | **Forward** (default) | `claude` | Finds the host `claude` binary and runs it directly |
 | **Sandbox** | `claude --sandbox` | Launches Claude Code inside a Docker container with full permissions |
 
+```
+claude --sandbox "fix the bug"
+└── wrapper detects --sandbox, resolves host identity
+      └── docker compose launches container with home + workdir mounted
+            └── claude-exec.sh creates user (matching host UID/GID), drops privileges
+                  └── claude runs as your user inside the sandbox
+```
+
 The sandbox container comes pre-configured with:
 - **Nix flakes** — auto-activates `flake.nix` if present, giving Claude access to the same compilers, linters, and dev tools you use — an equal developer in your environment
 - **Project mount** — your working directory is mounted read-write, so Claude reads and edits your code directly, just as you would
+- **User identity** — the container dynamically creates a user matching your host UID, GID, and username, so file ownership on bind mounts is always correct
+- **Volume isolation** — `~/.cache` and `~/.local` use dedicated Docker volumes to prevent cross-platform conflicts between host (macOS) and container (Linux)
 - **Devcontainer network** — auto-joins the devcontainer's Docker network, giving Claude access to the same databases, APIs, and services your environment exposes
 
 ## Installation
@@ -84,24 +94,24 @@ Detection requires:
 
 When a network is detected, you'll see:
 ```
-Joining Docker network 'myproject_default'
+Detected devcontainer network 'myproject_default'
 ```
 
 ## Configuration
 
-The full list of host environment variables forwarded to the sandbox is defined in [`claude-sandbox.env`](claude-sandbox.env).
+The full list of host environment variables forwarded to the sandbox is defined in [`claude-sandbox.env.yml`](claude-sandbox.env.yml).
 
 These additional variables are handled specially:
 
 | Variable | Description |
 |----------|-------------|
 | `CLAUDE_SANDBOX` | Always run in sandbox mode — equivalent to passing `--sandbox` on every invocation |
-| `SSH_AUTH_SOCK` | SSH agent socket — bind-mounted into the container at `/run/ssh-agent` |
+| `SSH_AUTH_SOCK` | SSH agent socket — bind-mounted into the container |
 | `DEBUG` | Enable debug tracing (`set -x`) |
 
 ### Settings
 
-The host `~/.claude` directory is bind-mounted into the container at the same absolute path. Claude Code automatically picks up your settings — no extra configuration needed. The sandbox ships with a baked-in [`docker/settings.json`](docker/settings.json) that enables `bypassPermissions`; it is passed via `--settings` and always takes final precedence.
+The host home directory is bind-mounted into the container at the same absolute path. Claude Code automatically picks up your settings — no extra configuration needed. The sandbox ships with a baked-in [`docker/settings.json`](docker/settings.json) that enables `bypassPermissions`; it is passed via `--settings` and always takes final precedence.
 
 ## Sessions
 
