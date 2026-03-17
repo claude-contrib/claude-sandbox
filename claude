@@ -61,9 +61,12 @@ _resolve_docker_env() {
   export CLAUDE_CONFIG_DIR
 
   CLAUDE_HOST_REPO_DIR="$(git rev-parse --git-common-dir 2>/dev/null)"
-  # Resolve the Repository Directory
+  # Resolve the repository root as an absolute path.
+  # --git-common-dir returns a relative path (e.g. .git) in non-worktree repos,
+  # so we must absolutise it before taking dirname.
   if [[ -n "$CLAUDE_HOST_REPO_DIR" ]]; then
-    CLAUDE_HOST_REPO_DIR="$(dirname "$CLAUDE_HOST_REPO_DIR")"
+    CLAUDE_HOST_REPO_DIR=$(dirname "$CLAUDE_HOST_REPO_DIR")
+    CLAUDE_HOST_REPO_DIR="$(cd "$CLAUDE_HOST_REPO_DIR" && pwd)"
   else
     CLAUDE_HOST_REPO_DIR="$PWD"
   fi
