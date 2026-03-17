@@ -21,12 +21,14 @@ claude-sandbox ${version}
 Usage: claude [flags] [claude args...]
 
 Flags:
-  --sandbox    Run claude inside a Docker sandbox container
+  --sandbox       Run claude inside a Docker sandbox container
   --sandbox-help  Show this help message and exit
+
+Claude args (intercepted in sandbox mode):
+  --add-dir DIR  bind-mounted read-only into the container
 
 Environment variables:
   CLAUDE_SANDBOX      Always run in sandbox mode (same as passing --sandbox)
-  SSH_AUTH_SOCK       SSH agent socket (forwarded to sandbox)
   DEBUG               Enable debug tracing (set -x)
 
 https://github.com/claude-contrib/claude-sandbox
@@ -138,6 +140,22 @@ _run_in_docker() {
       run_args+=(-T)
     fi
   fi
+
+  # Mount each --add-dir directory as a read-only bind volume.
+  local add_dir_path
+  for ((i = 1; i <= $#; i++)); do
+    case "${!i}" in
+    --add-dir)
+      i=$((i + 1))
+      add_dir_path="$(cd "${!i}" && pwd)"
+      run_args+=(--volume "$add_dir_path:$add_dir_path:ro")
+      ;;
+    --add-dir=*)
+      add_dir_path="$(cd "${!i#--add-dir=}" && pwd)"
+      run_args+=(--volume "$add_dir_path:$add_dir_path:ro")
+      ;;
+    esac
+  done
 
   # Launch the sandboxed claude session.
   _gum log --level info "Starting Claude sandbox..."
