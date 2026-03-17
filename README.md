@@ -32,7 +32,7 @@ The sandbox container comes pre-configured with:
 - **Project mount** — the git repo root is mounted **read-write** (falling back to `$PWD` outside a repo), so Claude can read and edit code across the entire repo including worktrees; the container's working directory is set to your actual `$PWD`
 - **User identity** — the container dynamically creates a user matching your host UID, GID, and username, so file ownership on bind mounts is always correct
 - **Persistent volumes** — `~/.cache` and `/nix` use dedicated Docker volumes so Nix store and cached artifacts survive container restarts without re-downloading
-- **Devcontainer network** — auto-detects a running devcontainer and joins its Docker network (user-defined or bridge), giving Claude access to the same databases, APIs, and services your environment exposes
+- **Devcontainer network** — auto-detects a running devcontainer and joins its Docker network, giving Claude access to the same databases, APIs, and services your environment exposes
 
 ## Isolation Model
 
@@ -126,7 +126,7 @@ Detection requires:
 1. A `.devcontainer/devcontainer.json` or `.devcontainer.json` in the project root
 2. A running devcontainer with the `devcontainer.local_folder` label matching the project
 
-User-defined compose networks provide DNS-based service discovery. The default `bridge` network is also supported for IP-based access.
+User-defined compose networks provide DNS-based service discovery.
 
 When a network is detected, you'll see:
 ```
