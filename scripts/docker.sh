@@ -61,7 +61,7 @@ _get_container_network() {
   local network
   while IFS= read -r network; do
     case "$network" in
-    bridge | host | none | "") continue ;;
+    host | none | "") continue ;;
     *)
       echo "$network"
       return 0
