@@ -45,10 +45,9 @@ _get_container_id() {
 
 # Get the Docker network of a running devcontainer for the current project.
 # Inspects the container's attached networks and returns the first
-# non-default one (preferring compose-created networks like myproject_default).
-# Falls back to the first network if all are default types.
+# compose-created one (skipping bridge, host, and none).
 # Stdout: Docker network name.
-# Returns: 0 if a network is found, 1 otherwise.
+# Returns: 0 if a compose network is found, 1 otherwise.
 _get_container_network() {
   local container_id
   container_id="$(_get_container_id)" || return 1
@@ -61,7 +60,7 @@ _get_container_network() {
   local network
   while IFS= read -r network; do
     case "$network" in
-    host | none | "") continue ;;
+    bridge | host | none | "") continue ;;
     *)
       echo "$network"
       return 0
@@ -69,8 +68,6 @@ _get_container_network() {
     esac
   done <<<"$network_list"
 
-  # No user-defined network found — default networks (bridge/host/none) cannot
-  # be used with network-scoped aliases, so there is nothing useful to join.
   return 1
 }
 

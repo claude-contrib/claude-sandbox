@@ -234,7 +234,7 @@ setup() {
 # _get_container_network
 # ---------------------------------------------------------------------------
 
-@test "_get_container_network returns first non-default network" {
+@test "_get_container_network returns first compose network" {
   local tmpdir
   tmpdir="$(mktemp -d)"
   mkdir -p "$tmpdir/.devcontainer"
@@ -256,7 +256,7 @@ setup() {
   rm -rf "$tmpdir"
 }
 
-@test "_get_container_network fails when all networks are defaults" {
+@test "_get_container_network fails when only default networks exist" {
   local tmpdir
   tmpdir="$(mktemp -d)"
   mkdir -p "$tmpdir/.devcontainer"
