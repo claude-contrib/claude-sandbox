@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.13.1](https://github.com/claude-contrib/claude-sandbox/compare/v0.13.0...v0.13.1) (2026-03-17)
+
+
+### Bug Fixes
+
+* detect git repo root for CLAUDE_HOST_REPO_DIR mount ([be85c41](https://github.com/claude-contrib/claude-sandbox/commit/be85c41063dac4c299b804b213f25b7484b064ef))
+
 ## [0.13.0](https://github.com/claude-contrib/claude-sandbox/compare/v0.12.0...v0.13.0) (2026-03-17)
 
 
