@@ -12,6 +12,7 @@ WORKDIR /build
 COPY flake.nix flake.lock ./
 
 RUN nix profile add \
+      --profile /nix/var/nix/profiles/default \
       --option keep-outputs false \
       --option keep-derivations false \
       .#claude-sandbox && \
@@ -21,16 +22,14 @@ RUN nix profile add \
 # Stage 2: Runtime — minimal base with nix store copied in
 FROM debian:bookworm-20250407-slim
 
-RUN useradd -m -u 1000 -s /bin/bash claude
+RUN groupadd nixbld && \
+    useradd -m -u 1000 -s /bin/bash -G nixbld claude
 
-COPY --from=builder /nix/store /nix/store
-COPY --from=builder /etc/nix /etc/nix
-COPY --from=builder /nix/var /nix/var
-COPY --from=builder /root/.nix-profile /home/claude/.nix-profile
+COPY --from=builder --chown=root:nixbld /nix/store /nix/store
+COPY --from=builder --chown=root:nixbld /etc/nix /etc/nix
+COPY --from=builder --chown=root:nixbld --chmod=g+w /nix/var /nix/var
 
-RUN sed -i '/^build-users-group/d' /etc/nix/nix.conf && \
-    chmod 1777 /nix/store && \
-    chown -R claude:claude /nix/var && \
+RUN chmod 1775 /nix/store && \
     mkdir -p /home/claude/.cache \
              /home/claude/.local/bin \
              /home/claude/.local/share/claude \
@@ -42,9 +41,9 @@ USER claude
 ENV LANG=C.UTF-8
 ENV TERM=xterm-256color
 ENV COLORTERM=truecolor
-ENV SSL_CERT_FILE="/home/claude/.nix-profile/etc/ssl/certs/ca-bundle.crt"
-ENV NIX_SSL_CERT_FILE="/home/claude/.nix-profile/etc/ssl/certs/ca-bundle.crt"
-ENV PATH="/home/claude/.nix-profile/bin:/home/claude/.local/bin:/nix/var/nix/profiles/default/bin:$PATH"
+ENV SSL_CERT_FILE="/nix/var/nix/profiles/default/etc/ssl/certs/ca-bundle.crt"
+ENV NIX_SSL_CERT_FILE="/nix/var/nix/profiles/default/etc/ssl/certs/ca-bundle.crt"
+ENV PATH="/nix/var/nix/profiles/default/bin:/home/claude/.local/bin:$PATH"
 
 WORKDIR /home/claude
 
