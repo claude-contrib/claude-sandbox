@@ -12,17 +12,5 @@
   "statusLine": {
     "type": "command",
     "command": "claude-status"
-  },
-  "hooks": {
-    "SessionStart": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "/home/claude/.local/share/claude/hooks/context.sh"
-          }
-        ]
-      }
-    ]
   }
 }
