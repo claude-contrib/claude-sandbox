@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.14.0](https://github.com/claude-contrib/claude-sandbox/compare/v0.13.3...v0.14.0) (2026-03-17)
+
+
+### Features
+
+* bind mount --add-dir directories as read-only volumes in sandbox ([d131279](https://github.com/claude-contrib/claude-sandbox/commit/d1312799d95856992bb38b47b1ecb7a753c081e1))
+
 ## [0.13.3](https://github.com/claude-contrib/claude-sandbox/compare/v0.13.2...v0.13.3) (2026-03-17)
 
 
