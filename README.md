@@ -44,7 +44,7 @@ The sandbox uses Docker process isolation — Claude runs in a separate containe
 - Caches — `~/.cache` and `~/.local` use dedicated Docker volumes, preventing cross-platform conflicts between macOS (host) and Linux (container)
 
 **Shared (by design):**
-- `~/.config` — mounted read-write so that Claude Code config (`CLAUDE_CONFIG_DIR`) and git config (`GIT_CONFIG_GLOBAL`) work without manual setup; both must point to paths under `~/.config` (see [Configuration](#configuration))
+- `~/.config` — mounted **read-only** so that git config (`GIT_CONFIG_GLOBAL`) and other host settings are available without manual setup; `CLAUDE_CONFIG_DIR` is mounted separately as read-write so Claude Code can persist its own state. Both must point to paths under `~/.config` (see [Configuration](#configuration))
 - Project directory — mounted read-write for code editing
 - Credentials — API keys, cloud provider tokens, and `GH_TOKEN` are forwarded via environment variables (see [Configuration](#configuration))
 - SSH agent — forwarded when `SSH_AUTH_SOCK` is set
@@ -135,7 +135,7 @@ These additional variables are handled specially:
 
 ### Settings
 
-The host `~/.config` directory is bind-mounted into the container at the same absolute path, so Claude Code picks up settings from `CLAUDE_CONFIG_DIR` automatically. The sandbox ships with a baked-in [`docker/settings.json`](docker/settings.json) that enables `bypassPermissions`; it is passed via `--settings` and always takes final precedence.
+The host `~/.config` directory is bind-mounted **read-only** into the container at the same absolute path, so git config and other host settings are available. `CLAUDE_CONFIG_DIR` is mounted separately as read-write, so Claude Code can persist its own state. The sandbox ships with a baked-in [`docker/settings.json`](docker/settings.json) that enables `bypassPermissions`; it is passed via `--settings` and always takes final precedence.
 
 ## Sessions
 
