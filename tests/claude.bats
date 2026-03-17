@@ -314,50 +314,6 @@ setup() {
 }
 
 # ---------------------------------------------------------------------------
-# _get_container_env
-# ---------------------------------------------------------------------------
-
-@test "_get_container_env includes -e flag for set variables" {
-  local tmpfile
-  tmpfile="$(mktemp)"
-  printf 'MY_TEST_VAR\n' >"$tmpfile"
-  export MY_TEST_VAR="hello"
-  run _get_container_env "$tmpfile"
-  unset MY_TEST_VAR
-  rm -f "$tmpfile"
-  [[ "$output" == *"-e"* ]]
-  [[ "$output" == *"MY_TEST_VAR"* ]]
-}
-
-@test "_get_container_env omits unset variables" {
-  local tmpfile
-  tmpfile="$(mktemp)"
-  printf 'DEFINITELY_UNSET_VAR_XYZ\n' >"$tmpfile"
-  unset DEFINITELY_UNSET_VAR_XYZ
-  run _get_container_env "$tmpfile"
-  rm -f "$tmpfile"
-  [[ -z "$output" ]]
-}
-
-@test "_get_container_env skips comment lines" {
-  local tmpfile
-  tmpfile="$(mktemp)"
-  printf '# this is a comment\n' >"$tmpfile"
-  run _get_container_env "$tmpfile"
-  rm -f "$tmpfile"
-  [[ -z "$output" ]]
-}
-
-@test "_get_container_env skips blank lines" {
-  local tmpfile
-  tmpfile="$(mktemp)"
-  printf '\n   \n' >"$tmpfile"
-  run _get_container_env "$tmpfile"
-  rm -f "$tmpfile"
-  [[ -z "$output" ]]
-}
-
-# ---------------------------------------------------------------------------
 # _run_in_host
 # ---------------------------------------------------------------------------
 

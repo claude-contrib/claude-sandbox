@@ -67,13 +67,10 @@ _run_in_docker() {
   # Pull the container image if not present locally.
   _get_container_image
 
-  # Build the docker compose file list.
-  CLAUDE_DOCKER_COMPOSE="$_claude_script_dir/claude-sandbox.yml"
-  if [[ ! -f "$CLAUDE_DOCKER_COMPOSE" ]]; then
-    _gum log --level error "Docker compose file not found: $CLAUDE_DOCKER_COMPOSE"
-    return 1
-  fi
-  local -a compose_args=(-f "$CLAUDE_DOCKER_COMPOSE")
+  local -a compose_args=()
+
+  compose_args+=(-f "$_claude_script_dir/claude-sandbox.yml")
+  compose_args+=(-f "$_claude_script_dir/claude-sandbox.env.yml")
 
   # Attach to a devcontainer network when detected.
   local docker_network
@@ -88,12 +85,6 @@ _run_in_docker() {
 
   # Accumulate extra docker run options.
   local -a run_args=()
-
-  # Inject environment variables from the config file.
-  local -a env_opts=()
-  while IFS= read -r _env_opt; do env_opts+=("$_env_opt"); done \
-    < <(_get_container_env "$_claude_script_dir/claude-sandbox.env")
-  run_args+=("${env_opts[@]+"${env_opts[@]}"}")
 
   if [[ -e "${SSH_AUTH_SOCK:-}" ]]; then
     CLAUDE_USER_GROUP="$(_get_container_group "$SSH_AUTH_SOCK")"
