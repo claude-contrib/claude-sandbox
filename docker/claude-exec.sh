@@ -14,17 +14,17 @@ CLAUDE_DOCKER_SHELL="/bin/bash"
 
 # Create the primary group if it doesn't already exist.
 if ! getent group "$CLAUDE_HOST_GID" >/dev/null 2>&1; then
-  groupadd -g "$CLAUDE_HOST_GID" "$CLAUDE_HOST_USER"
+  groupadd --non-unique -g "$CLAUDE_HOST_GID" "$CLAUDE_HOST_USER"
 fi
 
 # Create the user.
-useradd \
+useradd --non-unique \
   -u "$CLAUDE_HOST_UID" \
   -g "$CLAUDE_HOST_GID" \
   -G "$CLAUDE_DOCKER_GROUP" \
   -d "$CLAUDE_HOST_HOME" \
   -s "$CLAUDE_DOCKER_SHELL" \
-  "$CLAUDE_HOST_USER"
+  "$CLAUDE_HOST_USER" 2>/dev/null
 
 # Set up required directories under the user's home.
 install -d -o "$CLAUDE_HOST_UID" -g "$CLAUDE_HOST_GID" \
@@ -32,6 +32,9 @@ install -d -o "$CLAUDE_HOST_UID" -g "$CLAUDE_HOST_GID" \
   "$CLAUDE_HOST_HOME/.local/bin" \
   "$CLAUDE_HOST_HOME/.local/share/claude" \
   "$CLAUDE_HOST_HOME/.config/claude"
+
+# Fix ownership of nix state and user cache (volumes may have stale ownership).
+chown -R "$CLAUDE_HOST_UID:$CLAUDE_HOST_GID" /nix/var
 
 # Copy managed settings to the user's settings location.
 claude_settings_path="/etc/claude/settings.json"
