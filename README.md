@@ -118,6 +118,19 @@ claude --sandbox-help
 DEBUG=1 claude --sandbox
 ```
 
+## Argument Handling
+
+Some Claude CLI arguments are intercepted by the sandbox wrapper and handled specially before being forwarded to the container:
+
+| Argument | Sandbox behaviour |
+|----------|-------------------|
+| `--add-dir DIR` | The directory is bind-mounted **read-only** into the container at the same absolute path, then forwarded to `claude` inside the sandbox |
+
+```bash
+# Mount an extra directory read-only inside the sandbox
+claude --sandbox --add-dir /path/to/docs
+```
+
 ## Devcontainer Network
 
 If your project uses a [devcontainer](https://containers.dev/) (VS Code, Codespaces, devcontainer CLI), the sandbox automatically detects the running devcontainer and joins its Docker network. This lets Claude reach services (databases, APIs, etc.) defined in the devcontainer without any extra configuration.
@@ -144,7 +157,6 @@ These additional variables are handled specially:
 | `CLAUDE_CONFIG_DIR` | Claude Code config directory — defaults to `~/.config/claude`, must be under `~/.config` |
 | `GIT_CONFIG_GLOBAL` | Git global config file — defaults to `~/.config/git/config`, must be under `~/.config` |
 | `CLAUDE_SANDBOX` | Always run in sandbox mode — equivalent to passing `--sandbox` on every invocation |
-| `SSH_AUTH_SOCK` | SSH agent socket — bind-mounted into the container |
 | `DEBUG` | Enable debug tracing (`set -x`) |
 
 ### Settings
