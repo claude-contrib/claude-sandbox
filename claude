@@ -50,6 +50,28 @@ _resolve_docker_env() {
   export CLAUDE_HOST_USER
   export CLAUDE_HOST_HOME
   export CLAUDE_HOST_WORKING_DIR
+
+  # Validate that config paths resolve under ~/.config (the only home subdirectory
+  # bind-mounted into the sandbox).
+  CLAUDE_HOST_CONFIG_DIR="$HOME/.config"
+  export CLAUDE_HOST_CONFIG_DIR
+
+  # Default CLAUDE_CONFIG_DIR and GIT_CONFIG_GLOBAL to XDG paths under ~/.config.
+  CLAUDE_CONFIG_DIR="${CLAUDE_CONFIG_DIR:-$CLAUDE_HOST_CONFIG_DIR/claude}"
+  export CLAUDE_CONFIG_DIR
+
+  if [[ "$CLAUDE_CONFIG_DIR" != "$CLAUDE_HOST_CONFIG_DIR" && "$CLAUDE_CONFIG_DIR" != "$CLAUDE_HOST_CONFIG_DIR/"* ]]; then
+    _gum log --level error "CLAUDE_CONFIG_DIR must be under ~/.config (got: $CLAUDE_CONFIG_DIR)"
+    return 1
+  fi
+
+  GIT_CONFIG_GLOBAL="${GIT_CONFIG_GLOBAL:-$CLAUDE_HOST_CONFIG_DIR/git/config}"
+  export GIT_CONFIG_GLOBAL
+
+  if [[ "$GIT_CONFIG_GLOBAL" != "$CLAUDE_HOST_CONFIG_DIR/"* ]]; then
+    _gum log --level error "GIT_CONFIG_GLOBAL must be under ~/.config (got: $GIT_CONFIG_GLOBAL)"
+    return 1
+  fi
 }
 
 # Run claude in a Docker sandbox container.

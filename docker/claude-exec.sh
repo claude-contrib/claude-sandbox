@@ -27,11 +27,12 @@ useradd --non-unique \
   "$CLAUDE_HOST_USER" 2>/dev/null
 
 # Set up required directories under the user's home.
+# $HOME itself is not bind-mounted (only ~/.config is), so ensure it exists.
 install -d -o "$CLAUDE_HOST_UID" -g "$CLAUDE_HOST_GID" \
+  "$CLAUDE_HOST_HOME" \
   "$CLAUDE_HOST_HOME/.cache" \
   "$CLAUDE_HOST_HOME/.local/bin" \
-  "$CLAUDE_HOST_HOME/.local/share/claude" \
-  "$CLAUDE_HOST_HOME/.config/claude"
+  "$CLAUDE_HOST_HOME/.local/share/claude"
 
 # Fix ownership of nix state and named volumes (may have stale ownership).
 chown -R "$CLAUDE_HOST_UID:$CLAUDE_HOST_GID" /nix/var "$CLAUDE_HOST_HOME/.cache" "$CLAUDE_HOST_HOME/.local"

@@ -6,7 +6,7 @@ services:
       - claude-nix:/nix
       - claude-local:${CLAUDE_HOST_HOME}/.local
       - claude-cache:${CLAUDE_HOST_HOME}/.cache
-      - ${CLAUDE_HOST_HOME}:${CLAUDE_HOST_HOME}
+      - ${CLAUDE_HOST_CONFIG_DIR}:${CLAUDE_HOST_CONFIG_DIR}
       - ${CLAUDE_HOST_WORKING_DIR}:${CLAUDE_HOST_WORKING_DIR}
     environment:
       - CLAUDE_HOST_USER

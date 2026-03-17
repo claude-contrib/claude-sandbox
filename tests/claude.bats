@@ -6,6 +6,9 @@ setup() {
   # Reset memoized gum state
   unset _gum_available
 
+  # Reset config vars so tests don't leak state to each other
+  unset CLAUDE_CONFIG_DIR GIT_CONFIG_GLOBAL
+
   # Source the wrapper script (BASH_SOURCE guard prevents main from running)
   source "$REPO_ROOT/claude"
 
@@ -451,7 +454,7 @@ SCRIPT
   cd "$tmpdir/projects/myapp"
 
   _claude_script_dir="$REPO_ROOT"
-  unset SSH_AUTH_SOCK GH_TOKEN GITHUB_TOKEN
+  unset SSH_AUTH_SOCK GH_TOKEN GITHUB_TOKEN CLAUDE_CONFIG_DIR GIT_CONFIG_GLOBAL
 
   docker() {
     case "$1" in
@@ -474,7 +477,7 @@ SCRIPT
   cd "$tmpdir"
 
   _claude_script_dir="$REPO_ROOT"
-  unset SSH_AUTH_SOCK GH_TOKEN GITHUB_TOKEN
+  unset SSH_AUTH_SOCK GH_TOKEN GITHUB_TOKEN CLAUDE_CONFIG_DIR GIT_CONFIG_GLOBAL
 
   docker() {
     case "$1" in
@@ -501,7 +504,7 @@ SCRIPT
   cd "$tmpdir"
 
   _claude_script_dir="$REPO_ROOT"
-  unset SSH_AUTH_SOCK GH_TOKEN GITHUB_TOKEN
+  unset SSH_AUTH_SOCK GH_TOKEN GITHUB_TOKEN CLAUDE_CONFIG_DIR GIT_CONFIG_GLOBAL
 
   docker() {
     case "$1" in
@@ -528,7 +531,7 @@ SCRIPT
   cd "$tmpdir"
 
   _claude_script_dir="$REPO_ROOT"
-  unset SSH_AUTH_SOCK GH_TOKEN GITHUB_TOKEN
+  unset SSH_AUTH_SOCK GH_TOKEN GITHUB_TOKEN CLAUDE_CONFIG_DIR GIT_CONFIG_GLOBAL
 
   docker() {
     case "$1" in
@@ -555,7 +558,7 @@ SCRIPT
   local ssh_sock="$tmpdir/test-ssh.sock"
   touch "$ssh_sock"
   export SSH_AUTH_SOCK="$ssh_sock"
-  unset GH_TOKEN GITHUB_TOKEN
+  unset GH_TOKEN GITHUB_TOKEN CLAUDE_CONFIG_DIR GIT_CONFIG_GLOBAL
 
   docker() {
     case "$1" in
@@ -580,7 +583,7 @@ SCRIPT
 
   _claude_script_dir="$REPO_ROOT"
   export GH_TOKEN="test-token"
-  unset SSH_AUTH_SOCK GITHUB_TOKEN
+  unset SSH_AUTH_SOCK GITHUB_TOKEN CLAUDE_CONFIG_DIR GIT_CONFIG_GLOBAL
 
   docker() {
     case "$1" in
@@ -632,6 +635,56 @@ SCRIPT
   unset CLAUDE_DOCKER_HOME
   _resolve_docker_env
   [[ -z "${CLAUDE_DOCKER_HOME:-}" ]]
+}
+
+@test "_resolve_docker_env defaults CLAUDE_CONFIG_DIR to ~/.config/claude" {
+  unset CLAUDE_CONFIG_DIR GIT_CONFIG_GLOBAL
+  _resolve_docker_env
+  [[ "$CLAUDE_CONFIG_DIR" == "$HOME/.config/claude" ]]
+}
+
+@test "_resolve_docker_env defaults GIT_CONFIG_GLOBAL to ~/.config/git/config" {
+  unset CLAUDE_CONFIG_DIR GIT_CONFIG_GLOBAL
+  _resolve_docker_env
+  [[ "$GIT_CONFIG_GLOBAL" == "$HOME/.config/git/config" ]]
+}
+
+@test "_resolve_docker_env accepts CLAUDE_CONFIG_DIR under ~/.config" {
+  export CLAUDE_CONFIG_DIR="$HOME/.config/my-claude"
+  unset GIT_CONFIG_GLOBAL
+  run _resolve_docker_env
+  [[ "$status" -eq 0 ]]
+}
+
+@test "_resolve_docker_env accepts CLAUDE_CONFIG_DIR equal to ~/.config" {
+  export CLAUDE_CONFIG_DIR="$HOME/.config"
+  unset GIT_CONFIG_GLOBAL
+  run _resolve_docker_env
+  [[ "$status" -eq 0 ]]
+}
+
+@test "_resolve_docker_env rejects CLAUDE_CONFIG_DIR outside ~/.config" {
+  export CLAUDE_CONFIG_DIR="$HOME/.claude"
+  unset GIT_CONFIG_GLOBAL
+  unset _gum_available
+  unset -f gum
+  PATH="/nonexistent"
+
+  run _resolve_docker_env
+  [[ "$status" -eq 1 ]]
+  [[ "$output" == *"CLAUDE_CONFIG_DIR must be under ~/.config"* ]]
+}
+
+@test "_resolve_docker_env rejects GIT_CONFIG_GLOBAL outside ~/.config" {
+  unset CLAUDE_CONFIG_DIR
+  export GIT_CONFIG_GLOBAL="$HOME/.gitconfig"
+  unset _gum_available
+  unset -f gum
+  PATH="/nonexistent"
+
+  run _resolve_docker_env
+  [[ "$status" -eq 1 ]]
+  [[ "$output" == *"GIT_CONFIG_GLOBAL must be under ~/.config"* ]]
 }
 
 @test "_run_in_docker exits with error when Docker is not running" {

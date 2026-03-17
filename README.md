@@ -1,6 +1,6 @@
 # Claude Sandbox
 
-> Sandboxed Docker environment for [Claude Code](https://claude.ai/code) — full autonomy, system-level isolation.
+> Sandboxed Docker environment for [Claude Code](https://claude.ai/code) — full autonomy, zero risk to your host.
 
 [![Release](https://img.shields.io/github/v/release/claude-contrib/claude-sandbox)](https://github.com/claude-contrib/claude-sandbox/releases/latest)
 [![Docker](https://img.shields.io/badge/ghcr.io-claude--sandbox-blue?logo=docker)](https://ghcr.io/claude-contrib/claude-sandbox)
@@ -20,7 +20,7 @@ The `claude` wrapper script sits in your `$PATH` ahead of the real binary:
 ```
 claude --sandbox "fix the bug"
 └── wrapper detects --sandbox, resolves host identity
-      └── docker compose launches container with home + workdir mounted
+      └── docker compose launches container with ~/.config + workdir mounted
             └── claude-exec.sh creates user (matching host UID/GID), drops privileges
                   └── claude runs as your user inside the sandbox
 ```
@@ -37,19 +37,20 @@ The sandbox container comes pre-configured with:
 The sandbox uses Docker process isolation — Claude runs in a separate container as your user but cannot affect the host system.
 
 **Isolated:**
+- Home directory — `$HOME` is **not** mounted; `~/.ssh`, `~/.gnupg`, `~/.aws`, and other dotfiles are inaccessible
 - System files — no access to `/etc`, `/usr`, or host-installed packages
 - Host processes — cannot see, signal, or interact with processes outside the container
 - Package installation — `apt`, `brew`, and other system package managers are unavailable
 - Caches — `~/.cache` and `~/.local` use dedicated Docker volumes, preventing cross-platform conflicts between macOS (host) and Linux (container)
 
 **Shared (by design):**
-- `$HOME` — mounted read-write so that git config (including `[include]` chains), Claude Code config (`~/.claude`, `~/.claude.json`), and other dotfiles work without manual setup
+- `~/.config` — mounted read-write so that Claude Code config (`CLAUDE_CONFIG_DIR`) and git config (`GIT_CONFIG_GLOBAL`) work without manual setup; both must point to paths under `~/.config` (see [Configuration](#configuration))
 - Project directory — mounted read-write for code editing
 - Credentials — API keys, cloud provider tokens, and `GH_TOKEN` are forwarded via environment variables (see [Configuration](#configuration))
 - SSH agent — forwarded when `SSH_AUTH_SOCK` is set
 - Network — the container has outbound internet access (required for the Claude API)
 
-The sandbox prevents Claude from damaging your operating system or installing unwanted software. It does not restrict read access to files under your home directory.
+The sandbox prevents Claude from damaging your operating system, installing unwanted software, or accessing sensitive files under your home directory.
 
 ## Installation
 
@@ -124,13 +125,15 @@ These additional variables are handled specially:
 
 | Variable | Description |
 |----------|-------------|
+| `CLAUDE_CONFIG_DIR` | Claude Code config directory — defaults to `~/.config/claude`, must be under `~/.config` |
+| `GIT_CONFIG_GLOBAL` | Git global config file — defaults to `~/.config/git/config`, must be under `~/.config` |
 | `CLAUDE_SANDBOX` | Always run in sandbox mode — equivalent to passing `--sandbox` on every invocation |
 | `SSH_AUTH_SOCK` | SSH agent socket — bind-mounted into the container |
 | `DEBUG` | Enable debug tracing (`set -x`) |
 
 ### Settings
 
-The host home directory is bind-mounted into the container at the same absolute path. Claude Code automatically picks up your settings — no extra configuration needed. The sandbox ships with a baked-in [`docker/settings.json`](docker/settings.json) that enables `bypassPermissions`; it is passed via `--settings` and always takes final precedence.
+The host `~/.config` directory is bind-mounted into the container at the same absolute path, so Claude Code picks up settings from `CLAUDE_CONFIG_DIR` automatically. The sandbox ships with a baked-in [`docker/settings.json`](docker/settings.json) that enables `bypassPermissions`; it is passed via `--settings` and always takes final precedence.
 
 ## Sessions
 
@@ -144,7 +147,7 @@ claude
 claude --sandbox --resume <session-id>
 ```
 
-> **macOS note:** The host Claude Code stores its auth credentials in the macOS Keychain, which is not available inside the container. Run `claude` once inside the sandbox to log in — the credentials will be saved in `~/.claude` and reused on subsequent launches.
+> **macOS note:** The host Claude Code stores its auth credentials in the macOS Keychain, which is not available inside the container. Run `claude` once inside the sandbox to log in — the credentials will be saved in `CLAUDE_CONFIG_DIR` (defaults to `~/.config/claude`) and reused on subsequent launches.
 
 ## Troubleshooting
 
