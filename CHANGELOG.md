@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.13.0](https://github.com/claude-contrib/claude-sandbox/compare/v0.12.0...v0.13.0) (2026-03-17)
+
+
+### Features
+
+* **nix:** add packages.default derivation and Nix installation docs ([b2fa3fa](https://github.com/claude-contrib/claude-sandbox/commit/b2fa3faee2fc11a0236fd9bfb046d45ec0051cb5))
+
 ## [0.12.0](https://github.com/claude-contrib/claude-sandbox/compare/v0.11.0...v0.12.0) (2026-03-17)
 
 
