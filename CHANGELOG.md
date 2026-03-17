@@ -1,5 +1,24 @@
 # Changelog
 
+## [0.11.0](https://github.com/claude-contrib/claude-sandbox/compare/v0.10.4...v0.11.0) (2026-03-17)
+
+
+### Features
+
+* add devcontainer config and forward cloud provider credentials ([e8a3f42](https://github.com/claude-contrib/claude-sandbox/commit/e8a3f42d95ffa16c60c337b8988516bf0798f712))
+* add project name and local volume to sandbox ([e39f5f0](https://github.com/claude-contrib/claude-sandbox/commit/e39f5f03da83b495f859cc1b4f9e9370cff9fbf4))
+* **docker:** configure git ssh to accept new host keys ([d47727c](https://github.com/claude-contrib/claude-sandbox/commit/d47727cf550cbc61a3cb2348fa6e373b55ef29c4))
+* **docker:** mount host config read-only and add container config volume ([f5613cc](https://github.com/claude-contrib/claude-sandbox/commit/f5613ccd078907bc68bb18fa0f7d227128f4446a))
+* **docker:** support bridge network for devcontainer connectivity ([861f0ae](https://github.com/claude-contrib/claude-sandbox/commit/861f0ae7bee129c100f54b65cda7e92ff56e060b))
+* **docker:** use ssh config for host key verification ([d9cec28](https://github.com/claude-contrib/claude-sandbox/commit/d9cec28ad2e7cb0d5b59aa71647a74f602c62ee1))
+* restrict sandbox mounts to ~/.config and validate config paths ([e668bdc](https://github.com/claude-contrib/claude-sandbox/commit/e668bdcc5beb33a8cce8f0ab81afac83d40c0bfa))
+
+
+### Bug Fixes
+
+* **docker:** handle duplicate user/group creation and fix nix ownership ([edc509e](https://github.com/claude-contrib/claude-sandbox/commit/edc509e91c511cb4f9c439ee5b11ee852134deff))
+* **docker:** improve sandbox startup logging messages ([7e55b69](https://github.com/claude-contrib/claude-sandbox/commit/7e55b69e9768a25d8d94a3ceaab04214e03f7e84))
+
 ## [0.10.4](https://github.com/claude-contrib/claude-sandbox/compare/v0.10.3...v0.10.4) (2026-03-16)
 
 
