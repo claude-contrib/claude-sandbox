@@ -36,6 +36,7 @@ ENV COLORTERM=truecolor
 ENV SSL_CERT_FILE="/nix/var/nix/profiles/default/etc/ssl/certs/ca-bundle.crt"
 ENV NIX_SSL_CERT_FILE="/nix/var/nix/profiles/default/etc/ssl/certs/ca-bundle.crt"
 ENV PATH="/nix/var/nix/profiles/default/bin:$PATH"
+ENV GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=accept-new"
 
 COPY settings.json /etc/claude/settings.json
 COPY --chmod=755 claude-exec.sh /usr/sbin/claude-exec.sh
