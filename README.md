@@ -43,14 +43,15 @@ The sandbox uses Docker process isolation — Claude runs in a separate containe
 - System files — no access to `/etc`, `/usr`, or host-installed packages
 - Host processes — cannot see, signal, or interact with processes outside the container
 - Package installation — `apt`, `brew`, and other system package managers are unavailable
-- Caches — `~/.cache` and `/nix` use dedicated Docker volumes for performance, persisting across container restarts
 
 **Shared (by design):**
 - `~/.config` — mounted **read-only** so that git config (`GIT_CONFIG_GLOBAL`) and other host settings are available without manual setup; `CLAUDE_CONFIG_DIR` is mounted separately as **read-write** so Claude Code can persist its own state. Both must point to paths under `~/.config` (see [Configuration](#configuration))
 - Git repo root — mounted **read-write** for code editing (worktree-aware; falls back to `$PWD`)
+- Extra directories — any path passed via `--add-dir` is mounted **read-only** at the same absolute path inside the container
 - Credentials — API keys, cloud provider tokens, and `GH_TOKEN` are forwarded via environment variables (see [Configuration](#configuration))
 - SSH agent — forwarded when `SSH_AUTH_SOCK` is set
-- Network — the container has outbound internet access (required for the Claude API)
+- Caches — `~/.cache` and `/nix` use dedicated Docker volumes (container-only, not host-shared) that persist across container restarts
+- Network — outbound internet access (required for the Claude API); automatically joins a running devcontainer's Docker network when detected (see [Devcontainer Network](#devcontainer-network))
 
 The sandbox prevents Claude from damaging your operating system, installing unwanted software, or accessing sensitive files under your home directory.
 
