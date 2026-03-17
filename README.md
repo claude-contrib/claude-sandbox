@@ -30,7 +30,7 @@ The sandbox container comes pre-configured with:
 - **Project mount** — your working directory is mounted read-write, so Claude reads and edits your code directly, just as you would
 - **User identity** — the container dynamically creates a user matching your host UID, GID, and username, so file ownership on bind mounts is always correct
 - **Volume isolation** — `~/.cache` and `~/.local` use dedicated Docker volumes to prevent cross-platform conflicts between host (macOS) and container (Linux)
-- **Devcontainer network** — auto-joins the devcontainer's Docker network, giving Claude access to the same databases, APIs, and services your environment exposes
+- **Devcontainer network** — auto-detects a running devcontainer and joins its Docker network (user-defined or bridge), giving Claude access to the same databases, APIs, and services your environment exposes
 
 ## Isolation Model
 
@@ -111,6 +111,8 @@ If your project uses a [devcontainer](https://containers.dev/) (VS Code, Codespa
 Detection requires:
 1. A `.devcontainer/devcontainer.json` or `.devcontainer.json` in the project root
 2. A running devcontainer with the `devcontainer.local_folder` label matching the project
+
+User-defined compose networks provide DNS-based service discovery. The default `bridge` network is also supported for IP-based access.
 
 When a network is detected, you'll see:
 ```
