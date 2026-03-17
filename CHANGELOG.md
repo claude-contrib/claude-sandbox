@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.12.0](https://github.com/claude-contrib/claude-sandbox/compare/v0.11.0...v0.12.0) (2026-03-17)
+
+
+### Features
+
+* **docker:** update claude-code-nix flake dependency ([bbe3ddb](https://github.com/claude-contrib/claude-sandbox/commit/bbe3ddb7325e450aec576b9df3887fa73c4d973e))
+
 ## [0.11.0](https://github.com/claude-contrib/claude-sandbox/compare/v0.10.4...v0.11.0) (2026-03-17)
 
 
