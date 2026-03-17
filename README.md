@@ -127,6 +127,20 @@ claude --sandbox --resume <session-id>
 
 > **macOS note:** The host Claude Code stores its auth credentials in the macOS Keychain, which is not available inside the container. Run `claude` once inside the sandbox to log in — the credentials will be saved in `~/.claude` and reused on subsequent launches.
 
+## Troubleshooting
+
+Enable debug tracing to see every command the wrapper executes:
+
+```bash
+DEBUG=1 claude --sandbox
+```
+
+If the container is in a bad state (stale Nix store, corrupted cache), remove the Docker volumes and start fresh:
+
+```bash
+docker volume rm claude-nix claude-local claude-cache
+```
+
 ## The claude-contrib Ecosystem
 
 | Repo | What it provides |
