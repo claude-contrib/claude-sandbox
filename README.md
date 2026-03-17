@@ -6,7 +6,7 @@
 [![Docker](https://img.shields.io/badge/ghcr.io-claude--sandbox-blue?logo=docker)](https://ghcr.io/claude-contrib/claude-sandbox)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-Run Claude Code in an isolated Docker container with `bypassPermissions` enabled, Nix flake support, your project directory mounted **read-write**, and automatic devcontainer network detection. One command, two modes: forward to the host binary by default, or sandbox with a flag.
+Run Claude Code in an isolated Docker container with `bypassPermissions` enabled, Nix flake support, your **git repo root** mounted **read-write** (worktree-aware), and automatic devcontainer network detection. One command, two modes: forward to the host binary by default, or sandbox with a flag.
 
 ## How It Works
 
@@ -29,7 +29,7 @@ claude --sandbox "fix the bug"
 
 The sandbox container comes pre-configured with:
 - **Nix flakes** — auto-activates `flake.nix` if present, giving Claude access to the same compilers, linters, and dev tools you use — an equal developer in your environment
-- **Project mount** — your working directory is mounted **read-write**, so Claude reads and edits your code directly, just as you would
+- **Project mount** — the git repo root is mounted **read-write** (falling back to `$PWD` outside a repo), so Claude can read and edit code across the entire repo including worktrees; the container's working directory is set to your actual `$PWD`
 - **User identity** — the container dynamically creates a user matching your host UID, GID, and username, so file ownership on bind mounts is always correct
 - **Persistent volumes** — `~/.cache` and `/nix` use dedicated Docker volumes so Nix store and cached artifacts survive container restarts without re-downloading
 - **Devcontainer network** — auto-detects a running devcontainer and joins its Docker network (user-defined or bridge), giving Claude access to the same databases, APIs, and services your environment exposes
@@ -47,7 +47,7 @@ The sandbox uses Docker process isolation — Claude runs in a separate containe
 
 **Shared (by design):**
 - `~/.config` — mounted **read-only** so that git config (`GIT_CONFIG_GLOBAL`) and other host settings are available without manual setup; `CLAUDE_CONFIG_DIR` is mounted separately as **read-write** so Claude Code can persist its own state. Both must point to paths under `~/.config` (see [Configuration](#configuration))
-- Project directory — mounted **read-write** for code editing
+- Git repo root — mounted **read-write** for code editing (worktree-aware; falls back to `$PWD`)
 - Credentials — API keys, cloud provider tokens, and `GH_TOKEN` are forwarded via environment variables (see [Configuration](#configuration))
 - SSH agent — forwarded when `SSH_AUTH_SOCK` is set
 - Network — the container has outbound internet access (required for the Claude API)
