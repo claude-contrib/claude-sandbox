@@ -81,14 +81,14 @@ _run_in_docker() {
   # Attach to a devcontainer network when detected.
   local docker_network
   if docker_network="$(_get_container_network)"; then
-    _gum log --level info "Joining Docker network '$docker_network'"
+    _gum log --level info "Detected devcontainer network '$docker_network'"
     export CLAUDE_DOCKER_NETWORK="$docker_network"
     compose_args+=(-f "$_claude_script_dir/claude-sandbox.net.yml")
   fi
 
   # Forward SSH agent
   if [[ -e "${SSH_AUTH_SOCK:-}" ]]; then
-    _gum log --level info "Forwarding SSH socket '$SSH_AUTH_SOCK'"
+    _gum log --level info "Forwarding SSH agent"
     compose_args+=(-f "$_claude_script_dir/claude-sandbox.ssh.yml")
   fi
 
@@ -107,6 +107,7 @@ _run_in_docker() {
   fi
 
   # Launch the sandboxed claude session.
+  _gum log --level info "Starting sandbox..."
   docker compose "${compose_args[@]}" run ${run_args[@]+"${run_args[@]}"} --rm claude claude-exec.sh "$@"
 }
 
