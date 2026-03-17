@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.13.3](https://github.com/claude-contrib/claude-sandbox/compare/v0.13.2...v0.13.3) (2026-03-17)
+
+
+### Bug Fixes
+
+* resolve CLAUDE_HOST_REPO_DIR to absolute path ([26cbdfb](https://github.com/claude-contrib/claude-sandbox/commit/26cbdfbe843e6bea6f0a25951805df0ae55c47d3))
+
 ## [0.13.2](https://github.com/claude-contrib/claude-sandbox/compare/v0.13.1...v0.13.2) (2026-03-17)
 
 
