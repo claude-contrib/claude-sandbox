@@ -2,5 +2,6 @@ services:
   claude:
     volumes:
       - "${SSH_AUTH_SOCK}:${SSH_AUTH_SOCK}"
+      - "${CLAUDE_HOST_HOME}/.ssh/known_hosts:${CLAUDE_HOST_HOME}/.ssh/known_hosts"
     environment:
       - SSH_AUTH_SOCK

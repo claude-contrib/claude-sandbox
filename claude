@@ -108,6 +108,8 @@ _run_in_docker() {
   # Forward SSH agent
   if [[ -e "${SSH_AUTH_SOCK:-}" ]]; then
     _gum log --level info "Forwarding SSH agent"
+    mkdir -p "$HOME/.ssh"
+    touch "$HOME/.ssh/known_hosts"
     compose_args+=(-f "$_claude_script_dir/claude-sandbox.ssh.yml")
   fi
 
