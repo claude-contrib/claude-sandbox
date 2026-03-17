@@ -72,6 +72,9 @@ _resolve_docker_env() {
     _gum log --level error "GIT_CONFIG_GLOBAL must be under ~/.config (got: $GIT_CONFIG_GLOBAL)"
     return 1
   fi
+
+  CLAUDE_HOST_REPO_DIR="$(git rev-parse --show-toplevel 2>/dev/null || echo "$PWD")"
+  export CLAUDE_HOST_REPO_DIR
 }
 
 # Run claude in a Docker sandbox container.

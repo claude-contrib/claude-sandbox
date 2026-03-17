@@ -6,7 +6,7 @@ services:
       - claude-nix:/nix
       - claude-cache:${CLAUDE_HOST_HOME}/.cache
       - ${CLAUDE_HOST_XDG_CONFIG}:${CLAUDE_HOST_XDG_CONFIG}:ro
-      - ${CLAUDE_HOST_WORKING_DIR}:${CLAUDE_HOST_WORKING_DIR}
+      - ${CLAUDE_HOST_REPO_DIR}:${CLAUDE_HOST_REPO_DIR}
       - ${CLAUDE_CONFIG_DIR}:${CLAUDE_CONFIG_DIR}
     environment:
       - CLAUDE_HOST_USER
