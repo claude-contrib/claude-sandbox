@@ -106,7 +106,7 @@ _run_in_docker() {
   fi
 
   # Launch the sandboxed claude session.
-  docker compose "${compose_args[@]}" run "${run_args[@]}" --rm claude claude-exec.sh "$@"
+  docker compose "${compose_args[@]}" run ${run_args[@]+"${run_args[@]}"} --rm claude claude-exec.sh "$@"
 }
 
 # Run the host claude binary, skipping this wrapper in PATH.

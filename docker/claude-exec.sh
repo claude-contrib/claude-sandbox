@@ -9,6 +9,9 @@ set -euo pipefail
 : "${CLAUDE_HOST_USER:?CLAUDE_HOST_USER is required}"
 : "${CLAUDE_HOST_HOME:?CLAUDE_HOST_HOME is required}"
 
+CLAUDE_DOCKER_GROUP="nixbld"
+CLAUDE_DOCKER_SHELL="/bin/bash"
+
 # Create the primary group if it doesn't already exist.
 if ! getent group "$CLAUDE_HOST_GID" >/dev/null 2>&1; then
   groupadd -g "$CLAUDE_HOST_GID" "$CLAUDE_HOST_USER"
@@ -18,9 +21,9 @@ fi
 useradd \
   -u "$CLAUDE_HOST_UID" \
   -g "$CLAUDE_HOST_GID" \
-  -G nixbld \
+  -G "$CLAUDE_DOCKER_GROUP" \
   -d "$CLAUDE_HOST_HOME" \
-  -s /bin/bash \
+  -s "$CLAUDE_DOCKER_SHELL" \
   "$CLAUDE_HOST_USER"
 
 # Set up required directories under the user's home.
