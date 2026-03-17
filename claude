@@ -70,7 +70,7 @@ _run_in_docker() {
   _get_container_image
 
   local -a compose_args=()
-
+  # Accumulate compose files
   compose_args+=(--project-name claude-sandbox)
   compose_args+=(-f "$_claude_script_dir/claude-sandbox.yml")
   compose_args+=(-f "$_claude_script_dir/claude-sandbox.env.yml")
