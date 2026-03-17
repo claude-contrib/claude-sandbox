@@ -25,6 +25,8 @@ claude --sandbox "fix the bug"
                   └── claude runs as your user inside the sandbox
 ```
 
+![Demo](docs/demo.webp)
+
 The sandbox container comes pre-configured with:
 - **Nix flakes** — auto-activates `flake.nix` if present, giving Claude access to the same compilers, linters, and dev tools you use — an equal developer in your environment
 - **Project mount** — your working directory is mounted **read-write**, so Claude reads and edits your code directly, just as you would

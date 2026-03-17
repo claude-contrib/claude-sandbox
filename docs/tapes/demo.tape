@@ -19,10 +19,8 @@ Enter
 Sleep 500ms
 Show
 
-Type "claude --sandbox --print 'What is Claude Sandbox?'"
+Type "echo -n 'Are you running in docker container?' | claude --sandbox"
 Sleep 500ms
 Enter
 
-Sleep 30s
-
-Sleep 3s
+Sleep 25s
