@@ -564,7 +564,7 @@ SCRIPT
   export -f docker
 
   run _run_in_docker
-  [[ "$output" == *"$ssh_sock:$ssh_sock"* ]]
+  [[ "$output" == *"claude-sandbox.ssh.yml"* ]]
 
   unset SSH_AUTH_SOCK
   rm -rf "$tmpdir"

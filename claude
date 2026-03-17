@@ -85,12 +85,14 @@ _run_in_docker() {
     compose_args+=(-f "$_claude_script_dir/claude-sandbox.net.yml")
   fi
 
-  # Accumulate extra docker run options.
-  local -a run_args=()
+  # Forward SSH agent
   if [[ -e "${SSH_AUTH_SOCK:-}" ]]; then
-    run_args+=(-v "$SSH_AUTH_SOCK:$SSH_AUTH_SOCK")
+    _gum log --level info "Forwarding SSH socket '$SSH_AUTH_SOCK'"
+    compose_args+=(-f "$_claude_script_dir/claude-sandbox.ssh.yml")
   fi
 
+  # Accumulate extra docker run options.
+  local -a run_args=()
   # When stdin is a pipe: if /dev/tty is reachable, slurp piped content as the
   # last argument and reconnect stdin to the terminal so claude stays interactive.
   # If /dev/tty is unavailable (e.g. CI), disable pseudo-TTY allocation (-T).

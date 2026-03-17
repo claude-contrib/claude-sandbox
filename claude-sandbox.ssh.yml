@@ -1,0 +1,6 @@
+services:
+  claude:
+    volumes:
+      - "${SSH_AUTH_SOCK}:${SSH_AUTH_SOCK}"
+    environment:
+      - SSH_AUTH_SOCK

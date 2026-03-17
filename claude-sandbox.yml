@@ -14,7 +14,6 @@ services:
       - CLAUDE_HOST_GID
       - CLAUDE_HOST_HOME
 
-
 volumes:
   claude-nix:
     name: claude-nix
