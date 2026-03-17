@@ -43,17 +43,3 @@ _gum() {
     ;;
   esac
 }
-
-# Export host git identity so claude-sandbox.env forwards them.
-_resolve_git_env() {
-  local _dir="${CLAUDE_HOST_WORKING_DIR:-$PWD}"
-
-  local _name
-  _name="$(git -C "$_dir" config --default '' user.name)"
-
-  local _email
-  _email="$(git -C "$_dir" config --default '' user.email)"
-
-  [[ -n "$_name" ]] && export GIT_AUTHOR_NAME="$_name" GIT_COMMITTER_NAME="$_name"
-  [[ -n "$_email" ]] && export GIT_AUTHOR_EMAIL="$_email" GIT_COMMITTER_EMAIL="$_email"
-}

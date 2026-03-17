@@ -66,9 +66,6 @@ _run_in_docker() {
   # Resolve and export all CLAUDE_* environment variables.
   _resolve_docker_env
 
-  # Export host git identity so claude-sandbox.env forwards them.
-  _resolve_git_env
-
   # Pull the container image if not present locally.
   _get_container_image
 
