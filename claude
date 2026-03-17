@@ -121,7 +121,7 @@ _run_in_host() {
     fi
   done
 
-  echo "error: could not find host claude binary in PATH" >&2
+  _gum log --level error "Could not find host claude binary in PATH"
   exit 1
 }
 

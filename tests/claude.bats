@@ -342,10 +342,11 @@ SCRIPT
 @test "_run_in_host errors when no claude binary found" {
   _claude_script_this="$(realpath "$REPO_ROOT/claude")"
   PATH="/nonexistent"
+  unset -f gum
 
   run _run_in_host
   [[ "$status" -eq 1 ]]
-  [[ "$output" == *"could not find host claude binary"* ]]
+  [[ "$output" == *"Could not find host claude binary"* ]]
 }
 
 # ---------------------------------------------------------------------------
@@ -413,10 +414,11 @@ SCRIPT
 @test "main with no args and no host claude errors gracefully" {
   _claude_script_this="$(realpath "$REPO_ROOT/claude")"
   PATH="/nonexistent"
+  unset -f gum
 
   run main
   [[ "$status" -eq 1 ]]
-  [[ "$output" == *"could not find host claude binary"* ]]
+  [[ "$output" == *"Could not find host claude binary"* ]]
 }
 
 # ---------------------------------------------------------------------------
