@@ -1,3 +1,10 @@
 services:
   claude:
-    network_mode: ${CLAUDE_DOCKER_NETWORK}
+    networks:
+      - default
+      - devcontainer
+
+networks:
+  devcontainer:
+    external: true
+    name: ${CLAUDE_DOCKER_NETWORK}

@@ -97,7 +97,7 @@ _run_in_docker() {
   compose_args+=(-f "$_claude_script_dir/claude-sandbox.yml")
   compose_args+=(-f "$_claude_script_dir/claude-sandbox.env.yml")
 
-  # Attach to a devcontainer network when detected.
+  # Join the devcontainer's compose network when detected.
   local docker_network
   if docker_network="$(_get_container_network)"; then
     _gum log --level info "Detected devcontainer network '$docker_network'"
