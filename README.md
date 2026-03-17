@@ -60,6 +60,18 @@ The sandbox prevents Claude from damaging your operating system, installing unwa
 zinit light claude-contrib/claude-sandbox
 ```
 
+### Using Nix flakes
+
+```sh
+nix profile install github:claude-contrib/claude-sandbox
+```
+
+Or in your `flake.nix` inputs:
+
+```nix
+inputs.claude-sandbox.url = "github:claude-contrib/claude-sandbox";
+```
+
 ### Using sheldon
 
 ```toml
