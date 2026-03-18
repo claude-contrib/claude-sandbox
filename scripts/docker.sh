@@ -77,5 +77,5 @@ _get_container_image() {
   if docker image inspect "$image" &>/dev/null; then
     return 0
   fi
-  _gum spin "Pulling Docker image $image" docker pull "$image"
+  gum spin --title "Pulling Docker image $image" -- docker pull "$image"
 }

@@ -3,9 +3,6 @@
 REPO_ROOT="$(cd "$(dirname "$BATS_TEST_FILENAME")/.." && pwd)"
 
 setup() {
-  # Reset memoized gum state
-  unset _gum_available
-
   # Reset config vars so tests don't leak state to each other
   unset CLAUDE_CONFIG_DIR GIT_CONFIG_GLOBAL
 
@@ -15,7 +12,20 @@ setup() {
   # Mock external commands by default
   docker() { :; }
   git() { :; }
-  gum() { :; }
+  gum() {
+    case "$1" in
+      log)
+        shift
+        echo "${@: -1}"
+        ;;
+      spin)
+        shift
+        while [[ $# -gt 0 && "$1" != "--" ]]; do shift; done
+        [[ "$1" == "--" ]] && shift
+        "$@"
+        ;;
+    esac
+  }
   export -f docker git gum
 }
 
@@ -47,77 +57,25 @@ setup() {
 }
 
 # ---------------------------------------------------------------------------
-# _has_gum
+# gum log
 # ---------------------------------------------------------------------------
 
-@test "_has_gum returns 0 when gum is on PATH" {
-  unset _gum_available
-  gum() { :; }
-  export -f gum
-  run _has_gum
-  [[ "$status" -eq 0 ]]
-}
-
-@test "_has_gum returns 1 when gum is not on PATH" {
-  unset _gum_available
-  unset -f gum
-  # Ensure gum is not on PATH
-  PATH="/nonexistent"
-  run _has_gum
-  [[ "$status" -eq 1 ]]
-}
-
-@test "_has_gum memoizes result" {
-  unset _gum_available
-  # First call: gum is not available
-  unset -f gum
-  PATH="/nonexistent"
-  _has_gum || true
-  # Now make gum available — memoized value should still say unavailable
-  gum() { :; }
-  export -f gum
-  run _has_gum
-  [[ "$status" -eq 1 ]]
-}
-
-# ---------------------------------------------------------------------------
-# _gum log
-# ---------------------------------------------------------------------------
-
-@test "_gum log falls back to stderr message when no gum" {
-  unset _gum_available
-  unset -f gum
-  PATH="/nonexistent"
-  run _gum log --level info "hello world"
-  [[ "$output" == *"hello world"* ]]
-}
-
-@test "_gum log calls gum when available" {
-  unset _gum_available
+@test "gum log calls gum" {
   gum() { echo "gum called: $*"; }
   export -f gum
-  run _gum log --level info "hello world"
+  run gum log --level info "hello world"
   [[ "$output" == *"gum called: log --level info hello world"* ]]
 }
 
 # ---------------------------------------------------------------------------
-# _gum spin
+# gum spin
 # ---------------------------------------------------------------------------
 
-@test "_gum spin falls back to running command directly when no gum" {
-  unset _gum_available
-  unset -f gum
-  PATH="/nonexistent"
-  run _gum spin "doing stuff" echo "direct output"
-  [[ "$output" == *"direct output"* ]]
-}
-
-@test "_gum spin calls gum spin when available" {
-  unset _gum_available
+@test "gum spin calls gum spin" {
   gum() { echo "gum: $*"; }
   export -f gum
-  run _gum spin "doing stuff" echo "hello"
-  [[ "$output" == *"gum: spin --spinner dot --title doing stuff -- echo hello"* ]]
+  run gum spin --title "doing stuff" -- echo "hello"
+  [[ "$output" == *"gum: spin --title doing stuff -- echo hello"* ]]
 }
 
 # ---------------------------------------------------------------------------
@@ -298,9 +256,6 @@ setup() {
 
 @test "_get_container_image pulls when image not found" {
   CLAUDE_DOCKER_TAG="1.0.0"
-  unset _gum_available
-  unset -f gum
-  PATH="/nonexistent"
 
   docker() {
     case "$1" in
@@ -344,7 +299,6 @@ SCRIPT
 @test "_run_in_host errors when no claude binary found" {
   _claude_script_this="$(realpath "$REPO_ROOT/claude")"
   PATH="/nonexistent"
-  unset -f gum
 
   run _run_in_host
   [[ "$status" -eq 1 ]]
@@ -416,7 +370,6 @@ SCRIPT
 @test "main with no args and no host claude errors gracefully" {
   _claude_script_this="$(realpath "$REPO_ROOT/claude")"
   PATH="/nonexistent"
-  unset -f gum
 
   run main
   [[ "$status" -eq 1 ]]
@@ -717,9 +670,6 @@ SCRIPT
 @test "_resolve_docker_env rejects CLAUDE_CONFIG_DIR outside ~/.config" {
   export CLAUDE_CONFIG_DIR="$HOME/.claude"
   unset GIT_CONFIG_GLOBAL
-  unset _gum_available
-  unset -f gum
-  PATH="/nonexistent"
 
   run _resolve_docker_env
   [[ "$status" -eq 1 ]]
@@ -729,9 +679,6 @@ SCRIPT
 @test "_resolve_docker_env rejects GIT_CONFIG_GLOBAL outside ~/.config" {
   unset CLAUDE_CONFIG_DIR
   export GIT_CONFIG_GLOBAL="$HOME/.gitconfig"
-  unset _gum_available
-  unset -f gum
-  PATH="/nonexistent"
 
   run _resolve_docker_env
   [[ "$status" -eq 1 ]]
@@ -739,10 +686,6 @@ SCRIPT
 }
 
 @test "_run_in_docker exits with error when Docker is not running" {
-  unset _gum_available
-  unset -f gum
-  PATH="/nonexistent"
-
   docker() { return 1; }   # all docker calls fail — daemon is down
   export -f docker
 

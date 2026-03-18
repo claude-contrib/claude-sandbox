@@ -7,7 +7,6 @@ set -euo pipefail
 _claude_script_this="$(realpath "${BASH_SOURCE[0]}")"
 _claude_script_dir="$(cd "$(dirname "$_claude_script_this")" && pwd)"
 
-source "$_claude_script_dir/scripts/core.sh"
 source "$_claude_script_dir/scripts/docker.sh"
 
 # Print usage information and exit.
@@ -75,7 +74,7 @@ _resolve_docker_env() {
   export CLAUDE_HOST_REPO_DIR
 
   if [[ "$CLAUDE_CONFIG_DIR" != "$CLAUDE_HOST_XDG_CONFIG" && "$CLAUDE_CONFIG_DIR" != "$CLAUDE_HOST_XDG_CONFIG/"* ]]; then
-    _gum log --level error "CLAUDE_CONFIG_DIR must be under ~/.config (got: $CLAUDE_CONFIG_DIR)"
+    gum log --level error "CLAUDE_CONFIG_DIR must be under ~/.config (got: $CLAUDE_CONFIG_DIR)"
     return 1
   fi
 
@@ -83,7 +82,7 @@ _resolve_docker_env() {
   export GIT_CONFIG_GLOBAL
 
   if [[ "$GIT_CONFIG_GLOBAL" != "$CLAUDE_HOST_XDG_CONFIG/"* ]]; then
-    _gum log --level error "GIT_CONFIG_GLOBAL must be under ~/.config (got: $GIT_CONFIG_GLOBAL)"
+    gum log --level error "GIT_CONFIG_GLOBAL must be under ~/.config (got: $GIT_CONFIG_GLOBAL)"
     return 1
   fi
 
@@ -96,7 +95,7 @@ _resolve_docker_env() {
 _run_in_docker() {
   # Verify Docker is available and running.
   if ! _check_docker; then
-    _gum log --level error "Docker is not running. Please start Docker and try again."
+    gum log --level error "Docker is not running. Please start Docker and try again."
     return 1
   fi
 
@@ -115,14 +114,14 @@ _run_in_docker() {
   # Join the devcontainer's compose network when detected.
   local docker_network
   if docker_network="$(_get_container_network)"; then
-    _gum log --level info "Detected devcontainer network '$docker_network'"
+    gum log --level info "Detected devcontainer network '$docker_network'"
     export CLAUDE_DOCKER_NETWORK="$docker_network"
     compose_args+=(-f "$_claude_script_dir/claude-sandbox.net.yml")
   fi
 
   # Forward SSH agent
   if [[ -e "${SSH_AUTH_SOCK:-}" ]]; then
-    _gum log --level info "Forwarding SSH agent"
+    gum log --level info "Forwarding SSH agent"
     mkdir -p "$HOME/.ssh" && touch "$HOME/.ssh/known_hosts"
     compose_args+=(-f "$_claude_script_dir/claude-sandbox.ssh.yml")
   fi
@@ -158,7 +157,7 @@ _run_in_docker() {
   done
 
   # Launch the sandboxed claude session.
-  _gum log --level info "Starting Claude sandbox..."
+  gum log --level info "Starting Claude sandbox..."
   docker compose "${compose_args[@]}" run ${run_args[@]+"${run_args[@]}"} --rm claude claude-exec.sh "$@"
 }
 
@@ -175,7 +174,7 @@ _run_in_host() {
     fi
   done
 
-  _gum log --level error "Could not find host claude binary in PATH"
+  gum log --level error "Could not find host claude binary in PATH"
   exit 1
 }
 

@@ -59,7 +59,7 @@ The sandbox prevents Claude from damaging your operating system, installing unwa
 
 - [Docker](https://docs.docker.com/get-docker/) with the Compose plugin (`docker`)
 - [Claude Code](https://docs.anthropic.com/en/docs/claude-code/setup) (`claude`)
-- [Gum](https://github.com/charmbracelet/gum) (`gum`) _(optional)_
+- [Gum](https://github.com/charmbracelet/gum) (`gum`)
 
 **macOS (Homebrew):**
 
