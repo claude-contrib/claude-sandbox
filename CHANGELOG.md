@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.14.1](https://github.com/claude-contrib/claude-sandbox/compare/v0.14.0...v0.14.1) (2026-03-18)
+
+
+### Bug Fixes
+
+* handle set -e exit when outside a git repository ([5cc97a8](https://github.com/claude-contrib/claude-sandbox/commit/5cc97a87f1bf78e863953d4d5959bf970d2f8723))
+
 ## [0.14.0](https://github.com/claude-contrib/claude-sandbox/compare/v0.13.3...v0.14.0) (2026-03-17)
 
 
