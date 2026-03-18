@@ -20,7 +20,7 @@ RUN nix profile add \
     nix store optimise
 
 # Stage 2: Runtime — minimal base with nix store copied in
-FROM debian:bookworm-20250407-slim
+FROM debian:bookworm-20260316-slim
 
 RUN groupadd nixbld
 
