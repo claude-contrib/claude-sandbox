@@ -55,6 +55,23 @@ The sandbox uses Docker process isolation — Claude runs in a separate containe
 
 The sandbox prevents Claude from damaging your operating system, installing unwanted software, or accessing sensitive files under your home directory.
 
+## Requirements
+
+**[Docker](https://docs.docker.com/get-docker/) with the Compose plugin** — required for `--sandbox` mode; see the [official installation guide](https://docs.docker.com/get-docker/) for your platform.
+
+**[Claude Code](https://claude.ai/code) (`claude`)** — the CLI being wrapped and forwarded to:
+
+```sh
+curl -fsSL https://claude.ai/install.sh | bash
+```
+
+**[Gum](https://github.com/charmbracelet/gum) (`gum`)** — optional; provides enhanced UI (spinner, structured log output); falls back to plain stderr when absent:
+
+```sh
+brew install gum                    # macOS
+nix profile install nixpkgs#gum     # Nix
+```
+
 ## Installation
 
 ### Using zinit
