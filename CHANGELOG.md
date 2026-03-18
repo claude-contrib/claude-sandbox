@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.16.0](https://github.com/claude-contrib/claude-sandbox/compare/v0.15.0...v0.16.0) (2026-03-18)
+
+
+### Features
+
+* add --plugin-dir support for sandbox mode ([82036d2](https://github.com/claude-contrib/claude-sandbox/commit/82036d22e0c5724bbe1d55d2be4e99c90b2999e1))
+* add environment variables for GitHub context in sandbox ([845cb6c](https://github.com/claude-contrib/claude-sandbox/commit/845cb6ca8b9293aa1da189d59784e8c640a521e8))
+
 ## [0.15.0](https://github.com/claude-contrib/claude-sandbox/compare/v0.14.1...v0.15.0) (2026-03-18)
 
 
