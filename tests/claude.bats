@@ -579,6 +579,58 @@ SCRIPT
   rm -rf "$tmpdir" "$extra_dir"
 }
 
+@test "_run_in_docker mounts --plugin-dir directory as read-only volume" {
+  local tmpdir
+  tmpdir="$(mktemp -d)"
+  HOME="$tmpdir"
+  cd "$tmpdir"
+
+  local extra_dir
+  extra_dir="$(mktemp -d)"
+
+  _claude_script_dir="$REPO_ROOT"
+  unset SSH_AUTH_SOCK GH_TOKEN GITHUB_TOKEN CLAUDE_CONFIG_DIR GIT_CONFIG_GLOBAL
+
+  docker() {
+    case "$1" in
+      image) return 0 ;;
+      compose) echo "ARGS: $*" ;;
+    esac
+  }
+  export -f docker
+
+  run _run_in_docker --plugin-dir "$extra_dir"
+  [[ "$output" == *"--volume ${extra_dir}:${extra_dir}:ro"* ]]
+
+  rm -rf "$tmpdir" "$extra_dir"
+}
+
+@test "_run_in_docker resolves relative --plugin-dir path to absolute for mount" {
+  local tmpdir
+  tmpdir="$(mktemp -d)"
+  HOME="$tmpdir"
+
+  local extra_dir
+  extra_dir="$(mktemp -d)"
+  cd "$extra_dir"
+
+  _claude_script_dir="$REPO_ROOT"
+  unset SSH_AUTH_SOCK GH_TOKEN GITHUB_TOKEN CLAUDE_CONFIG_DIR GIT_CONFIG_GLOBAL
+
+  docker() {
+    case "$1" in
+      image) return 0 ;;
+      compose) echo "ARGS: $*" ;;
+    esac
+  }
+  export -f docker
+
+  run _run_in_docker --plugin-dir .
+  [[ "$output" == *"--volume ${extra_dir}:${extra_dir}:ro"* ]]
+
+  rm -rf "$tmpdir" "$extra_dir"
+}
+
 @test "_run_in_docker exposes GH_TOKEN to docker compose environment" {
   local tmpdir
   tmpdir="$(mktemp -d)"
