@@ -47,7 +47,7 @@ The sandbox uses Docker process isolation — Claude runs in a separate containe
 **Shared (by design):**
 - `~/.config` — mounted **read-only** so that git config (`GIT_CONFIG_GLOBAL`) and other host settings are available without manual setup; `CLAUDE_CONFIG_DIR` is mounted separately as **read-write** so Claude Code can persist its own state. Both must point to paths under `~/.config` (see [Configuration](#configuration))
 - Git repo root — mounted **read-write** for code editing (worktree-aware; falls back to `$PWD`)
-- Extra directories — any path passed via `--add-dir` is mounted **read-only** at the same absolute path inside the container
+- Extra directories — any path passed via `--add-dir` or `--plugin-dir` is mounted **read-only** at the same absolute path inside the container
 - Credentials — API keys, cloud provider tokens, and `GH_TOKEN` are forwarded via environment variables (see [Configuration](#configuration))
 - SSH agent — forwarded when `SSH_AUTH_SOCK` is set
 - Caches — `~/.cache` and `/nix` use dedicated Docker volumes (container-only, not host-shared) that persist across container restarts
@@ -147,10 +147,14 @@ Some Claude CLI arguments are intercepted by the sandbox wrapper and handled spe
 | Argument | Sandbox behaviour |
 |----------|-------------------|
 | `--add-dir DIR` | The directory is bind-mounted **read-only** into the container at the same absolute path, then forwarded to `claude` inside the sandbox |
+| `--plugin-dir DIR` | The directory is bind-mounted **read-only** into the container at the same absolute path, then forwarded to `claude` inside the sandbox |
 
 ```bash
 # Mount an extra directory read-only inside the sandbox
 claude --sandbox --add-dir /path/to/docs
+
+# Mount a plugin directory read-only inside the sandbox
+claude --sandbox --plugin-dir /path/to/plugins
 ```
 
 ## Devcontainer Network
