@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.15.0](https://github.com/claude-contrib/claude-sandbox/compare/v0.14.1...v0.15.0) (2026-03-18)
+
+
+### Features
+
+* make gum a hard dependency ([8f99995](https://github.com/claude-contrib/claude-sandbox/commit/8f99995f8c0f691c8730bd05c6145d160c7286fc))
+
+
+### Bug Fixes
+
+* correct docker dependabot directory to /docker ([d6d206f](https://github.com/claude-contrib/claude-sandbox/commit/d6d206f2d891c0da689165b73625a6e817a0eb94))
+
 ## [0.14.1](https://github.com/claude-contrib/claude-sandbox/compare/v0.14.0...v0.14.1) (2026-03-18)
 
 
