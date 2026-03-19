@@ -49,7 +49,7 @@ The sandbox uses Docker process isolation — Claude runs in a separate containe
 - Git repo root — mounted **read-write** for code editing (worktree-aware; falls back to `$PWD`)
 - Extra directories — any path passed via `--add-dir` or `--plugin-dir` is mounted **read-only** at the same absolute path inside the container
 - Credentials — API keys, cloud provider tokens, and `GH_TOKEN` are forwarded via environment variables (see [Configuration](#configuration))
-- `gh claude` state — `{XDG_STATE_HOME:-~/.local/state}/gh/claude` is mounted **read-write** so the GitHub CLI Claude extension can read and persist session data inside the container
+- `gh claude` state — `{XDG_STATE_HOME:-~/.local/state}/gh/claude` is mounted **read-write** so the [gh-claude](#github-cli-claude-extension-gh-claude) extension can persist session data inside the container
 - SSH agent — forwarded when `SSH_AUTH_SOCK` is set
 - Caches — `~/.cache` and `/nix` use dedicated Docker volumes (container-only, not host-shared) that persist across container restarts
 - Network — outbound internet access (required for the Claude API); automatically joins a running devcontainer's Docker network when detected (see [Devcontainer Network](#devcontainer-network))
@@ -203,6 +203,28 @@ claude --sandbox --resume <session-id>
 ```
 
 > **macOS note:** The host Claude Code stores its auth credentials in the macOS Keychain, which is not available inside the container. Run `claude` once inside the sandbox to log in — the credentials will be saved in `CLAUDE_CONFIG_DIR` (defaults to `~/.config/claude`) and reused on subsequent launches.
+
+## GitHub CLI Extensions
+
+[gh-claude](https://github.com/gh-extensions/gh-claude) — draft pull requests, plan issues, review code, and debug CI failures from the terminal using Claude.
+
+[gh-worktree](https://github.com/gh-extensions/gh-worktree) — create an isolated git worktree for a PR or issue, then run a command inside it.
+
+```bash
+gh extension install gh-extensions/gh-claude
+gh extension install gh-extensions/gh-worktree
+```
+
+### Session State and Sandbox Integration
+
+`gh claude` stores session state at `${XDG_STATE_HOME:-~/.local/state}/gh/claude/sessions/<session-id>/`. Claude Sandbox automatically bind-mounts this directory **read-write** into the container, so sessions are shared between host and sandbox — start a session outside, continue it inside, or vice versa.
+
+Combine `gh-worktree` with `--sandbox` to get a fully sandboxed session on the correct branch:
+
+```bash
+gh worktree pr 42 -- gh claude pr chat 42 -- --sandbox
+gh worktree issue 42 -- gh claude issue chat 42 -- --sandbox
+```
 
 ## Troubleshooting
 
