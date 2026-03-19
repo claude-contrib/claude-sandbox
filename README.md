@@ -214,15 +214,36 @@ claude --sandbox --resume <session-id>
 - [gh-claude](https://github.com/gh-extensions/gh-claude) — draft pull requests, plan issues, review code, and debug CI failures.
 - [gh-worktree](https://github.com/gh-extensions/gh-worktree) — create an isolated git worktree for a PR or issue, then run a command inside it.
 
-### Session State and Sandbox Integration
+### Session State
 
 `gh claude` stores session state at `${XDG_STATE_HOME:-~/.local/state}/gh/claude/sessions/<session-id>/`. Claude Sandbox automatically bind-mounts this directory **read-write** into the container, so sessions are shared between host and sandbox — start a session outside, continue it inside, or vice versa.
 
-Combine `gh-worktree` with `--sandbox` to get a fully sandboxed session on the correct branch:
+### gh claude in the sandbox
+
+Pass `-- --sandbox` to run a `gh claude` interactive session inside the container:
+
+```bash
+gh claude pr chat 42 -- --sandbox
+gh claude issue chat 7 -- --sandbox
+gh claude run chat 123456 -- --sandbox
+```
+
+### gh-worktree + sandbox
+
+`gh-worktree` runs a command inside an isolated git worktree checked out to the PR or issue branch. Use it with `claude --sandbox` to get a sandboxed Claude session on the correct branch without touching your working tree:
+
+```bash
+gh worktree pr 42 -- claude --sandbox
+gh worktree issue 7 -- claude --sandbox
+```
+
+### Combining gh-worktree and gh claude
+
+Chain both to get a fully sandboxed `gh claude` session with the right branch and full PR or issue context:
 
 ```bash
 gh worktree pr 42 -- gh claude pr chat 42 -- --sandbox
-gh worktree issue 42 -- gh claude issue chat 42 -- --sandbox
+gh worktree issue 7 -- gh claude issue chat 7 -- --sandbox
 ```
 
 ## Troubleshooting
