@@ -87,6 +87,12 @@ _resolve_docker_env() {
     return 1
   fi
 
+  # Resolve the GitHub CLI Claude extension state directory and ensure it exists
+  # on the host so the bind mount has a real source directory.
+  CLAUDE_HOST_GH_CLAUDE_STATE_DIR="${XDG_STATE_HOME:-$CLAUDE_HOST_HOME/.local/state}/gh/claude"
+  mkdir -p "$CLAUDE_HOST_GH_CLAUDE_STATE_DIR"
+  export CLAUDE_HOST_GH_CLAUDE_STATE_DIR
+
 }
 
 # Run claude in a Docker sandbox container.
