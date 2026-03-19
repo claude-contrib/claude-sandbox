@@ -228,7 +228,7 @@ gh claude run chat 123456 -- --sandbox
 
 ### gh-worktree + sandbox
 
-`gh-worktree` runs a command inside an isolated git worktree checked out to the PR or issue branch. Use it with `claude --sandbox` to get a sandboxed Claude session on the correct branch without touching your working tree:
+`gh-worktree` runs a command inside an isolated git worktree checked out to the PR or issue branch. Use it with `claude --sandbox` to get a sandboxed Claude session on the correct branch without touching your working tree. Because `gh-worktree` places its worktrees under `~/.github/worktrees`, they are already accessible inside the sandbox:
 
 ```bash
 gh worktree pr 42 -- claude --sandbox
