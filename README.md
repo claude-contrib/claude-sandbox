@@ -12,10 +12,10 @@ Run Claude Code in an isolated Docker container with `bypassPermissions` enabled
 
 The `claude` wrapper script sits in your `$PATH` ahead of the real binary:
 
-| Mode | Trigger | What happens |
-|------|---------|--------------|
-| **Forward** (default) | `claude` | Finds the host `claude` binary and runs it directly |
-| **Sandbox** | `claude --sandbox` | Launches Claude Code inside a Docker container with full permissions |
+| Mode                  | Trigger            | What happens                                                         |
+| --------------------- | ------------------ | -------------------------------------------------------------------- |
+| **Forward** (default) | `claude`           | Finds the host `claude` binary and runs it directly                  |
+| **Sandbox**           | `claude --sandbox` | Launches Claude Code inside a Docker container with full permissions |
 
 ```
 claude --sandbox "fix the bug"
@@ -28,6 +28,7 @@ claude --sandbox "fix the bug"
 ![Demo](docs/demo.webp)
 
 The sandbox container comes pre-configured with:
+
 - **Nix flakes** — auto-activates `flake.nix` if present, giving Claude access to the same compilers, linters, and dev tools you use — an equal developer in your environment
 - **Project mount** — the git repo root is mounted **read-write** (falling back to `$PWD` outside a repo), so Claude can read and edit code across the entire repo including worktrees; the container's working directory is set to your actual `$PWD`
 - **User identity** — the container dynamically creates a user matching your host UID, GID, and username, so file ownership on bind mounts is always correct
@@ -39,12 +40,14 @@ The sandbox container comes pre-configured with:
 The sandbox uses Docker process isolation — Claude runs in a separate container as your user but cannot affect the host system.
 
 **Isolated:**
+
 - Home directory — `$HOME` is **not** mounted; `~/.ssh`, `~/.gnupg`, `~/.aws`, and other dotfiles are inaccessible
 - System files — no access to `/etc`, `/usr`, or host-installed packages
 - Host processes — cannot see, signal, or interact with processes outside the container
 - Package installation — `apt`, `brew`, and other system package managers are unavailable
 
 **Shared (by design):**
+
 - `~/.config` — mounted **read-only** so that git config (`GIT_CONFIG_GLOBAL`) and other host settings are available without manual setup; `CLAUDE_CONFIG_DIR` is mounted separately as **read-write** so Claude Code can persist its own state. Both must point to paths under `~/.config` (see [Configuration](#configuration))
 - Git repo root — mounted **read-write** for code editing (worktree-aware; falls back to `$PWD`)
 - Extra directories — any path passed via `--add-dir` or `--plugin-dir` is mounted **read-only** at the same absolute path inside the container
@@ -145,9 +148,9 @@ DEBUG=1 claude --sandbox
 
 Some Claude CLI arguments are intercepted by the sandbox wrapper and handled specially before being forwarded to the container:
 
-| Argument | Sandbox behaviour |
-|----------|-------------------|
-| `--add-dir DIR` | The directory is bind-mounted **read-only** into the container at the same absolute path, then forwarded to `claude` inside the sandbox |
+| Argument           | Sandbox behaviour                                                                                                                       |
+| ------------------ | --------------------------------------------------------------------------------------------------------------------------------------- |
+| `--add-dir DIR`    | The directory is bind-mounted **read-only** into the container at the same absolute path, then forwarded to `claude` inside the sandbox |
 | `--plugin-dir DIR` | The directory is bind-mounted **read-only** into the container at the same absolute path, then forwarded to `claude` inside the sandbox |
 
 ```bash
@@ -163,12 +166,14 @@ claude --sandbox --plugin-dir /path/to/plugins
 If your project uses a [devcontainer](https://containers.dev/) (VS Code, Codespaces, devcontainer CLI), the sandbox automatically detects the running devcontainer and joins its Docker network. This lets Claude reach services (databases, APIs, etc.) defined in the devcontainer without any extra configuration.
 
 Detection requires:
+
 1. A `.devcontainer/devcontainer.json` or `.devcontainer.json` in the project root
 2. A running devcontainer with the `devcontainer.local_folder` label matching the project
 
 User-defined compose networks provide DNS-based service discovery.
 
 When a network is detected, you'll see:
+
 ```
 Detected devcontainer network 'myproject_default'
 ```
@@ -179,12 +184,12 @@ The full list of host environment variables forwarded to the sandbox is defined 
 
 These additional variables are handled specially:
 
-| Variable | Description |
-|----------|-------------|
+| Variable            | Description                                                                              |
+| ------------------- | ---------------------------------------------------------------------------------------- |
 | `CLAUDE_CONFIG_DIR` | Claude Code config directory — defaults to `~/.config/claude`, must be under `~/.config` |
-| `GIT_CONFIG_GLOBAL` | Git global config file — defaults to `~/.config/git/config`, must be under `~/.config` |
-| `CLAUDE_SANDBOX` | Always run in sandbox mode — equivalent to passing `--sandbox` on every invocation |
-| `DEBUG` | Enable debug tracing (`set -x`) |
+| `GIT_CONFIG_GLOBAL` | Git global config file — defaults to `~/.config/git/config`, must be under `~/.config`   |
+| `CLAUDE_SANDBOX`    | Always run in sandbox mode — equivalent to passing `--sandbox` on every invocation       |
+| `DEBUG`             | Enable debug tracing (`set -x`)                                                          |
 
 ### Settings
 
@@ -206,7 +211,7 @@ claude --sandbox --resume <session-id>
 
 ## Integrations
 
-- [gh-claude](https://github.com/gh-extensions/gh-claude) — draft pull requests, plan issues, review code, and debug CI failures from the terminal using Claude.
+- [gh-claude](https://github.com/gh-extensions/gh-claude) — draft pull requests, plan issues, review code, and debug CI failures.
 - [gh-worktree](https://github.com/gh-extensions/gh-worktree) — create an isolated git worktree for a PR or issue, then run a command inside it.
 
 ### Session State and Sandbox Integration
@@ -236,14 +241,14 @@ docker volume rm claude-nix claude-cache
 
 ## The claude-contrib Ecosystem
 
-| Repo | What it provides |
-|------|-----------------|
-| [claude-extensions](https://github.com/claude-contrib/claude-extensions) | Hooks, context rules, session automation |
-| [claude-features](https://github.com/claude-contrib/claude-features) | Devcontainer features for Claude Code and Anthropic tools |
-| [claude-languages](https://github.com/claude-contrib/claude-languages) | LSP language servers — completions, diagnostics, hover |
-| **claude-sandbox** ← you are here | Sandboxed Docker environment for Claude Code |
-| [claude-services](https://github.com/claude-contrib/claude-services) | MCP servers — browser, filesystem, sequential thinking |
-| [claude-status](https://github.com/claude-contrib/claude-status) | Live status line — context, cost, model, branch, worktree |
+| Repo                                                                     | What it provides                                          |
+| ------------------------------------------------------------------------ | --------------------------------------------------------- |
+| [claude-extensions](https://github.com/claude-contrib/claude-extensions) | Hooks, context rules, session automation                  |
+| [claude-features](https://github.com/claude-contrib/claude-features)     | Devcontainer features for Claude Code and Anthropic tools |
+| [claude-languages](https://github.com/claude-contrib/claude-languages)   | LSP language servers — completions, diagnostics, hover    |
+| **claude-sandbox** ← you are here                                        | Sandboxed Docker environment for Claude Code              |
+| [claude-services](https://github.com/claude-contrib/claude-services)     | MCP servers — browser, filesystem, sequential thinking    |
+| [claude-status](https://github.com/claude-contrib/claude-status)         | Live status line — context, cost, model, branch, worktree |
 
 ## License
 
