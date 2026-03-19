@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.18.0](https://github.com/claude-contrib/claude-sandbox/compare/v0.17.0...v0.18.0) (2026-03-19)
+
+
+### Features
+
+* update claude-status flake.lock ([a7a65f1](https://github.com/claude-contrib/claude-sandbox/commit/a7a65f19453d93966c9865b61d1bcce077bee3c7))
+
+
+### Bug Fixes
+
+* update startup log message to use correct product name ([25cb7f6](https://github.com/claude-contrib/claude-sandbox/commit/25cb7f6f7f2386a38e83d6a97dd0971d3555b795))
+
 ## [0.17.0](https://github.com/claude-contrib/claude-sandbox/compare/v0.16.0...v0.17.0) (2026-03-19)
 
 
