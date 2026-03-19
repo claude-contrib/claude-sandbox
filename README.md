@@ -216,12 +216,12 @@ claude --sandbox --resume <session-id>
 
 ### gh claude in the sandbox
 
-Pass `-- --sandbox` to run a `gh claude` interactive session inside the container. Session state is stored at `${XDG_STATE_HOME:-~/.local/state}/gh/claude/sessions/<session-id>/` and bind-mounted **read-write** into the container, so sessions are shared between host and sandbox — start a session outside, continue it inside, or vice versa:
+Pass `--sandbox` before the subcommand to run a `gh claude` interactive session inside the container. Session state is stored at `${XDG_STATE_HOME:-~/.local/state}/gh/claude/sessions/<session-id>/` and bind-mounted **read-write** into the container, so sessions are shared between host and sandbox — start a session outside, continue it inside, or vice versa:
 
 ```bash
-gh claude pr chat 42 -- --sandbox
-gh claude issue chat 7 -- --sandbox
-gh claude run chat 123456 -- --sandbox
+gh claude --sandbox pr chat 42
+gh claude --sandbox issue chat 7
+gh claude --sandbox run chat 123456
 ```
 
 ### gh-worktree + sandbox
@@ -238,8 +238,8 @@ gh worktree issue 7 -- claude --sandbox
 Chain both to get a fully sandboxed `gh claude` session with the right branch and full PR or issue context:
 
 ```bash
-gh worktree pr 42 -- gh claude pr chat 42 -- --sandbox
-gh worktree issue 7 -- gh claude issue chat 7 -- --sandbox
+gh worktree pr 42 -- gh claude --sandbox pr chat 42
+gh worktree issue 7 -- gh claude --sandbox issue chat 7
 ```
 
 ## Troubleshooting
