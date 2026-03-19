@@ -49,6 +49,7 @@ The sandbox uses Docker process isolation — Claude runs in a separate containe
 - Git repo root — mounted **read-write** for code editing (worktree-aware; falls back to `$PWD`)
 - Extra directories — any path passed via `--add-dir` or `--plugin-dir` is mounted **read-only** at the same absolute path inside the container
 - Credentials — API keys, cloud provider tokens, and `GH_TOKEN` are forwarded via environment variables (see [Configuration](#configuration))
+- `gh claude` state — `{XDG_STATE_HOME:-~/.local/state}/gh/claude` is mounted **read-write** so the GitHub CLI Claude extension can read and persist session data inside the container
 - SSH agent — forwarded when `SSH_AUTH_SOCK` is set
 - Caches — `~/.cache` and `/nix` use dedicated Docker volumes (container-only, not host-shared) that persist across container restarts
 - Network — outbound internet access (required for the Claude API); automatically joins a running devcontainer's Docker network when detected (see [Devcontainer Network](#devcontainer-network))
