@@ -206,14 +206,8 @@ claude --sandbox --resume <session-id>
 
 ## Integrations
 
-[gh-claude](https://github.com/gh-extensions/gh-claude) — draft pull requests, plan issues, review code, and debug CI failures from the terminal using Claude.
-
-[gh-worktree](https://github.com/gh-extensions/gh-worktree) — create an isolated git worktree for a PR or issue, then run a command inside it.
-
-```bash
-gh extension install gh-extensions/gh-claude
-gh extension install gh-extensions/gh-worktree
-```
+- [gh-claude](https://github.com/gh-extensions/gh-claude) — draft pull requests, plan issues, review code, and debug CI failures from the terminal using Claude.
+- [gh-worktree](https://github.com/gh-extensions/gh-worktree) — create an isolated git worktree for a PR or issue, then run a command inside it.
 
 ### Session State and Sandbox Integration
 
