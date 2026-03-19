@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.17.0](https://github.com/claude-contrib/claude-sandbox/compare/v0.16.0...v0.17.0) (2026-03-19)
+
+
+### Features
+
+* bind-mount gh/claude state directory read-write into sandbox ([00fb940](https://github.com/claude-contrib/claude-sandbox/commit/00fb9407b15217bab20efc2a80af331b406cf899))
+
 ## [0.16.0](https://github.com/claude-contrib/claude-sandbox/compare/v0.15.0...v0.16.0) (2026-03-18)
 
 
