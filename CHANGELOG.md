@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.19.0](https://github.com/claude-contrib/claude-sandbox/compare/v0.18.0...v0.19.0) (2026-03-20)
+
+
+### Features
+
+* update flake.lock dependencies ([d32f0a9](https://github.com/claude-contrib/claude-sandbox/commit/d32f0a90d085c0068b8bf3ba09147b844077f33e))
+
 ## [0.18.0](https://github.com/claude-contrib/claude-sandbox/compare/v0.17.0...v0.18.0) (2026-03-19)
 
 
