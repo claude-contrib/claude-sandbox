@@ -34,6 +34,7 @@
         packages.default = claude-sandbox;
 
         devShells.default = pkgs.mkShell {
+          name = "claude-sandbox";
           packages = with pkgs; [
             bash
             bats
