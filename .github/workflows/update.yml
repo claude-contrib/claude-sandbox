@@ -16,16 +16,16 @@ jobs:
       - uses: actions/checkout@v6
       - uses: DeterminateSystems/nix-installer-action@v21
       - uses: DeterminateSystems/magic-nix-cache-action@v13
+      - name: Update docker/flake.lock
+        uses: DeterminateSystems/update-flake-lock@v28
+        with:
+          path-to-flake-dir: docker
+          pr-title: "chore(docker): update flake.lock dependencies"
+          pr-labels: |
+            dependencies
       - name: Update root flake.lock
         uses: DeterminateSystems/update-flake-lock@v28
         with:
           pr-title: "chore: update flake.lock dependencies"
-          pr-labels: |
-            dependencies
-      - name: Update docker/flake.lock
-        uses: DeterminateSystems/update-flake-lock@v28
-        with:
-          path-to-flake-dir: docker/
-          pr-title: "chore(docker): update flake.lock dependencies"
           pr-labels: |
             dependencies
