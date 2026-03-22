@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.20.1](https://github.com/claude-contrib/claude-sandbox/compare/v0.20.0...v0.20.1) (2026-03-22)
+
+
+### Bug Fixes
+
+* add claude-sandbox package alias to docker flake ([6fa66a1](https://github.com/claude-contrib/claude-sandbox/commit/6fa66a1fec36c80c4c017c7e9e9d4d51fe27b166))
+
 ## [0.20.0](https://github.com/claude-contrib/claude-sandbox/compare/v0.19.0...v0.20.0) (2026-03-22)
 
 
