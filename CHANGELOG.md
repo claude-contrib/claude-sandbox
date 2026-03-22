@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.20.0](https://github.com/claude-contrib/claude-sandbox/compare/v0.19.0...v0.20.0) (2026-03-22)
+
+
+### Features
+
+* trigger release with latest dependencies ([ff10521](https://github.com/claude-contrib/claude-sandbox/commit/ff1052156064af69d39cb6371e23b9aa2cc5303e))
+
 ## [0.19.0](https://github.com/claude-contrib/claude-sandbox/compare/v0.18.0...v0.19.0) (2026-03-20)
 
 
