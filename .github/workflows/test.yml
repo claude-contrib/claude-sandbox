@@ -13,4 +13,5 @@ jobs:
       - uses: actions/checkout@v6
       - uses: DeterminateSystems/nix-installer-action@v21
       - uses: DeterminateSystems/magic-nix-cache-action@v13
-      - run: nix develop --command bats tests/
+      - name: Run bats tests
+        run: nix develop --command bats tests/
