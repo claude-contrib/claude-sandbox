@@ -6,8 +6,14 @@
     flake-utils.url = "github:numtide/flake-utils";
   };
 
-  outputs = { self, nixpkgs, flake-utils }:
-    flake-utils.lib.eachDefaultSystem (system:
+  outputs =
+    {
+      nixpkgs,
+      flake-utils,
+      ...
+    }:
+    flake-utils.lib.eachDefaultSystem (
+      system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
         claude-sandbox = pkgs.stdenvNoCC.mkDerivation {
@@ -27,10 +33,16 @@
             cp claude-sandbox.ssh.yml $out/share/claude-sandbox/
             chmod +x $out/share/claude-sandbox/claude
             makeWrapper $out/share/claude-sandbox/claude $out/bin/claude \
-              --prefix PATH : ${pkgs.lib.makeBinPath [ pkgs.docker pkgs.git ]}
+              --prefix PATH : ${
+                pkgs.lib.makeBinPath [
+                  pkgs.docker
+                  pkgs.git
+                ]
+              }
           '';
         };
-      in {
+      in
+      {
         packages.default = claude-sandbox;
 
         devShells.default = pkgs.mkShell {
@@ -41,5 +53,6 @@
             shellcheck
           ];
         };
-      });
+      }
+    );
 }
