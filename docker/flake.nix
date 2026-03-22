@@ -32,7 +32,7 @@
         claude-status = claude-status-nix.packages.${system}.default;
       in
       {
-        packages.claude-sandbox = pkgs.buildEnv {
+        packages.default = pkgs.buildEnv {
           name = "claude-sandbox";
           paths = with pkgs; [
             claude-code
