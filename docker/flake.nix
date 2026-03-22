@@ -31,8 +31,8 @@
         claude-code = claude-code-nix.packages.${system}.default;
         claude-status = claude-status-nix.packages.${system}.default;
       in
-      {
-        packages.default = pkgs.buildEnv {
+      let
+        env = pkgs.buildEnv {
           name = "claude-sandbox";
           paths = with pkgs; [
             claude-code
@@ -43,6 +43,10 @@
             jq
           ];
         };
+      in
+      {
+        packages.default = env;
+        packages.claude-sandbox = env;
       }
     );
 }
