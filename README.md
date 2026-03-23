@@ -2,6 +2,7 @@
 
 > Sandboxed Docker environment for [Claude Code](https://claude.ai/code) — full autonomy, zero risk to your host.
 
+[![Claude](https://img.shields.io/badge/Claude-AI-black?logo=anthropic)](https://claude.ai)
 [![Test](https://github.com/claude-contrib/claude-sandbox/actions/workflows/test.yml/badge.svg)](https://github.com/claude-contrib/claude-sandbox/actions/workflows/test.yml)
 [![Release](https://img.shields.io/github/v/release/claude-contrib/claude-sandbox)](https://github.com/claude-contrib/claude-sandbox/releases/latest)
 [![Docker](https://img.shields.io/badge/ghcr.io-claude--sandbox-blue?logo=docker)](https://ghcr.io/claude-contrib/claude-sandbox)
