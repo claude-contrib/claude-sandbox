@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.20.2](https://github.com/claude-contrib/claude-sandbox/compare/v0.20.1...v0.20.2) (2026-03-23)
+
+
+### Bug Fixes
+
+* **docker:** update claude-status and add package name ([34865f7](https://github.com/claude-contrib/claude-sandbox/commit/34865f78353ac45027b011b1d49cdef5af1c60d3))
+
 ## [0.20.1](https://github.com/claude-contrib/claude-sandbox/compare/v0.20.0...v0.20.1) (2026-03-22)
 
 
