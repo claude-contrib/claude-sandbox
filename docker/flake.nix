@@ -33,6 +33,7 @@
       in
       {
         packages.claude-sandbox = pkgs.buildEnv {
+          name = "claude-sandbox";
           paths = with pkgs; [
             claude-code
             claude-status
