@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.20.3](https://github.com/claude-contrib/claude-sandbox/compare/v0.20.2...v0.20.3) (2026-03-23)
+
+
+### Bug Fixes
+
+* **docker:** downgrade nix image to 2.34.1 ([279d0de](https://github.com/claude-contrib/claude-sandbox/commit/279d0de657e5101e542a0bcf8db65b825e91164e))
+
 ## [0.20.2](https://github.com/claude-contrib/claude-sandbox/compare/v0.20.1...v0.20.2) (2026-03-23)
 
 
