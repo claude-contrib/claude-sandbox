@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # Stage 1: Build — install all packages via nix
-FROM nixos/nix:2.34.1 AS builder
+FROM nixos/nix:2.34.4 AS builder
 
 RUN echo "sandbox = false" >> /etc/nix/nix.conf && \
     echo "filter-syscalls = false" >> /etc/nix/nix.conf && \
