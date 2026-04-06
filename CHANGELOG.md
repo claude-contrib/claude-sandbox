@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.21.0](https://github.com/claude-contrib/claude-sandbox/compare/v0.20.3...v0.21.0) (2026-04-06)
+
+
+### Features
+
+* **deps:** bump nixos/nix from 2.34.1 to 2.34.4 in /docker ([b94a4ff](https://github.com/claude-contrib/claude-sandbox/commit/b94a4ffcf51a1643aa37c4c0a69386c0ba29f5fa))
+
 ## [0.20.3](https://github.com/claude-contrib/claude-sandbox/compare/v0.20.2...v0.20.3) (2026-03-23)
 
 
