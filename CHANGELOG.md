@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.21.1](https://github.com/claude-contrib/claude-sandbox/compare/v0.21.0...v0.21.1) (2026-04-07)
+
+
+### Bug Fixes
+
+* chown SSH agent socket to container user before gosu drop ([bbbdcc1](https://github.com/claude-contrib/claude-sandbox/commit/bbbdcc18fcc89869ff689177c0cf20ba88bf2866))
+
 ## [0.21.0](https://github.com/claude-contrib/claude-sandbox/compare/v0.20.3...v0.21.0) (2026-04-06)
 
 
