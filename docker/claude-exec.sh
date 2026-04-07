@@ -38,8 +38,9 @@ install -d -o "$CLAUDE_HOST_UID" -g "$CLAUDE_HOST_GID" \
 chown -R "$CLAUDE_HOST_UID:$CLAUDE_HOST_GID" /nix/var "$CLAUDE_HOST_HOME/.cache" "$CLAUDE_HOST_HOME/.local"
 
 # Fix SSH agent socket ownership so the container user can connect.
-if [[ -n "${SSH_AUTH_SOCK:-}" ]] && [[ -S "${SSH_AUTH_SOCK}" ]]; then
+if [[ -n "${SSH_AUTH_SOCK:-}" ]] && [[ -e "${SSH_AUTH_SOCK}" ]]; then
   chown "$CLAUDE_HOST_UID:$CLAUDE_HOST_GID" "$SSH_AUTH_SOCK"
+  chmod 660 "$SSH_AUTH_SOCK"
 fi
 
 # Copy managed settings to the user's settings location.
