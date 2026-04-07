@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.21.2](https://github.com/claude-contrib/claude-sandbox/compare/v0.21.1...v0.21.2) (2026-04-07)
+
+
+### Bug Fixes
+
+* improve SSH agent socket handling in container ([de7c96c](https://github.com/claude-contrib/claude-sandbox/commit/de7c96c7a13f987a4fb2a7d55c17edd6558807b0))
+
 ## [0.21.1](https://github.com/claude-contrib/claude-sandbox/compare/v0.21.0...v0.21.1) (2026-04-07)
 
 
