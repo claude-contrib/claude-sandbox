@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.21.3](https://github.com/claude-contrib/claude-sandbox/compare/v0.21.2...v0.21.3) (2026-04-07)
+
+
+### Bug Fixes
+
+* preserve execute bit on SSH_AUTH_SOCK for VirtioFS compatibility ([ef59d12](https://github.com/claude-contrib/claude-sandbox/commit/ef59d1243631c6f3d3371a0225dcc9b925a1f61f))
+
 ## [0.21.2](https://github.com/claude-contrib/claude-sandbox/compare/v0.21.1...v0.21.2) (2026-04-07)
 
 
