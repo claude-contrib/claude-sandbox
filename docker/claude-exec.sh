@@ -37,6 +37,11 @@ install -d -o "$CLAUDE_HOST_UID" -g "$CLAUDE_HOST_GID" \
 # Fix ownership of nix state and named volumes (may have stale ownership).
 chown -R "$CLAUDE_HOST_UID:$CLAUDE_HOST_GID" /nix/var "$CLAUDE_HOST_HOME/.cache" "$CLAUDE_HOST_HOME/.local"
 
+# Fix SSH agent socket ownership so the container user can connect.
+if [[ -n "${SSH_AUTH_SOCK:-}" ]] && [[ -S "${SSH_AUTH_SOCK}" ]]; then
+  chown "$CLAUDE_HOST_UID:$CLAUDE_HOST_GID" "$SSH_AUTH_SOCK"
+fi
+
 # Copy managed settings to the user's settings location.
 claude_settings_path="/etc/claude/settings.json"
 
