@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.21.4](https://github.com/claude-contrib/claude-sandbox/compare/v0.21.3...v0.21.4) (2026-04-08)
+
+
+### Bug Fixes
+
+* use host-services relay socket for SSH agent on macOS ([0335059](https://github.com/claude-contrib/claude-sandbox/commit/0335059e5762d69fdd9ca2ce61d30d97580f643a))
+
 ## [0.21.3](https://github.com/claude-contrib/claude-sandbox/compare/v0.21.2...v0.21.3) (2026-04-07)
 
 
