@@ -130,6 +130,17 @@ _run_in_docker() {
   if [[ -e "${SSH_AUTH_SOCK:-}" ]]; then
     gum log --level info "Forwarding SSH agent"
     mkdir -p "$HOME/.ssh" && touch "$HOME/.ssh/known_hosts"
+
+    # On macOS (OrbStack / Docker Desktop) the launchd socket is bind-mounted
+    # into the container as an empty tmpfs via VirtioFS, so connect() never
+    # reaches OrbStack's proxy. Use the host-services relay socket instead,
+    # which is a real Unix socket accessible inside Docker containers.
+    CLAUDE_SSH_AUTH_SOCK="${SSH_AUTH_SOCK}"
+    if [[ "${CLAUDE_SSH_AUTH_SOCK}" == */com.apple.launchd.*/Listeners ]]; then
+      CLAUDE_SSH_AUTH_SOCK=/run/host-services/ssh-auth.sock
+    fi
+    export CLAUDE_SSH_AUTH_SOCK
+
     compose_args+=(-f "$_claude_script_dir/claude-sandbox.ssh.yml")
   fi
 
