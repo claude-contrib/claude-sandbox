@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.22.0](https://github.com/claude-contrib/claude-sandbox/compare/v0.21.4...v0.22.0) (2026-04-10)
+
+
+### Features
+
+* forward Docker socket into sandbox when available ([21f1b7e](https://github.com/claude-contrib/claude-sandbox/commit/21f1b7e9eb1bab53b10bd91fbd5a0eaf8a7aea92))
+* update flake dependencies ([d657a33](https://github.com/claude-contrib/claude-sandbox/commit/d657a33ce77b37f88a4f441d7adf35d274dc2a5d))
+
 ## [0.21.4](https://github.com/claude-contrib/claude-sandbox/compare/v0.21.3...v0.21.4) (2026-04-08)
 
 
