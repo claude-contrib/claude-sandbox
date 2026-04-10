@@ -144,6 +144,14 @@ _run_in_docker() {
     compose_args+=(-f "$_claude_script_dir/claude-sandbox.ssh.yml")
   fi
 
+  # Forward Docker socket if available
+  local docker_sock="${DOCKER_SOCK:-/var/run/docker.sock}"
+  if [[ -S "${docker_sock}" ]]; then
+    gum log --level info "Forwarding Docker socket"
+    export CLAUDE_DOCKER_SOCK="${docker_sock}"
+    compose_args+=(-f "$_claude_script_dir/claude-sandbox.docker.yml")
+  fi
+
   # Accumulate extra docker run options.
   local -a run_args=()
   # When stdin is a pipe: if /dev/tty is reachable, slurp piped content as the
