@@ -1,31 +1,55 @@
-name: Release
+name: CI
+
+permissions:
+  contents: write
+  id-token: write
+  pull-requests: write
+  packages: write
 
 on:
   push:
     branches: [main]
-
-permissions:
-  contents: write
-  pull-requests: write
-  packages: write
+  pull_request:
+    branches: [main]
 
 jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@v22
+
+      - name: Setup Nix Cache
+        uses: DeterminateSystems/magic-nix-cache-action@v13
+
+      - name: Run Tests
+        run: nix develop --command bats tests/
+
   release:
+    needs: build
+    if: github.event_name == 'push'
     runs-on: ubuntu-latest
     outputs:
-      releases_created: ${{ steps.release.outputs.releases_created }}
+      release_created: ${{ steps.release.outputs.release_created }}
       tag_name: ${{ steps.release.outputs.tag_name }}
     steps:
-      - uses: actions/checkout@v6
-      - uses: googleapis/release-please-action@v4
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Create Release PR
         id: release
+        uses: googleapis/release-please-action@v4
         with:
-          config-file: .github/config/release-please-config.json
           manifest-file: .github/config/release-please-manifest.json
+          config-file: .github/config/release-please-config.json
+          target-branch: main
 
   docker:
     needs: release
-    if: ${{ needs.release.outputs.releases_created == 'true' }}
+    if: ${{ needs.release.outputs.release_created == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -36,7 +60,6 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - uses: docker/setup-qemu-action@v4
       - uses: docker/setup-buildx-action@v4
-
       - name: Docker metadata
         id: meta
         uses: docker/metadata-action@v6
@@ -49,7 +72,6 @@ jobs:
           labels: |
             org.opencontainers.image.title=claude-sandbox
             org.opencontainers.image.description=Isolated, Nix-enabled Claude Code execution environment
-
       - uses: docker/build-push-action@v7
         with:
           context: docker/
