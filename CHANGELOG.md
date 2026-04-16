@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.22.1](https://github.com/claude-contrib/claude-sandbox/compare/v0.22.0...v0.22.1) (2026-04-16)
+
+
+### Bug Fixes
+
+* add postCreateCommand to restore nix volume permissions ([fac8725](https://github.com/claude-contrib/claude-sandbox/commit/fac8725f8b663012a6b0caaf91f83ea13b0e7ec4))
+
 ## [0.22.0](https://github.com/claude-contrib/claude-sandbox/compare/v0.21.4...v0.22.0) (2026-04-10)
 
 
