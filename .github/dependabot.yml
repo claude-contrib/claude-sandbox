@@ -1,12 +1,30 @@
 version: 2
-
 updates:
-  - package-ecosystem: github-actions
-    directory: /
+  - package-ecosystem: "github-actions"
+    directory: "/"
     schedule:
-      interval: weekly
+      interval: "weekly"
+    open-pull-requests-limit: 10
+    groups:
+      all-actions:
+        patterns: ["*"]
+    labels:
+      - "dependencies"
+      - "github-actions"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
 
-  - package-ecosystem: docker
-    directory: /docker
+  - package-ecosystem: "docker"
+    directory: "/docker"
     schedule:
-      interval: weekly
+      interval: "weekly"
+    open-pull-requests-limit: 10
+    groups:
+      all-docker:
+        patterns: ["*"]
+    labels:
+      - "dependencies"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
