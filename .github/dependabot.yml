@@ -6,23 +6,7 @@ updates:
       interval: "weekly"
     open-pull-requests-limit: 10
     groups:
-      all-actions:
-        patterns: ["*"]
-    labels:
-      - "dependencies"
-      - "github-actions"
-      - "auto-merge"
-    commit-message:
-      prefix: "chore"
-      include: "scope"
-
-  - package-ecosystem: "docker"
-    directory: "/docker"
-    schedule:
-      interval: "weekly"
-    open-pull-requests-limit: 10
-    groups:
-      all-docker:
+      all-github-actions:
         patterns: ["*"]
     labels:
       - "dependencies"
