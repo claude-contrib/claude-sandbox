@@ -14,7 +14,7 @@ Set Padding 20
 Set TypingSpeed 75ms
 
 Hide
-Type "cd /Users/iamralch/Projects/github.com/claude-contrib/claude-sandbox && clear"
+Type "cd ~/Projects/claude-sandbox && clear"
 Enter
 Sleep 500ms
 Show
