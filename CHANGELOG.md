@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.22.2](https://github.com/claude-contrib/claude-sandbox/compare/v0.22.1...v0.22.2) (2026-05-03)
+
+
+### Bug Fixes
+
+* **docker:** reset persistent volumes after pulling a new image ([6c6b6c0](https://github.com/claude-contrib/claude-sandbox/commit/6c6b6c08b4a7cb0bdf4b1ec60fdfb8ecc6b1ef69))
+
 ## [0.22.1](https://github.com/claude-contrib/claude-sandbox/compare/v0.22.0...v0.22.1) (2026-04-16)
 
 
