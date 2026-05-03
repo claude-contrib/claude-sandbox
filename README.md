@@ -2,6 +2,7 @@
 
 > Sandboxed Docker environment for [Claude Code](https://claude.ai/code) — full autonomy with reduced access to host state.
 
+[![Claude](https://img.shields.io/badge/Claude-AI-black?logo=anthropic)](https://claude.ai)
 [![CI](https://github.com/claude-contrib/claude-sandbox/actions/workflows/ci.yml/badge.svg)](https://github.com/claude-contrib/claude-sandbox/actions/workflows/ci.yml)
 [![Release](https://img.shields.io/github/v/release/claude-contrib/claude-sandbox)](https://github.com/claude-contrib/claude-sandbox/releases/latest)
 [![Docker](https://img.shields.io/badge/ghcr.io-claude--sandbox-blue?logo=docker)](https://ghcr.io/claude-contrib/claude-sandbox)
@@ -15,9 +16,9 @@ Claude Sandbox is an unofficial community project and is not affiliated with, en
 
 The `claude` wrapper script sits in your `$PATH` ahead of the real binary:
 
-| Mode                  | Trigger            | What happens                                                         |
-| --------------------- | ------------------ | -------------------------------------------------------------------- |
-| **Forward** (default) | `claude`           | Finds the host `claude` binary and runs it directly                  |
+| Mode                  | Trigger            | What happens                                                                   |
+| --------------------- | ------------------ | ------------------------------------------------------------------------------ |
+| **Forward** (default) | `claude`           | Finds the host `claude` binary and runs it directly                            |
 | **Sandbox**           | `claude --sandbox` | Launches Claude Code inside a Docker container with sandbox-scoped permissions |
 
 ```
