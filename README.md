@@ -1,14 +1,15 @@
 # Claude Sandbox
 
-> Sandboxed Docker environment for [Claude Code](https://claude.ai/code) — full autonomy, zero risk to your host.
+> Sandboxed Docker environment for [Claude Code](https://claude.ai/code) — full autonomy with reduced access to host state.
 
-[![Claude](https://img.shields.io/badge/Claude-AI-black?logo=anthropic)](https://claude.ai)
 [![CI](https://github.com/claude-contrib/claude-sandbox/actions/workflows/ci.yml/badge.svg)](https://github.com/claude-contrib/claude-sandbox/actions/workflows/ci.yml)
 [![Release](https://img.shields.io/github/v/release/claude-contrib/claude-sandbox)](https://github.com/claude-contrib/claude-sandbox/releases/latest)
 [![Docker](https://img.shields.io/badge/ghcr.io-claude--sandbox-blue?logo=docker)](https://ghcr.io/claude-contrib/claude-sandbox)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 Run Claude Code in an isolated Docker container with `bypassPermissions` enabled, Nix flake support, your **git repo root** mounted **read-write** (worktree-aware), and automatic devcontainer network detection. One command, two modes: forward to the host binary by default, or sandbox with a flag.
+
+Claude Sandbox is an unofficial community project and is not affiliated with, endorsed by, or sponsored by Anthropic.
 
 ## How It Works
 
@@ -17,7 +18,7 @@ The `claude` wrapper script sits in your `$PATH` ahead of the real binary:
 | Mode                  | Trigger            | What happens                                                         |
 | --------------------- | ------------------ | -------------------------------------------------------------------- |
 | **Forward** (default) | `claude`           | Finds the host `claude` binary and runs it directly                  |
-| **Sandbox**           | `claude --sandbox` | Launches Claude Code inside a Docker container with full permissions |
+| **Sandbox**           | `claude --sandbox` | Launches Claude Code inside a Docker container with sandbox-scoped permissions |
 
 ```
 claude --sandbox "fix the bug"
@@ -39,7 +40,7 @@ The sandbox container comes pre-configured with:
 
 ## Isolation Model
 
-The sandbox uses Docker process isolation — Claude runs in a separate container as your user but cannot affect the host system.
+The sandbox uses Docker process isolation — Claude runs in a separate container as your user and is isolated from most host state by default. It still has access to the mounts, environment variables, credentials, and network paths listed below.
 
 **Isolated:**
 
@@ -59,7 +60,7 @@ The sandbox uses Docker process isolation — Claude runs in a separate containe
 - Caches — `~/.cache` and `/nix` use dedicated Docker volumes (container-only, not host-shared) that persist across container restarts
 - Network — outbound internet access (required for the Claude API); automatically joins a running devcontainer's Docker network when detected (see [Devcontainer Network](#devcontainer-network))
 
-The sandbox prevents Claude from damaging your operating system, installing unwanted software, or accessing sensitive files under your home directory.
+The sandbox reduces host exposure by avoiding a full home-directory mount and by keeping system files and host processes outside the container. It is not a security boundary for data you explicitly share with it, such as your repo, forwarded credentials, SSH agent, devcontainer network, or Docker socket.
 
 ## Requirements
 
@@ -182,7 +183,7 @@ Detected devcontainer network 'myproject_default'
 
 ## Configuration
 
-The full list of host environment variables forwarded to the sandbox is defined in [`claude-sandbox.env.yml`](claude-sandbox.env.yml).
+The full list of host environment variables forwarded to the sandbox is defined in [`claude-sandbox.env.yml`](claude-sandbox.env.yml). Forwarded variables may include API keys, cloud provider credentials, proxy settings, and GitHub tokens; anything forwarded should be treated as available to Claude Code and to processes it runs inside the container.
 
 These additional variables are handled specially:
 
