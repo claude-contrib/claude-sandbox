@@ -77,5 +77,10 @@ _get_container_image() {
   if docker image inspect "$image" &>/dev/null; then
     return 0
   fi
-  gum spin --title "Pulling Docker image $image" -- docker pull "$image"
+
+  gum spin --title "Pulling Docker image $image" -- docker pull "$image" || return 1
+
+  # Reset persistent container-only state before the first run of a new image.
+  docker volume rm claude-nix &>/dev/null || true
+  docker volume rm claude-cache &>/dev/null || true
 }

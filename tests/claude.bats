@@ -244,6 +244,7 @@ setup() {
   docker() {
     case "$1" in
       image) return 0 ;;
+      volume) echo "SHOULD NOT REMOVE PERSISTENT VOLUME"; return 1 ;;
       pull) echo "SHOULD NOT PULL"; return 1 ;;
     esac
   }
@@ -252,15 +253,18 @@ setup() {
   run _get_container_image
   [[ "$status" -eq 0 ]]
   [[ "$output" != *"SHOULD NOT PULL"* ]]
+  [[ "$output" != *"SHOULD NOT REMOVE PERSISTENT VOLUME"* ]]
 }
 
 @test "_get_container_image pulls when image not found" {
   CLAUDE_DOCKER_TAG="1.0.0"
+  local volume_log="$BATS_TEST_TMPDIR/volumes"
 
   docker() {
     case "$1" in
       image) return 1 ;;
       pull) echo "pulled"; return 0 ;;
+      volume) echo "$3" >>"$volume_log"; return 0 ;;
     esac
   }
   export -f docker
@@ -268,6 +272,8 @@ setup() {
   run _get_container_image
   [[ "$status" -eq 0 ]]
   [[ "$output" == *"pulled"* ]]
+  [[ "$(cat "$volume_log")" == *"claude-nix"* ]]
+  [[ "$(cat "$volume_log")" == *"claude-cache"* ]]
 }
 
 # ---------------------------------------------------------------------------
