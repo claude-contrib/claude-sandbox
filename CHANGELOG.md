@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.22.3](https://github.com/claude-contrib/claude-sandbox/compare/v0.22.2...v0.22.3) (2026-05-04)
+
+
+### Bug Fixes
+
+* **github:** correct action versions in update.yml ([d539d1b](https://github.com/claude-contrib/claude-sandbox/commit/d539d1bcb91cfa0ae236b3a1085b03c607d3c95d))
+
 ## [0.22.2](https://github.com/claude-contrib/claude-sandbox/compare/v0.22.1...v0.22.2) (2026-05-03)
 
 
