@@ -83,34 +83,34 @@ setup() {
 # ---------------------------------------------------------------------------
 
 @test "_get_project_path returns git root with .devcontainer/devcontainer.json" {
-  local tmpdir
-  tmpdir="$(mktemp -d)"
-  mkdir -p "$tmpdir/.devcontainer"
-  touch "$tmpdir/.devcontainer/devcontainer.json"
+  local project_dir
+  project_dir="$(mktemp -d)"
+  mkdir -p "$project_dir/.devcontainer"
+  touch "$project_dir/.devcontainer/devcontainer.json"
 
-  git() { echo "$tmpdir"; }
+  git() { echo "$project_dir"; }
   export -f git
 
   run _get_project_path
   [[ "$status" -eq 0 ]]
-  [[ "$output" == "$tmpdir" ]]
+  [[ "$output" == "$project_dir" ]]
 
-  rm -rf "$tmpdir"
+  rm -rf "$project_dir"
 }
 
 @test "_get_project_path returns git root with .devcontainer.json" {
-  local tmpdir
-  tmpdir="$(mktemp -d)"
-  touch "$tmpdir/.devcontainer.json"
+  local project_dir
+  project_dir="$(mktemp -d)"
+  touch "$project_dir/.devcontainer.json"
 
-  git() { echo "$tmpdir"; }
+  git() { echo "$project_dir"; }
   export -f git
 
   run _get_project_path
   [[ "$status" -eq 0 ]]
-  [[ "$output" == "$tmpdir" ]]
+  [[ "$output" == "$project_dir" ]]
 
-  rm -rf "$tmpdir"
+  rm -rf "$project_dir"
 }
 
 @test "_get_project_path fails when not in a git repo" {
@@ -122,33 +122,33 @@ setup() {
 }
 
 @test "_get_project_path fails in git repo without devcontainer config" {
-  local tmpdir
-  tmpdir="$(mktemp -d)"
+  local project_dir
+  project_dir="$(mktemp -d)"
 
-  git() { echo "$tmpdir"; }
+  git() { echo "$project_dir"; }
   export -f git
 
   run _get_project_path
   [[ "$status" -eq 1 ]]
 
-  rm -rf "$tmpdir"
+  rm -rf "$project_dir"
 }
 
 @test "_get_project_path works from subdirectory" {
-  local tmpdir
-  tmpdir="$(mktemp -d)"
-  mkdir -p "$tmpdir/.devcontainer" "$tmpdir/subdir/nested"
-  touch "$tmpdir/.devcontainer/devcontainer.json"
+  local project_dir
+  project_dir="$(mktemp -d)"
+  mkdir -p "$project_dir/.devcontainer" "$project_dir/subdir/nested"
+  touch "$project_dir/.devcontainer/devcontainer.json"
 
-  git() { echo "$tmpdir"; }
+  git() { echo "$project_dir"; }
   export -f git
 
-  cd "$tmpdir/subdir/nested"
+  cd "$project_dir/subdir/nested"
   run _get_project_path
   [[ "$status" -eq 0 ]]
-  [[ "$output" == "$tmpdir" ]]
+  [[ "$output" == "$project_dir" ]]
 
-  rm -rf "$tmpdir"
+  rm -rf "$project_dir"
 }
 
 # ---------------------------------------------------------------------------
@@ -156,12 +156,12 @@ setup() {
 # ---------------------------------------------------------------------------
 
 @test "_get_container_id returns container ID from docker ps" {
-  local tmpdir
-  tmpdir="$(mktemp -d)"
-  mkdir -p "$tmpdir/.devcontainer"
-  touch "$tmpdir/.devcontainer/devcontainer.json"
+  local project_dir
+  project_dir="$(mktemp -d)"
+  mkdir -p "$project_dir/.devcontainer"
+  touch "$project_dir/.devcontainer/devcontainer.json"
 
-  git() { echo "$tmpdir"; }
+  git() { echo "$project_dir"; }
   docker() { echo "abc123def456"; }
   export -f git docker
 
@@ -169,23 +169,23 @@ setup() {
   [[ "$status" -eq 0 ]]
   [[ "$output" == "abc123def456" ]]
 
-  rm -rf "$tmpdir"
+  rm -rf "$project_dir"
 }
 
 @test "_get_container_id fails when docker ps returns empty" {
-  local tmpdir
-  tmpdir="$(mktemp -d)"
-  mkdir -p "$tmpdir/.devcontainer"
-  touch "$tmpdir/.devcontainer/devcontainer.json"
+  local project_dir
+  project_dir="$(mktemp -d)"
+  mkdir -p "$project_dir/.devcontainer"
+  touch "$project_dir/.devcontainer/devcontainer.json"
 
-  git() { echo "$tmpdir"; }
+  git() { echo "$project_dir"; }
   docker() { echo ""; }
   export -f git docker
 
   run _get_container_id
   [[ "$status" -eq 1 ]]
 
-  rm -rf "$tmpdir"
+  rm -rf "$project_dir"
 }
 
 # ---------------------------------------------------------------------------
@@ -193,12 +193,12 @@ setup() {
 # ---------------------------------------------------------------------------
 
 @test "_get_container_network returns first compose network" {
-  local tmpdir
-  tmpdir="$(mktemp -d)"
-  mkdir -p "$tmpdir/.devcontainer"
-  touch "$tmpdir/.devcontainer/devcontainer.json"
+  local project_dir
+  project_dir="$(mktemp -d)"
+  mkdir -p "$project_dir/.devcontainer"
+  touch "$project_dir/.devcontainer/devcontainer.json"
 
-  git() { echo "$tmpdir"; }
+  git() { echo "$project_dir"; }
   docker() {
     case "$1" in
       ps) echo "abc123" ;;
@@ -211,16 +211,16 @@ setup() {
   [[ "$status" -eq 0 ]]
   [[ "$output" == "myproject_default" ]]
 
-  rm -rf "$tmpdir"
+  rm -rf "$project_dir"
 }
 
 @test "_get_container_network fails when only default networks exist" {
-  local tmpdir
-  tmpdir="$(mktemp -d)"
-  mkdir -p "$tmpdir/.devcontainer"
-  touch "$tmpdir/.devcontainer/devcontainer.json"
+  local project_dir
+  project_dir="$(mktemp -d)"
+  mkdir -p "$project_dir/.devcontainer"
+  touch "$project_dir/.devcontainer/devcontainer.json"
 
-  git() { echo "$tmpdir"; }
+  git() { echo "$project_dir"; }
   docker() {
     case "$1" in
       ps) echo "abc123" ;;
@@ -232,7 +232,7 @@ setup() {
   run _get_container_network
   [[ "$status" -eq 1 ]]
 
-  rm -rf "$tmpdir"
+  rm -rf "$project_dir"
 }
 
 # ---------------------------------------------------------------------------
@@ -281,25 +281,25 @@ setup() {
 # ---------------------------------------------------------------------------
 
 @test "_run_in_host finds and runs first claude binary on PATH skipping self" {
-  local tmpdir
-  tmpdir="$(mktemp -d)"
+  local project_dir
+  project_dir="$(mktemp -d)"
 
   # Create a fake claude binary
-  cat > "$tmpdir/claude" <<'SCRIPT'
+  cat > "$project_dir/claude" <<'SCRIPT'
 #!/bin/bash
 echo "host-claude $*"
 SCRIPT
-  chmod +x "$tmpdir/claude"
+  chmod +x "$project_dir/claude"
 
   # Override _claude_script_this so the wrapper skips itself
   _claude_script_this="$(realpath "$REPO_ROOT/claude")"
-  PATH="$tmpdir:$PATH"
+  PATH="$project_dir:$PATH"
 
   run _run_in_host --flag1 arg1
   [[ "$status" -eq 0 ]]
   [[ "$output" == "host-claude --flag1 arg1" ]]
 
-  rm -rf "$tmpdir"
+  rm -rf "$project_dir"
 }
 
 @test "_run_in_host errors when no claude binary found" {
@@ -405,11 +405,11 @@ SCRIPT
 # ---------------------------------------------------------------------------
 
 @test "_run_in_docker uses host working dir path" {
-  local tmpdir
-  tmpdir="$(mktemp -d)"
-  HOME="$tmpdir"
-  mkdir -p "$tmpdir/projects/myapp"
-  cd "$tmpdir/projects/myapp"
+  local project_dir
+  project_dir="$(mktemp -d)"
+  HOME="$project_dir"
+  mkdir -p "$project_dir/projects/myapp"
+  cd "$project_dir/projects/myapp"
 
   _claude_script_dir="$REPO_ROOT"
   unset SSH_AUTH_SOCK GH_TOKEN GITHUB_TOKEN CLAUDE_CONFIG_DIR GIT_CONFIG_GLOBAL
@@ -423,16 +423,16 @@ SCRIPT
   export -f docker
 
   run _run_in_docker
-  [[ "$output" == *"WORKING_DIR=$tmpdir/projects/myapp"* ]]
+  [[ "$output" == *"WORKING_DIR=$project_dir/projects/myapp"* ]]
 
-  rm -rf "$tmpdir"
+  rm -rf "$project_dir"
 }
 
 @test "_run_in_docker uses absolute path for dir outside HOME" {
-  local tmpdir
-  tmpdir="$(mktemp -d)"
+  local project_dir
+  project_dir="$(mktemp -d)"
   HOME="/nonexistent-home-dir"
-  cd "$tmpdir"
+  cd "$project_dir"
 
   _claude_script_dir="$REPO_ROOT"
   unset SSH_AUTH_SOCK GH_TOKEN GITHUB_TOKEN CLAUDE_CONFIG_DIR GIT_CONFIG_GLOBAL
@@ -446,9 +446,9 @@ SCRIPT
   export -f docker
 
   run _run_in_docker
-  [[ "$output" == *"WORKING_DIR=$tmpdir"* ]]
+  [[ "$output" == *"WORKING_DIR=$project_dir"* ]]
 
-  rm -rf "$tmpdir"
+  rm -rf "$project_dir"
 }
 
 @test "_run_in_docker passes -T when no controlling terminal" {
@@ -456,10 +456,10 @@ SCRIPT
     skip "controlling terminal available"
   fi
 
-  local tmpdir
-  tmpdir="$(mktemp -d)"
-  HOME="$tmpdir"
-  cd "$tmpdir"
+  local project_dir
+  project_dir="$(mktemp -d)"
+  HOME="$project_dir"
+  cd "$project_dir"
 
   _claude_script_dir="$REPO_ROOT"
   unset SSH_AUTH_SOCK GH_TOKEN GITHUB_TOKEN CLAUDE_CONFIG_DIR GIT_CONFIG_GLOBAL
@@ -475,7 +475,7 @@ SCRIPT
   run _run_in_docker
   [[ "$output" == *"-T"* ]]
 
-  rm -rf "$tmpdir"
+  rm -rf "$project_dir"
 }
 
 @test "_run_in_docker reconnects to /dev/tty when piped with terminal available" {
@@ -483,10 +483,10 @@ SCRIPT
     skip "no controlling terminal"
   fi
 
-  local tmpdir
-  tmpdir="$(mktemp -d)"
-  HOME="$tmpdir"
-  cd "$tmpdir"
+  local project_dir
+  project_dir="$(mktemp -d)"
+  HOME="$project_dir"
+  cd "$project_dir"
 
   _claude_script_dir="$REPO_ROOT"
   unset SSH_AUTH_SOCK GH_TOKEN GITHUB_TOKEN CLAUDE_CONFIG_DIR GIT_CONFIG_GLOBAL
@@ -503,17 +503,17 @@ SCRIPT
   [[ "$output" == *"ARGS:"* ]]
   [[ "$output" != *"-T"* ]]
 
-  rm -rf "$tmpdir"
+  rm -rf "$project_dir"
 }
 
 @test "_run_in_docker forwards SSH_AUTH_SOCK volume and env" {
-  local tmpdir
-  tmpdir="$(mktemp -d)"
-  HOME="$tmpdir"
-  cd "$tmpdir"
+  local project_dir
+  project_dir="$(mktemp -d)"
+  HOME="$project_dir"
+  cd "$project_dir"
 
   _claude_script_dir="$REPO_ROOT"
-  local ssh_sock="$tmpdir/test-ssh.sock"
+  local ssh_sock="$project_dir/test-ssh.sock"
   touch "$ssh_sock"
   export SSH_AUTH_SOCK="$ssh_sock"
   unset GH_TOKEN GITHUB_TOKEN CLAUDE_CONFIG_DIR GIT_CONFIG_GLOBAL
@@ -530,14 +530,14 @@ SCRIPT
   [[ "$output" == *"claude-sandbox.ssh.yml"* ]]
 
   unset SSH_AUTH_SOCK
-  rm -rf "$tmpdir"
+  rm -rf "$project_dir"
 }
 
 @test "_run_in_docker mounts --add-dir directory as read-only volume" {
-  local tmpdir
-  tmpdir="$(mktemp -d)"
-  HOME="$tmpdir"
-  cd "$tmpdir"
+  local project_dir
+  project_dir="$(mktemp -d)"
+  HOME="$project_dir"
+  cd "$project_dir"
 
   local extra_dir
   extra_dir="$(mktemp -d)"
@@ -556,13 +556,13 @@ SCRIPT
   run _run_in_docker --add-dir "$extra_dir"
   [[ "$output" == *"--volume ${extra_dir}:${extra_dir}:ro"* ]]
 
-  rm -rf "$tmpdir" "$extra_dir"
+  rm -rf "$project_dir" "$extra_dir"
 }
 
 @test "_run_in_docker resolves relative --add-dir path to absolute for mount" {
-  local tmpdir
-  tmpdir="$(mktemp -d)"
-  HOME="$tmpdir"
+  local project_dir
+  project_dir="$(mktemp -d)"
+  HOME="$project_dir"
 
   local extra_dir
   extra_dir="$(mktemp -d)"
@@ -582,14 +582,14 @@ SCRIPT
   run _run_in_docker --add-dir .
   [[ "$output" == *"--volume ${extra_dir}:${extra_dir}:ro"* ]]
 
-  rm -rf "$tmpdir" "$extra_dir"
+  rm -rf "$project_dir" "$extra_dir"
 }
 
 @test "_run_in_docker mounts --plugin-dir directory as read-only volume" {
-  local tmpdir
-  tmpdir="$(mktemp -d)"
-  HOME="$tmpdir"
-  cd "$tmpdir"
+  local project_dir
+  project_dir="$(mktemp -d)"
+  HOME="$project_dir"
+  cd "$project_dir"
 
   local extra_dir
   extra_dir="$(mktemp -d)"
@@ -608,13 +608,13 @@ SCRIPT
   run _run_in_docker --plugin-dir "$extra_dir"
   [[ "$output" == *"--volume ${extra_dir}:${extra_dir}:ro"* ]]
 
-  rm -rf "$tmpdir" "$extra_dir"
+  rm -rf "$project_dir" "$extra_dir"
 }
 
 @test "_run_in_docker resolves relative --plugin-dir path to absolute for mount" {
-  local tmpdir
-  tmpdir="$(mktemp -d)"
-  HOME="$tmpdir"
+  local project_dir
+  project_dir="$(mktemp -d)"
+  HOME="$project_dir"
 
   local extra_dir
   extra_dir="$(mktemp -d)"
@@ -634,14 +634,14 @@ SCRIPT
   run _run_in_docker --plugin-dir .
   [[ "$output" == *"--volume ${extra_dir}:${extra_dir}:ro"* ]]
 
-  rm -rf "$tmpdir" "$extra_dir"
+  rm -rf "$project_dir" "$extra_dir"
 }
 
 @test "_run_in_docker exposes GH_TOKEN to docker compose environment" {
-  local tmpdir
-  tmpdir="$(mktemp -d)"
-  HOME="$tmpdir"
-  cd "$tmpdir"
+  local project_dir
+  project_dir="$(mktemp -d)"
+  HOME="$project_dir"
+  cd "$project_dir"
 
   _claude_script_dir="$REPO_ROOT"
   export GH_TOKEN="test-token"
@@ -660,7 +660,7 @@ SCRIPT
   [[ "$output" == *"GH_TOKEN=test-token"* ]]
 
   unset GH_TOKEN
-  rm -rf "$tmpdir"
+  rm -rf "$project_dir"
 }
 
 # ---------------------------------------------------------------------------
@@ -683,14 +683,14 @@ SCRIPT
 }
 
 @test "_resolve_docker_env sets CLAUDE_HOST_HOME to HOME" {
-  local tmpdir
-  tmpdir="$(mktemp -d)"
-  HOME="$tmpdir"
+  local project_dir
+  project_dir="$(mktemp -d)"
+  HOME="$project_dir"
 
   _resolve_docker_env
-  [[ "$CLAUDE_HOST_HOME" == "$tmpdir" ]]
+  [[ "$CLAUDE_HOST_HOME" == "$project_dir" ]]
 
-  rm -rf "$tmpdir"
+  rm -rf "$project_dir"
 }
 
 @test "_resolve_docker_env does not set CLAUDE_DOCKER_HOME" {
