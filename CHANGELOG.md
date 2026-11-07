@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.22.4](https://github.com/claude-contrib/claude-sandbox/compare/v0.22.3...v0.22.4) (2026-11-07)
+
+
+### Bug Fixes
+
+* **ci:** merge with the App token so main gets its CI run ([#111](https://github.com/claude-contrib/claude-sandbox/issues/111)) ([d6ee56a](https://github.com/claude-contrib/claude-sandbox/commit/d6ee56a3e6bf059855a6a73f14455f6703512752))
+
 ## [0.22.3](https://github.com/claude-contrib/claude-sandbox/compare/v0.22.2...v0.22.3) (2026-05-04)
 
 
